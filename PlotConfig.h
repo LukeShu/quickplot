@@ -25,6 +25,7 @@ public:
   
   Plot *plot;
   int x, y;
+  void setTitle(void);
 
 private:
   
@@ -50,8 +51,6 @@ private:
   Button pointColorB;
   ValueSlider pointSizeVS;
   // RadioButton style1, style2 etc ...
-
-  void setTitle(void);
 
   SigC::Connection plotChanged_connection;
 

@@ -1,11 +1,13 @@
 Short term developer notes:
 
-remove the drawing of the pick line and pick cross when the graph is
-resized.
+What does the "Configure plots" button on the PlotConfig widget do?
+
+
+See if it easy to add GNOME sounds to the widget actions.
 
 put ebuild on gentoo
 
-
+release rpm dist
 
 
 

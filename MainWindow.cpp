@@ -529,7 +529,6 @@ void MainWindow::deletePlotConfig(PlotConfig *plotConfig)
     }
   }
   
-
   if(i!=numPlotConfigs) // if we found and deleted it.
   {
     // Slide the remaining PlotConfigs over to the front of the

@@ -156,6 +156,9 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   gridColorB.signal_clicked().
     connect( SigC::slot(*this, &GraphConfig::on_gridColor));
   
+  showPlotConfigB.signal_clicked().
+    connect( SigC::slot(*this, &GraphConfig::on_showPlotConfig));
+
   gridXLineSpaceVS.signal_valueChanged().
     connect( SigC::slot(*this, &GraphConfig::on_gridXLineSpace));
   
@@ -184,7 +187,7 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
                                    &ButtonBar::checkGraphConfigButton));
   signal_hide().connect(SigC::slot(mainWindow->buttonBar,
                                    &ButtonBar::checkGraphConfigButton));
-  
+
   Glib::RefPtr<Gdk::Pixbuf> pix =
     Gdk::Pixbuf::create_from_xpm_data(quickplot_icon);
   set_icon(pix);
@@ -234,7 +237,7 @@ void GraphConfig::setValuesFromGraph(void)
   else
     sameScaleStatusLabel.set_text("No");
   
-  setTabAsTitle();
+  setTitle();
 }
 
 void GraphConfig::on_notebookFlip(GtkNotebookPage* , guint )
@@ -242,7 +245,7 @@ void GraphConfig::on_notebookFlip(GtkNotebookPage* , guint )
   setValuesFromGraph();
 }
 
-void GraphConfig::setTabAsTitle(void)
+void GraphConfig::setTitle(void)
 {
   char s[16];
   
@@ -425,7 +428,8 @@ void GraphConfig::on_pointSize(void)
 
 void GraphConfig::on_showPlotConfig(void)
 {
-}  
+  mainWindow->showPlotLister();
+}
 
 void GraphConfig::on_bgColor(void)
 {

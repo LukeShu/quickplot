@@ -114,7 +114,7 @@ or greater are used to build the Quickplot source.
 
 <li><b><a
 href="http://www.imagemagick.org/">ImageMagick</a></b>&nbsp;&nbsp; The
-<em>convert</em> program (from ImageMagick) is use to make xpm images
+<em>convert</em> program (from ImageMagick) is used to make xpm images
 from PNG images in the Quickplot source.
 
 </ul>

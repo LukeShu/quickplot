@@ -72,6 +72,7 @@ public:
 
   void show(void);
   void on_unmap(void);
+  void setTitle(void);
 
 private:
   MainWindow *mainWindow;
@@ -79,7 +80,6 @@ private:
 
   void on_notebookFlip(GtkNotebookPage* , guint );
 
-  void setTabAsTitle(void);
 
   void setValuesFromGraph(void);
 

@@ -277,6 +277,11 @@ void App::openFile(const char *filename)
     
     
     graph->createDefaultPlots(file);
+
+    if(currentMainWindow->graphConfig)
+      currentMainWindow->graphConfig->setTitle();
+    if(currentMainWindow->plotLister)
+      currentMainWindow->plotLister->setTitle();    
   }
   else
   {

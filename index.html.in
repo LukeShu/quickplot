@@ -31,15 +31,20 @@ src="quickplot_icon.png"></h1>
 <tr>
 <td>
 
-
-<font size=+1><b>Quickplot</b></font> is <a
-href="http://www.gnu.org/copyleft/gpl.html">GNU GPL free
-software</a>.&nbsp; Quickplot is a fast interactive 2D plotter with
-infinite zooming, value picking, pipe input, and unlimited plots
+<font size=+1><b>Quickplot</b></font> is a fast interactive 2D plotter
+with infinite zooming, value picking, pipe input, and unlimited plots
 displayed.&nbsp; Quickplot is meant for looking at your data quickly
 and of secondary importance is making static pictures of your
-data.&nbsp; It's more of a data browser then a plot editor.&nbsp; It
-currently runs on GNU/Linux systems.
+data.&nbsp; It's a data viewer, not a plot editor.&nbsp; It reads
+ASCII text and sound files.&nbsp; It has lots of command line options,
+making it very shell script friendly.&nbsp; It currently runs on
+GNU/Linux systems.&nbsp;
+
+<p>
+<font size=+1><b>Quickplot</b></font> is <a
+href="http://www.gnu.org/copyleft/gpl.html">GNU GPL free
+software</a>.
+</p>
 
 </td>
 <td>

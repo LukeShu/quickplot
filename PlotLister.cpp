@@ -159,7 +159,7 @@ void PlotLister::on_notebookFlip(GtkNotebookPage* , guint )
   setValuesFromGraph();
 }
 
-void PlotLister::setTabAsTitle(void)
+void PlotLister::setTitle(void)
 {
   char s[16];
   
@@ -200,7 +200,7 @@ void PlotLister::on_removedPlot(Graph *graph, Plot *plot)
 
 void PlotLister::setValuesFromGraph(void)
 {
-  setTabAsTitle();
+  setTitle();
   
   interpolatedMI.
     set_sensitive(mainWindow->currentGraph->highestPickerType >=

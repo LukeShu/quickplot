@@ -12,9 +12,10 @@ public:
 
   void show();
 
+  void setTitle(void);
+
 private:
 
-  void setTabAsTitle(void);
   
   void on_notebookFlip(GtkNotebookPage* , guint );
 
