@@ -94,13 +94,6 @@ PlotLister::PlotLister(MainWindow *mainWindow_in):
       connect(SigC::slot(*this, &PlotLister::on_noninterpolated));
   }
 
-  // We just use the closeButton to get <escape> to close the window.
-  // We don't show the closeButton.
-  closeButton.signal_activate().connect(SigC::slot(*this, &PlotLister::hide));
-  closeButton.add_accelerator("activate", get_accel_group(),
-                              GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
-
-  //closeButton.accelerate(*this);
   show_all_children();
   
   
@@ -282,6 +275,29 @@ void PlotLister::on_noninterpolated(void)
 void PlotLister::on_offPlot(void)
 {
   mainWindow->currentGraph->pickerType = Graph::OFF_PLOT;
+}
+
+// Widget Key Accelerators don't work all the time, so we get the key
+// strokes the hard way.  Also there is no way to use Widget Key
+// Accelerators with Gtk::Window.
+bool PlotLister::on_key_press_event(GdkEventKey* event)
+{
+  // Can add checks on GdkModifierType in event->state.
+
+  switch(event->keyval)
+    {
+    case GDK_Escape:
+    case GDK_p:
+      {
+	hide();
+	return true;
+	break;
+      }
+    default:
+      break;
+    }
+
+  return Window::on_key_press_event(event);
 }
 
 

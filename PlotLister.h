@@ -108,10 +108,11 @@ private:
   Menu pickerTypeM;
   MenuItem  offPlotMI, interpolatedMI, noninterpolatedMI;
 
-  Button closeButton;
   Button printToStdoutB;
   ScrolledWindow scrolledWindow;
   Table table;
 
-  Label plotLabelL, plotPictureL, valuesL, xMinL, xMaxL, yMinL, yMaxL; 
+  Label plotLabelL, plotPictureL, valuesL, xMinL, xMaxL, yMinL, yMaxL;
+
+  bool on_key_press_event(GdkEventKey* event);
 };

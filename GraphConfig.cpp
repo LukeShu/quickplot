@@ -175,14 +175,6 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
     signal_switch_page().
     connect(SigC::slot(*this, &GraphConfig::on_notebookFlip));
 
-
-  // We just use the closeButton to get <escape> to close the window.
-  // We don't show the closeButton.
-  closeButton.signal_activate().connect(SigC::slot(*this, &GraphConfig::hide));
-  closeButton.add_accelerator("activate", get_accel_group(),
-                              GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
-  //closeButton.accelerate(*this);  
-
   signal_show().connect(SigC::slot(mainWindow->menuBar,
                                    &MainMenuBar::checkGraphConfigState));
   signal_hide().connect(SigC::slot(mainWindow->menuBar,
@@ -200,6 +192,9 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   show_all_children();
 
   x = SMALL_INT;
+
+  // need to get key presses.
+  add_events(Gdk::KEY_PRESS_MASK);
 }
 
 void GraphConfig::setValuesFromGraph(void)
@@ -539,4 +534,27 @@ void GraphConfig::on_gridColor(void)
     }
   }
 
+}
+
+// Widget Key Accelerators don't work all the time, so we get the key
+// strokes the hard way.  Also there is no way to use Widget Key
+// Accelerators with Gtk::Window.
+bool GraphConfig::on_key_press_event(GdkEventKey* event)
+{
+  // Can add checks on GdkModifierType in event->state.
+
+  switch(event->keyval)
+    {
+    case GDK_Escape:
+    case GDK_g:
+      {
+	hide();
+	return true;
+	break;
+      }
+    default:
+      break;
+    }
+
+  return Window::on_key_press_event(event);
 }

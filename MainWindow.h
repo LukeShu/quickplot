@@ -111,4 +111,6 @@ private:
 
   // used to set the start up window geometry.
   int startX, startY, startXSign, startYSign;
+
+  bool on_key_press_event(GdkEventKey* event);
 };

@@ -543,6 +543,105 @@ void MainWindow::deletePlotConfig(PlotConfig *plotConfig)
   }
 }
 
+// Widget Key Accelerators don't work all the time, so we get the key
+// strokes the hard way.  Also there is no way to use Widget Key
+// Accelerators with Gtk::Window.
+bool MainWindow::on_key_press_event(GdkEventKey* event)
+{
+  // Can add checks on GdkModifierType in event->state.
+
+  switch(event->keyval)
+    {
+    case GDK_Escape:
+    case GDK_d:
+      if(app->size() > 1)
+	{
+	  deleteLater();
+	  return true;
+	}
+      break;
+    case GDK_q:
+      app->quit();
+      return true;
+      break;
+    case GDK_o:
+      app->openDialog();
+      return true;
+      break;
+    case GDK_n:
+      makeNewGraphWithGraphConfig();
+      return true;
+      break;
+    case GDK_f:
+      app->createMainWindow();
+      return true;
+      break;
+    case GDK_c:
+      app->copyCurrentMainWindow();
+      return true;
+      break;
+    case GDK_i:
+      savePNGFile();
+      return true;
+      break;
+    case GDK_m:
+      if(menuBar.is_visible())
+	menuBar.hide();
+      else
+	menuBar.show();
+      return true;
+      break;
+    case GDK_b:
+      if(buttonBar.is_visible())
+	buttonBar.hide();
+      else
+	buttonBar.show();
+      return true;
+      break;
+    case GDK_t:
+      if(graphsNotebook.get_show_tabs())
+	graphsNotebook.set_show_tabs(false);
+      else
+	graphsNotebook.set_show_tabs(true);
+      return true;
+      break;
+    case GDK_s:
+      if(statusBar.is_visible())
+	statusBar.hide();
+      else
+	statusBar.show();
+      return true;
+      break;
+    case GDK_g:
+      if(graphConfig && graphConfig->is_visible())
+	graphConfig->hide();
+      else
+	showGraphConfig();
+      return true;
+      break;
+    case GDK_p:
+      if(plotLister && plotLister->is_visible())
+	plotLister->hide();
+      else
+	showPlotLister();
+      return true;
+      break;
+    case GDK_a:
+      on_about();
+      return true;
+      break;
+    case GDK_h:
+      on_help();
+      return true;
+      break;
+
+    default:
+      break;
+    }
+
+  return Window::on_key_press_event(event);
+}
+
 
 GraphsNotebook::GraphsNotebook(MainWindow *mainWindow_in):
   mainWindow(mainWindow_in)

@@ -18,7 +18,7 @@ Version @VERSION@
 
 <p><br>
 
-<h3>Quickplot Homepage</h3>
+<h3>Quickplot Home-page</h3>
 
 <blockquote> <a
 href="http://quickplot.sourceforge.net/">http://quickplot.sourceforge.net/</a
@@ -55,6 +55,9 @@ zoom.&nbsp; If you need to look at hundreds of files each with 100,000
 points, the command line options in Quickplot may save your
 sanity.
 
+<p>Quickplot can display sound files with many sound formats.
+</p>
+
 <p> Quickplot is more like an interactive data <b>browser</b> than an
 interactive picture <b>editor</b>.</p>
 
@@ -63,6 +66,7 @@ data quickly</em> theme.&nbsp; So all future additions to this program
 must preserve this quick and lean theme.&nbsp; This does not rule out
 the additions that make this program a more full-featured 2D plotter
 that one can make pretty pictures with.</p>
+
 
 </blockquote>
 
@@ -75,7 +79,8 @@ that one can make pretty pictures with.</p>
 <blockquote>
 
 Quickplot uses the GNU Autotools (./configure) to build and install.
-To build Quickplot the following packages are required to be
+To build Quickplot from the distribution source tarball
+(example: quickplot-@VERSION@.bz2) the following packages are required to be
 installed:
 
 <ul>
@@ -93,6 +98,29 @@ standard library interface.
 
 </ul>
 
+To build Quickplot from the <a
+     href="https://sourceforge.net/cvs/?group_id=82651">CVS source</a>
+the following packages are required to be installed:
+
+<ul>
+
+<li><b>The GNU Autotools</b>&nbsp;&nbsp; <a
+href="http://www.gnu.org/software/autoconf/">Autoconf</a> version 2.58
+or greater, <a
+href="http://www.gnu.org/software/automake/">Automake</a> version
+1.7 or greater, and <a
+href="http://www.gnu.org/software/libtool/">Libtool</a> version 1.4.3
+or greater are used to build the Quickplot source.
+
+<li><b><a
+href="http://www.imagemagick.org/">ImageMagick</a></b>&nbsp;&nbsp; The
+<em>convert</em> program (from ImageMagick) is use to make xpm images
+from PNG images in the Quickplot source.
+
+</ul>
+
+
+
 </blockquote>
 
 
@@ -104,19 +132,21 @@ standard library interface.
 
 <blockquote> We call it <em>Lanceman's Quickplot</em> in order to
 distinguish it from another program called Quickplot which predates
-this program.&nbsp; It used to be on NeXT computuers.&nbsp; It may
-have died with NeXT.&nbsp; This is a complete rewrite, by the original
+this program.&nbsp; It used to be on NeXT computers.&nbsp; It may
+have died with NeXT.
+
+<p>This is a complete rewrite, by the original
 author, of the Lanceman's Quickplot which first appeared in 1998, and
 managed to find its way into the <a
 href="http://www.debian.org/">Debian GNU/Linux</a> distribution soon
-after.
+after.</p>
 
 <p> Quickplot started out in 1998 as an Athena Widgets X11 GUI
 program, in 2003 it was rewritten as a <a
 href="http://www.trolltech.com/products/qt/">QT</a> GUI program, and
 in 2004 it was changed to a <a href="http://www.gtk.org/">GTK+</a> GUI
 program using the <a href="http://www.gtkmm.org/">gtkmm</a> C++ wrapper
-to GTK+.
+to GTK+.</p>
 
 </blockquote>
 

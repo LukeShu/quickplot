@@ -96,12 +96,6 @@ PlotConfig::PlotConfig(MainWindow *w, Plot *p,
     Gdk::Pixbuf::create_from_xpm_data(quickplot_icon);
   set_icon(pix);
 
-  // We just use the closeButton to get <escape> to close the window.
-  // We don't show the closeButton.
-  closeButton.signal_activate().connect(SigC::slot(*this, &PlotConfig::hide));
-  closeButton.add_accelerator("activate", get_accel_group(),
-                              GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
-  //closeButton.accelerate(*this); 
   x = x_in;
   y = y_in;
 
@@ -372,4 +366,27 @@ void PlotConfig::on_pointSize(void)
     if(mainWindow->graphConfig)
       mainWindow->graphConfig->plotSelector.drawArea.queueRedraw();
   }
+}
+
+// Widget Key Accelerators don't work all the time, so we get the key
+// strokes the hard way.  Also there is no way to use Widget Key
+// Accelerators with Gtk::Window.
+bool PlotConfig::on_key_press_event(GdkEventKey* event)
+{
+  // Can add checks on GdkModifierType in event->state.
+
+  switch(event->keyval)
+    {
+    case GDK_Escape:
+    case GDK_p:
+      {
+	hide();
+	return true;
+	break;
+      }
+    default:
+      break;
+    }
+
+  return Window::on_key_press_event(event);
 }

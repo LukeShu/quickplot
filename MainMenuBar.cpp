@@ -264,6 +264,8 @@ void MainMenuBar::addAccelKey(Widget *widget, gint key)
   // this one makes it happen with just the key alone.
   widget->add_accelerator("activate", mainWindow->get_accel_group(),
                          key, Gdk::LOCK_MASK, ACCEL_MASK);
+
+#if 0 // the MainWindow takes care of this now.
   widget->add_accelerator("activate", mainWindow->get_accel_group(),
                          key, Gdk::CONTROL_MASK, ACCEL_MASK);
   widget->add_accelerator("activate", mainWindow->get_accel_group(),
@@ -278,6 +280,7 @@ void MainMenuBar::addAccelKey(Widget *widget, gint key)
                          key, Gdk::MOD4_MASK, ACCEL_MASK);
   widget->add_accelerator("activate", mainWindow->get_accel_group(),
                          key, Gdk::MOD5_MASK, ACCEL_MASK);
+#endif
 }
 
 MainMenuBar::~MainMenuBar(void)

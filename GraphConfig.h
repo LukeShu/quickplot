@@ -26,9 +26,6 @@ private:
   
   MainWindow *mainWindow;
 
-
-  Button closeButton;
-  
   VBox topVBox;
   Frame topLabelFrame;
   Label topLabel;
@@ -81,5 +78,7 @@ private:
   void on_gridLineWidth(void);
   void on_lineWidth(void);
   void on_pointSize(void);
+
+  bool on_key_press_event(GdkEventKey* event);
 };
 

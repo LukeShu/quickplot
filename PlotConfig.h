@@ -31,8 +31,6 @@ private:
   MainWindow *mainWindow;
 
 
-  Button closeButton;
-  
   VBox vBox;
   Picture picture;
   HBox hBox;
@@ -69,4 +67,6 @@ private:
   void on_showPoints(void);
   void on_pointColor(void);
   void on_pointSize(void);
+
+  bool on_key_press_event(GdkEventKey* event);
 };
