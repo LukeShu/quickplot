@@ -1,6 +1,6 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
-# From amd64. Why in here I don't know.
+// For amd64. Why in here I don't know.
 #ifdef USE_LIBSNDFILE
 #include <sndfile.h>
 #endif
