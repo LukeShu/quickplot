@@ -3,7 +3,7 @@
 
 homepagefiles = @webimages@ @htmlfiles@\
  ChangeLog README README.devel\
- RELEASE_DATE TODO
+ RELEASE_DATE TODO quickplot.ebuild
 
 htmldir = $(datadir)/doc/quickplot/html
 nodist_html_DATA = help.html about.html index.html
@@ -107,12 +107,14 @@ configure.ac: mkconfigure_ac CONFIG
 Makefile.am: mkMakefile_am Makefile.am.in
 	./mkMakefile_am
 
-homepage: $(homepagefiles)
+homepage: $(homepagefiles) dist
 	tar -cjf quickplot_homepage-${VERSION}.tar.bz2 $(homepagefiles)
+	md5sum quickplot-${VERSION}.tar.bz2 quickplot-${VERSION}.tar.bz2.md5
+	md5sum quickplot-${VERSION}.tar.gz quickplot-${VERSION}.tar.gz.md5
+
 
 dist: MAKE_RELEASE_DATE
 
 
 MAKE_RELEASE_DATE:
 	./mkRELEASE_DATE
-

@@ -24,6 +24,11 @@ Requirements:
     http://www.gtkmm.org/ for information.
 
 
+  libsndfile (optional)
+
+    See: http://www.mega-nerd.com/libsndfile/
+
+
   GNU Autotools (for developing)
 
     To add source and make a new confgiure script you need the GNU
