@@ -1,3 +1,9 @@
+# This file is for people developing quickplot. This file is used to
+# generate many other files using the GNU autotools. You do this by
+# running `./bootstrap'.  If you're not developing or hacking
+# quickplot you likely don't want to run `./bootstrap' or
+# `./cvsclean'.
+
 # require autoconf version
 AC_PREREQ(2.58)
 
@@ -301,7 +307,13 @@ AC_DEFINE_UNQUOTED(CONFIGURE_DATE, "$CONFIGURE_DATE",
 AC_SUBST(TARNAME)
 
 
-#########################################
+if test "${MAKE}" = "" ; then
+  MAKE_ifset="Is not set, but that is likely OK."
+else
+  MAKE_ifset="${MAKE}"
+fi
+
+####################################################################
 
 
 AC_CONFIG_FILES([
@@ -311,18 +323,22 @@ Makefile
 AC_OUTPUT
 
 # you can add spew here
-#echo "configure done"
 
 AC_MSG_RESULT([
-  done configuring: $PACKAGE_NAME version $VERSION
+  ------------------------------------------------------
+  done configuring: $PACKAGE_NAME  version $VERSION
+  ------------------------------------------------------
 
-     Linking with lib gtkmm version:   $GTKMM_VERSION
+     Linking with lib gtkmm version:      $GTKMM_VERSION
+     Linking with libsndfile?:            $use_libsndfile
+     Linking with libsndfile version:     $SNDFILE_VERSION
+     C++ Compiler (CXX):                  $CXX
+     C++ Compiler Flags (CXXFLAGS):       $CXXFLAGS
+     C++ Linker Flags (LDFLAGS):          $LDFLAGS
+     Linker (LD):                         $LD
+     C/C++ preprocessor flags (CPPFLAGS): $CPPFLAGS
+     Installer (INSTALL):                 $INSTALL
+     Make (MAKE):                         $MAKE_ifset
+     Installation prefix (prefix):        $prefix
 
-     Linking with libsndfile?:         $use_libsndfile
-     Linking with libsndfile version:  $SNDFILE_VERSION
-
-
-     C++ Compiler:         $CXX
-     C++ Compiler Flags:   $CXXFLAGS
-     Installation prefix:  $prefix
 ])

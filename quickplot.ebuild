@@ -1,5 +1,5 @@
 # This is a Gentoo GNU/Linux ebuild script file for package quickplot.
-
+#run%  ACCEPT_KEYWORDS="~x86" emerge quickplot
 
 DESCRIPTION="A fast interactive 2-D plotter"
 HOMEPAGE="http://quickplot.sourceforge.net/"
