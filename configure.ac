@@ -14,11 +14,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.8.3,
+ 0.8.4,
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="Sun Dec  5 18:31:53 EST 2004"
+RELEASE_DATE="Wed Jan  5 18:30:01 EST 2005"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -199,7 +199,7 @@ fi
 
 
 #########################################
-#  fail if gtkmm package is needed
+#  fail if gtkmm package is not found
 #########################################
 
 case "$have_gtkmm" in

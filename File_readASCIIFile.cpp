@@ -11,7 +11,7 @@
 
 #include <list>
 #include <iomanip>
-
+#include <errno.h>
 #include <gtkmm.h>
 
 
@@ -39,7 +39,6 @@ using namespace Gtk;
 #include "StatusBar.h"
 #include "MainWindow.h"
 #include "App.h"
-
 
 #include "errorStr.h"
 #include "FileReader.h"

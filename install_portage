@@ -14,7 +14,8 @@ dir=`echo "$0" | sed 's,[^/]*$,,'`
 test "x${dir}" = "x" && dir='.'
 if test "x`cd "${dir}" 2>/dev/null && pwd`" != "x`pwd`"
 then
-    echo "This script ($0) must be executed directly from the top $0 source directory."
+    echo "This script ($0) must be executed directly \
+from the top $0 source directory."
     exit 1
 fi
 # end taken from Daniel Elstner

@@ -1,27 +1,32 @@
-# This is a Gentoo GNU/Linux ebuild script file for package quickplot.
-#run%  ACCEPT_KEYWORDS="~x86" emerge quickplot
+# Copyright 1999-2005 Gentoo Foundation
+# Distributed under the terms of the GNU General Public License v2
+# $Header$
 
-DESCRIPTION="A fast interactive 2-D plotter"
-HOMEPAGE="http://quickplot.sourceforge.net/"
+inherit eutils
+
+DESCRIPTION="A fast interactive 2D plotter."
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.bz2"
+HOMEPAGE="http://quickplot.sourceforge.net/"
 
-LICENSE="GPL-2"
-SLOT="0"
-KEYWORDS="~x86"
 IUSE=""
-DEPEND="\
->=dev-cpp/gtkmm-2.4.5 \
->=dev-util/pkgconfig-0.15 \
->=media-libs/libsndfile-1.0.5"
+SLOT="0"
+LICENSE="GPL-2"
+KEYWORDS="~x86 ~amd64"
 
+DEPEND=">=dev-util/pkgconfig-0.15
+	>=dev-cpp/gtkmm-2.4.5
+	>=media-libs/libsndfile-1.0.5"
 
-src_compile() {
-
-	econf || die
-	emake || die
+src_unpack() {
+	unpack ${A}
+	epatch ${FILESDIR}/${P}-gcc-3.4.patch
 }
 
-src_install() {
+src_compile() {
+	econf || die "econf step failed."
+	emake || die "emake step failed."
+}
 
-	einstall || die
+src_install () {
+	make install DESTDIR=${D} || die "make install step failed."
 }

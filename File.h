@@ -1,8 +1,10 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+# From amd64. Why in here I don't know.
+#ifdef USE_LIBSNDFILE
+#include <sndfile.h>
+#endif
 
-
-struct ::SNDFILE;
 class Source;
 class FileReader;
 class FileList;
@@ -22,7 +24,7 @@ private:
   void init(const FileList *fileList);
   
 #ifdef USE_LIBSNDFILE
-
+  
   // This will not work with stdin.
   bool readSndFile(const FileList *fileList, int fd=-1);
 

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdio.h>
 #include <math.h>
+#include <errno.h>
 
 #include <gtkmm.h>
 #include <glibmm/ustring.h>
