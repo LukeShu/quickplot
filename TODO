@@ -1,8 +1,9 @@
 Short term developer notes:
 
-rm from CVS:
-  mkMakefile_am mkRELEASE_DATE mkconfigure_ac mkverion RELEASE_DATE CONFIG mkversion mkhtml
-  
+
+bump development version to 0.7.5
+
+
 
 See if it is easy to add GNOME sounds to the widget actions.
 

@@ -1,3 +1,12 @@
+Thu Jun 17 17:57:12 EDT 2004  Lance Arsenault <lanceman@users.sourceforge.net>
+
+	*=== released version 0.7.4 ===
+	
+	*cleaned up scripts to better use GNU Autotools
+
+	*minor bug fixes
+	
+
 2004-05-16   23:49 EDT   Version 0.7.3   lanceman
 
    Fixed some minor bugs.  Added --silent command line option.
