@@ -453,7 +453,7 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 <li><b>q</b>&nbsp;&nbsp; <b><u>q</u></b>uit</li>
 <li><b>s</b>&nbsp;&nbsp; toggles the visiablity of the <b><u>s</u></b>tatus bar</li>
 <li><b>t</b>&nbsp;&nbsp; toggles the visiablity of the graph <b><u>t</u></b>abs</li>
-<li><b>esc</b>&nbsp;&nbsp; <b><u>d</u></b>elete the main window. This will not close the last main window.</li>
+<li><b>esc</b>&nbsp;&nbsp; close the current focused window. This will not close the last main window.</li>
 
 
 </ul>
