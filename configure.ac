@@ -8,11 +8,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.7.7,
+ 0.7.8,
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="Thu Aug  5 21:06:09 EDT 2004"
+RELEASE_DATE="not released yet"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
