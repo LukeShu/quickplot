@@ -672,7 +672,7 @@ int App::parseArgs2(int argc, char **argv)
       readStdin = YES;
 #endif
   }
-  
+
   if(readStdin == YES)
   {
     fileList = FileList::first;
@@ -681,11 +681,12 @@ int App::parseArgs2(int argc, char **argv)
     if(!file->isValid)
     {
       delete file;
-      return -1; //error
+      // Let the app contiune to run if it fails to read stdin.
+      //return -1; //error
     }
     fclose(stdin);
   }
-  
+
   // The first file in the list is stdin, so skip to the next one.
   if(FileList::first->next)
   {

@@ -1,3 +1,9 @@
+Thu Jan  6 20:26:45 EST 2005  Lance Arsenault <lanceman@users.sourceforge.net>
+	* === released version 0.8.6 ===
+	* added --with-html-dir=DIR configure option
+	* made it so that quickplot will not exit if reading stdin
+	fails at startup.
+
 Wed Jan  5 21:25:45 EST 2005  Lance Arsenault <lanceman@users.sourceforge.net>
 	*  === released version 0.8.5 ===
 	* fixed PlotLister bug that caused SegFault

@@ -14,11 +14,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.8.5,
+ 0.8.6,
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="Wed Jan  5 21:25:45 EST 2005"
+RELEASE_DATE="Thu Jan  6 20:26:45 EST 2005"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -278,6 +278,21 @@ AC_SUBST(SNDFILE_CFLAGS)
 AC_SUBST(SNDFILE_LIBS)
 
 
+########################################
+# --with-html-dir=PATH
+########################################
+
+htmldir=${datadir}/doc/quickplot/html
+
+AC_ARG_WITH([html-dir],
+      AS_HELP_STRING([--with-html-dir=DIR],
+      [directory to install html documents. \
+The default is ${datadir}/doc/quickplot/html]),
+      [htmldir=$withval], [htmldir=${datadir}/doc/quickplot/html])
+
+AC_SUBST(htmldir)
+
+
 #########################################
 # extra variables
 #########################################
@@ -339,6 +354,7 @@ AC_MSG_RESULT([
      C/C++ preprocessor flags (CPPFLAGS): $CPPFLAGS
      Installer (INSTALL):                 $INSTALL
      Make (MAKE):                         $MAKE_ifset
+     htmldir                              $htmldir
      Installation prefix (prefix):        $prefix
 
 ])

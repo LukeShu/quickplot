@@ -25,6 +25,6 @@ int main (int argc, char *argv[])
   if(app.isInvalid) return 1;
 
   app.run(); //Shows the window and returns when it is closed.
-  
+
   return 0;
 }

@@ -118,7 +118,7 @@ void File::init(const FileList *fileList)
 
 #endif // #ifdef USE_LIBSNDFILE
 
-  if(readASCIIFile(isStdin ? stdin : NULL, fileList))
+  if(readASCIIFile(isStdin ? stdin : 0, fileList))
     isValid = !error;
   else
     isValid = false;

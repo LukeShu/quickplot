@@ -19,9 +19,6 @@ homepagefiles =\
  TODO\
  quickplot.ebuild
 
-
-htmldir = $(datadir)/doc/quickplot/html
-
 html_DATA =\
  help.html\
  about.html\
