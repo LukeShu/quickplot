@@ -56,24 +56,31 @@ software</a>.
 <tr>
 <td>
 
+
 <ul>
 <b>
   <li>Screen shots <a href="screenshot1.png">1</a> <a
-     href="screenshot2.png">2</a> <a href="screenshot3.png">3</a> 
+     href="screenshot2.png">2</a> <a href="screenshot3.png">3</a></li>
   <li><a
-     href="about.html">About page</a> 
+     href="about.html">About page</a></li>
   <li><a
-     href="help.html">Help page</a>
+     href="help.html">Help page</a></li>
   <li><a
      href="https://sourceforge.net/project/showfiles.php?group_id=82651"
-     >Downloads page</a>
-  <li><a href="ChangeLog">ChangeLog</a>
+     >Downloads page</a></li>
+  <li><a href="ChangeLog">ChangeLog</a></li>
   <li><a
      href="https://sourceforge.net/cvs/?group_id=82651">SourceForge CVS
-     page</a>
+     page</a></li>
   <li><a href="https://sourceforge.net/projects/quickplot/">Sourceforge
-        Project Summary</a>
+        Project Summary</a></li>
 </b>
+</ul>
+
+<b>Note:</b>
+<ul>
+<li>Quickplot version 0.7.8 builds with gtkmm-2.2.*</li>
+<li>Quickplot version 0.8.0 builds with gtkmm-2.4.*</li>
 </ul>
 
 

@@ -87,13 +87,13 @@ void PlotSelector::on_map(void)
   if(wasMapped) return;
 
   Source::signal_addedSource().
-    connect(SigC::slot(*this, &PlotSelector::on_addSource));
+    connect(sigc::mem_fun(*this, &PlotSelector::on_addSource));
   Source::signal_removedSource().
-    connect(SigC::slot(*this, &PlotSelector::on_removeSource));
+    connect(sigc::mem_fun(*this, &PlotSelector::on_removeSource));
 
   mainWindow->graphsNotebook.
     signal_switch_page().
-    connect(SigC::slot(*this, &PlotSelector::on_notebookFlip));
+    connect(sigc::mem_fun(*this, &PlotSelector::on_notebookFlip));
 
   std::list<Source *>::const_iterator source = sources.begin();
   for(;source != sources.end(); source++)
@@ -324,7 +324,7 @@ Frame *PlotSelector::newSourceButtons(PlotSelector::XY xy, Source *source)
     vBox->pack_start(*b, PACK_SHRINK);
 
     b->signal_toggled().
-      connect(SigC::slot(*b, &FieldButton::clicked));
+      connect(sigc::mem_fun(*b, &FieldButton::clicked));
   }
 
   return f;
@@ -453,13 +453,12 @@ drawPlotLine(Plot *plot,
              RadioButton *xRadioButton,
              RadioButton *yRadioButton)
 {
-  GtkAllocation a = get_allocation();
-  int yoffset = a.y;
+  Gdk::Rectangle a = get_allocation();
+  int yoffset = a.get_y();
   a = xRadioButton->get_allocation();
-  int left_y = a.y + a.height/2 - yoffset;
+  int left_y = a.get_y() + a.get_height()/2 - yoffset;
   a = yRadioButton->get_allocation();
-  int right_y = a.y + a.height/2 - yoffset;
-
+  int right_y = a.get_y() + a.get_height()/2 - yoffset;
   
   // draw a line
   {
@@ -513,7 +512,7 @@ drawPlotLine(Plot *plot,
 
 bool ConnectFieldsDrawingArea::on_expose_event(GdkEventExpose*)
 {
-  if(win.is_null())
+  if(!win)
   {
     win = get_window();
     gc = Gdk::GC::create(win);
@@ -522,7 +521,8 @@ bool ConnectFieldsDrawingArea::on_expose_event(GdkEventExpose*)
   win->set_background(plotSelector->mainWindow->currentGraph->backgroundColor);
   win->clear();
   
-  int yoffset = get_allocation().y;
+  Gdk::Rectangle a = get_allocation();
+  int yoffset = a.get_y();
   
   // Draw the little blob on the edges of the radio buttons.
   gc->set_foreground(plotSelector->mainWindow->currentGraph->gridColor);
@@ -531,7 +531,7 @@ bool ConnectFieldsDrawingArea::on_expose_event(GdkEventExpose*)
     plotSelector->xFieldButtons.begin();
   for(;it != plotSelector->xFieldButtons.end(); it++)
   {
-    int y = (*it)->get_allocation().y - yoffset;
+    int y = (*it)->get_allocation().get_y() - yoffset;
     int h = (*it)->get_height();
     win->draw_arc(gc, true, -h/4, y+h/4, h/2, h/2, -90*64, 64*180);
   }
@@ -539,7 +539,7 @@ bool ConnectFieldsDrawingArea::on_expose_event(GdkEventExpose*)
   it = plotSelector->yFieldButtons.begin();
   for(;it != plotSelector->yFieldButtons.end(); it++)
   {
-    int y = (*it)->get_allocation().y - yoffset;
+    int y = (*it)->get_allocation().get_y() - yoffset;
     int h = (*it)->get_height();
     win->draw_arc(gc, true, get_width()-h/4, y+h/4, h/2, h/2, 180*64, 64*360);
   }
@@ -548,7 +548,8 @@ bool ConnectFieldsDrawingArea::on_expose_event(GdkEventExpose*)
     plotSelector->labels.begin();
   for(;lit != plotSelector->labels.end(); lit++)
   {
-    int y = (*lit)->get_allocation().y - yoffset;
+    Gdk::Rectangle a = (*lit)->get_allocation();
+    int y = a.get_y() - yoffset;
     int h = (*lit)->get_height();
     win->draw_rectangle(gc, true, 0, y, get_width(), h);
   }

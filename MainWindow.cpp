@@ -84,7 +84,7 @@ MainWindow::MainWindow(bool makeGraph):
   
   graphsNotebook.
     signal_switch_page().
-    connect(SigC::slot(*this, &MainWindow::on_notebookFlip));
+    connect(sigc::mem_fun(*this, &MainWindow::on_notebookFlip));
 
   
   add(mainVBox);
@@ -101,11 +101,11 @@ MainWindow::MainWindow(bool makeGraph):
   set_icon(pix);
 
   Source::signal_addedSource().
-    connect(SigC::slot(*this, &MainWindow::setTitle));
+    connect(sigc::mem_fun(*this, &MainWindow::setTitle));
   Source::signal_removedSource().
-    connect(SigC::slot(*this, &MainWindow::setTitle));
+    connect(sigc::mem_fun(*this, &MainWindow::setTitle));
 
-  signal_hide().connect(SigC::slot(*this, &MainWindow::deleteLater));
+  signal_hide().connect(sigc::mem_fun(*this, &MainWindow::deleteLater));
   
 
   if(opGeometry && mainWindowNumber == 1) // example: -geometry 800x240+300+200
@@ -140,7 +140,7 @@ MainWindow::MainWindow(bool makeGraph):
   }
   
   Graph::signal_removedPlot().
-    connect(SigC::slot(*this, &MainWindow::on_removedPlot));
+    connect(sigc::mem_fun(*this, &MainWindow::on_removedPlot));
 }
 
 void MainWindow::savePNGFile(void)

@@ -129,13 +129,13 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   Gtk::Menu::MenuList& menulist = sameScaleM.items();
 
   menulist.push_back( Gtk::Menu_Helpers::MenuElem("Same Scale",
-    SigC::slot(*this, &GraphConfig::on_sameScaleOn) ) );
+    sigc::mem_fun(*this, &GraphConfig::on_sameScaleOn) ) );
   
   menulist.push_back( Gtk::Menu_Helpers::MenuElem("Different Scales",
-    SigC::slot(*this, &GraphConfig::on_sameScaleOff) ) );
+    sigc::mem_fun(*this, &GraphConfig::on_sameScaleOff) ) );
   
   menulist.push_back( Gtk::Menu_Helpers::MenuElem("Automatic Scales",
-    SigC::slot(*this, &GraphConfig::on_sameScaleAuto) ) );
+    sigc::mem_fun(*this, &GraphConfig::on_sameScaleAuto) ) );
 
 
   setValuesFromGraph();
@@ -143,56 +143,56 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   /******************************************************************/
 
   showGridCB.signal_clicked().
-    connect( SigC::slot(*this, &GraphConfig::on_showGrid));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_showGrid));
   showGridNumbersCB.signal_clicked().
-    connect( SigC::slot(*this, &GraphConfig::on_showGridNumbers));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_showGridNumbers));
   showLinesCB.signal_clicked().
-    connect( SigC::slot(*this, &GraphConfig::on_showLines));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_showLines));
   showPointsCB.signal_clicked().
-    connect( SigC::slot(*this, &GraphConfig::on_showPoints));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_showPoints));
 
   Graph::signal_changedSameScale().
-    connect( SigC::slot(*this, &GraphConfig::on_sameScaleChange));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_sameScaleChange));
 
   bgColorB.signal_clicked().
-    connect( SigC::slot(*this, &GraphConfig::on_bgColor));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_bgColor));
 
   gridColorB.signal_clicked().
-    connect( SigC::slot(*this, &GraphConfig::on_gridColor));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_gridColor));
   
   showPlotConfigB.signal_clicked().
-    connect( SigC::slot(*this, &GraphConfig::on_showPlotConfig));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_showPlotConfig));
 
   gridXLineSpaceVS.signal_valueChanged().
-    connect( SigC::slot(*this, &GraphConfig::on_gridXLineSpace));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_gridXLineSpace));
   
   gridYLineSpaceVS.signal_valueChanged().
-    connect( SigC::slot(*this, &GraphConfig::on_gridYLineSpace));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_gridYLineSpace));
   
   gridLineWidthVS.signal_valueChanged().
-    connect( SigC::slot(*this, &GraphConfig::on_gridLineWidth));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_gridLineWidth));
 
   lineWidthVS.signal_valueChanged().
-    connect( SigC::slot(*this, &GraphConfig::on_lineWidth));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_lineWidth));
   
   pointSizeVS.signal_valueChanged().
-    connect( SigC::slot(*this, &GraphConfig::on_pointSize));
+    connect( sigc::mem_fun(*this, &GraphConfig::on_pointSize));
 
   mainWindow->graphsNotebook.
     signal_switch_page().
-    connect(SigC::slot(*this, &GraphConfig::on_notebookFlip));
+    connect(sigc::mem_fun(*this, &GraphConfig::on_notebookFlip));
 
   mainWindow->graphsNotebook.signal_tabLabelChanged().
-    connect(SigC::slot(*this, &GraphConfig::on_tabLabelChanged));
+    connect(sigc::mem_fun(*this, &GraphConfig::on_tabLabelChanged));
 
-  signal_show().connect(SigC::slot(mainWindow->menuBar,
+  signal_show().connect(sigc::mem_fun(mainWindow->menuBar,
                                    &MainMenuBar::checkGraphConfigState));
-  signal_hide().connect(SigC::slot(mainWindow->menuBar,
+  signal_hide().connect(sigc::mem_fun(mainWindow->menuBar,
                                    &MainMenuBar::checkGraphConfigState));
   
-  signal_show().connect(SigC::slot(mainWindow->buttonBar,
+  signal_show().connect(sigc::mem_fun(mainWindow->buttonBar,
                                    &ButtonBar::checkGraphConfigButton));
-  signal_hide().connect(SigC::slot(mainWindow->buttonBar,
+  signal_hide().connect(sigc::mem_fun(mainWindow->buttonBar,
                                    &ButtonBar::checkGraphConfigButton));
 
   Glib::RefPtr<Gdk::Pixbuf> pix =

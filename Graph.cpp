@@ -495,7 +495,7 @@ void Graph::draw(Glib::RefPtr<Gdk::Drawable> _win,
 // This seems to be like QT's qtWidget::draw().
 bool Graph::on_expose_event(GdkEventExpose *expose)
 {
-  if(win.is_null())
+  if(!win)
   {
     win = get_window();
     gc = Gdk::GC::create(win);
@@ -1043,7 +1043,7 @@ void Graph::setBackgroundColor(const Gdk::Color& color)
 {
   backgroundColor = color;
 
-  if(!(win.is_null()))
+  if(win)
   {
     get_default_colormap()->alloc_color(backgroundColor);
     win = get_window();
@@ -1057,7 +1057,7 @@ void Graph::setGridColor(const Gdk::Color& color)
 {
   gridColor = color;
   
-  if(!(win.is_null()))
+  if(win)
   {
     get_default_colormap()->alloc_color(gridColor);
   }
@@ -1084,7 +1084,7 @@ GraphTab::GraphTab(int count, MainWindow *mainWindow_in, Graph *graph_in) :
   removeButton.add(closeImage);
 
   removeButton.signal_pressed().
-    connect(SigC::slot(*this, &GraphTab::on_close));
+    connect(sigc::mem_fun(*this, &GraphTab::on_close));
   
   closeImage.show();
   label.show();

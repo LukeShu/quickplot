@@ -10,7 +10,7 @@ SLOT="0"
 KEYWORDS="~x86"
 IUSE=""
 DEPEND="\
->=dev-cpp/gtkmm-2.2.8 \
+>=dev-cpp/gtkmm-2.4.5 \
 >=dev-util/pkgconfig-0.15 \
 >=media-libs/libsndfile-1.0.5"
 

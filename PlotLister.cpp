@@ -82,17 +82,17 @@ PlotLister::PlotLister(MainWindow *mainWindow_in):
     menulist.push_back(offPlotMI);
     offPlotMI.show();
     offPlotMI.signal_activate().
-      connect(SigC::slot(*this, &PlotLister::on_offPlot));
+      connect(sigc::mem_fun(*this, &PlotLister::on_offPlot));
     
     menulist.push_back(interpolatedMI);
     interpolatedMI.show();
     interpolatedMI.signal_activate().
-      connect(SigC::slot(*this, &PlotLister::on_interpolated));
+      connect(sigc::mem_fun(*this, &PlotLister::on_interpolated));
     
     menulist.push_back(noninterpolatedMI);
     noninterpolatedMI.show();
     noninterpolatedMI.signal_activate().
-      connect(SigC::slot(*this, &PlotLister::on_noninterpolated));
+      connect(sigc::mem_fun(*this, &PlotLister::on_noninterpolated));
   }
 
   show_all_children();
@@ -105,23 +105,23 @@ PlotLister::PlotLister(MainWindow *mainWindow_in):
   
   setValuesFromGraph();
 
-  signal_show().connect(SigC::slot(mainWindow->menuBar,
+  signal_show().connect(sigc::mem_fun(mainWindow->menuBar,
                                    &MainMenuBar::checkPlotListerState));
-  signal_hide().connect(SigC::slot(mainWindow->menuBar,
+  signal_hide().connect(sigc::mem_fun(mainWindow->menuBar,
                                    &MainMenuBar::checkPlotListerState));
 
   mainWindow->graphsNotebook.
     signal_switch_page().
-    connect(SigC::slot(*this, &PlotLister::on_notebookFlip));
+    connect(sigc::mem_fun(*this, &PlotLister::on_notebookFlip));
 
 
   Graph::signal_removedPlot().
-    connect(SigC::slot(*this, &PlotLister::on_removedPlot));
+    connect(sigc::mem_fun(*this, &PlotLister::on_removedPlot));
   Graph::signal_addedPlot().
-    connect(SigC::slot(*this, &PlotLister::on_addedPlot));
+    connect(sigc::mem_fun(*this, &PlotLister::on_addedPlot));
 
   printToStdoutB.signal_pressed().
-    connect(SigC::slot(*this, &PlotLister::on_printToStdout));
+    connect(sigc::mem_fun(*this, &PlotLister::on_printToStdout));
                  
 
   x = SMALL_INT;
@@ -345,12 +345,12 @@ Row::Row(MainWindow *mainWindow_in, Table *table_in,
   add(yMaxE, 7);
  
   //afterRealizeConnection = yMaxE.signal_expose_event().
-  //  connect(SigC::slot(*this, &Row::afterRealize));
+  //  connect(sigc::mem_fun(*this, &Row::afterRealize));
 
   plot->signal_valueDisplay().
-    connect(SigC::slot(*this, &Row::on_valueDisplay));
+    connect(sigc::mem_fun(*this, &Row::on_valueDisplay));
   plotConfigB.signal_pressed().
-    connect(SigC::slot(*this, &Row::makePlotConfig));
+    connect(sigc::mem_fun(*this, &Row::makePlotConfig));
 }
 
 #if 0
@@ -415,7 +415,7 @@ bool Picture::on_expose_event(GdkEventExpose *)
 {
   if(plot)
   {
-    if(win.is_null())
+    if(!win)
     {
       win = get_window();
       gc = Gdk::GC::create(win);
@@ -502,11 +502,11 @@ void Picture::setPlot(Plot *p)
   {
     plotChangeConnection =
       plot->signal_changed().connect(
-      SigC::slot(*this, &Picture::queueRedraw));
+      sigc::mem_fun(*this, &Picture::queueRedraw));
 
     bgConnection =
       plot->graph->signal_backgroundColorChanged().
-      connect(SigC::slot(*this, &Picture::queueRedraw));
+      connect(sigc::mem_fun(*this, &Picture::queueRedraw));
   }
 }
 

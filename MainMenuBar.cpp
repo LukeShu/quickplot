@@ -65,7 +65,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     menuList.
       push_back(Menu_Helpers::
                 ImageMenuElem("_Open File ...", openImage, 
-                              SigC::slot(*app, &App::openDialog)));
+                              sigc::mem_fun(*app, &App::openDialog)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_o);
 
@@ -73,7 +73,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     menuList.
       push_back(Menu_Helpers::
                 ImageMenuElem("_New Graph Tab", newImage, 
-                              SigC::slot(*mainWindow,
+                              sigc::mem_fun(*mainWindow,
                                          &MainWindow::makeNewGraphWithGraphConfig)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_n);
@@ -86,7 +86,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     menuList.
       push_back(Menu_Helpers::
                 ImageMenuElem("New _Frame (Empty)", newFrameImage, 
-                              SigC::slot(*app,
+                              sigc::mem_fun(*app,
                                          &App::createMainWindow)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_f);
@@ -98,7 +98,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     menuList.
       push_back(Menu_Helpers::
                 ImageMenuElem("New Frame (_Copy This)", copyFrameImage, 
-                              SigC::slot(*app,
+                              sigc::mem_fun(*app,
                                          &App::copyCurrentMainWindow)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_c);
@@ -109,7 +109,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
   
     menuList.push_back(deleteFrameMenuItem);
     deleteFrameMenuItem.signal_activate().
-      connect(SigC::slot(*mainWindow, &MainWindow::deleteLater));
+      connect(sigc::mem_fun(*mainWindow, &MainWindow::deleteLater));
     closeImage.show();
     deleteFrameMenuItem.show();
     if(app->size() < 1)
@@ -125,7 +125,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     menuList.
       push_back(Menu_Helpers::
                 ImageMenuElem("Save PNG _Image File ...", saveImage, 
-                              SigC::slot(*mainWindow,
+                              sigc::mem_fun(*mainWindow,
                                          &MainWindow::savePNGFile)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_i);
@@ -137,7 +137,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     menuList.
       push_back(Menu_Helpers::ImageMenuElem("_Quit",
                                             quitImage,
-                                            SigC::slot(*app,
+                                            sigc::mem_fun(*app,
                                                        &App::quit)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_q);
@@ -161,7 +161,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     if(opShowMenuBar)
       showMenuBarItem.set_active();
     showMenuBarItem.signal_activate().
-      connect(SigC::slot(*this, &MainMenuBar::on_showMenuBarItem));
+      connect(sigc::mem_fun(*this, &MainMenuBar::on_showMenuBarItem));
     // make it so we activate with <alt>m, <control>m, and etc.    
     addAccelKey(&showMenuBarItem, GDK_m);
     
@@ -171,7 +171,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     if(opShowButtons)
       showButtonBarItem.set_active();
     showButtonBarItem.signal_activate().
-      connect(SigC::slot(*this, &MainMenuBar::on_showButtonBarItem));
+      connect(sigc::mem_fun(*this, &MainMenuBar::on_showButtonBarItem));
      // make it so we activate with <alt>m, <control>m, and etc.    
      addAccelKey(&showButtonBarItem, GDK_b);
     
@@ -181,7 +181,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     if(opShowGraphTabs)
       showGraphTabsItem.set_active();
     showGraphTabsItem.signal_activate().
-      connect(SigC::slot(*this, &MainMenuBar::on_showGraphTabsItem));
+      connect(sigc::mem_fun(*this, &MainMenuBar::on_showGraphTabsItem));
     // make it so we activate with <alt>m, <control>m, and etc.    
     addAccelKey(&showGraphTabsItem, GDK_t);
 
@@ -191,7 +191,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     if(opShowStatusBar)
       showStatusBarItem.set_active();
     showStatusBarItem.signal_activate().
-      connect(SigC::slot(*this, &MainMenuBar::on_showStatusBarItem));
+      connect(sigc::mem_fun(*this, &MainMenuBar::on_showStatusBarItem));
     // make it so we activate with <alt>m, <control>m, and etc.    
     addAccelKey(&showStatusBarItem, GDK_s);
 
@@ -204,7 +204,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     if(opShowGraphConfig)
       showGraphConfigItem.set_active();
     showGraphConfigItem.signal_activate().
-      connect(SigC::slot(*this, &MainMenuBar::on_showGraphConfigItem));
+      connect(sigc::mem_fun(*this, &MainMenuBar::on_showGraphConfigItem));
     // make it so we activate with <alt>m, <control>m, and etc.    
     addAccelKey(&showGraphConfigItem, GDK_g);
 
@@ -213,7 +213,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     showPlotListerItem.show();
     showPlotListerItem.set_active(false);
     showPlotListerItem.signal_activate().
-      connect(SigC::slot(*this, &MainMenuBar::on_showPlotListerItem));
+      connect(sigc::mem_fun(*this, &MainMenuBar::on_showPlotListerItem));
     // make it so we activate with <alt>m, <control>m, and etc.    
     addAccelKey(&showPlotListerItem, GDK_p);
     
@@ -230,14 +230,14 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     
     menuList.push_back(Menu_Helpers::
                        ImageMenuElem("_About", aboutImage,
-                                SigC::slot(*mainWindow,
+                                sigc::mem_fun(*mainWindow,
                                            &MainWindow::on_about)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_a);
 
     menuList.push_back(Menu_Helpers::
                        ImageMenuElem("_Help", helpImage,
-                                SigC::slot(*mainWindow,
+                                sigc::mem_fun(*mainWindow,
                                            &MainWindow::on_help)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_h);
@@ -245,14 +245,14 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
   }
   
   signal_show().
-    connect(SigC::slot(*this, &MainMenuBar::checkMenuBarState));
+    connect(sigc::mem_fun(*this, &MainMenuBar::checkMenuBarState));
   signal_hide().
-    connect(SigC::slot(*this, &MainMenuBar::checkMenuBarState));
+    connect(sigc::mem_fun(*this, &MainMenuBar::checkMenuBarState));
   
   mainWindow->statusBar.signal_show().
-    connect(SigC::slot(*this, &MainMenuBar::checkStatusBarState));
+    connect(sigc::mem_fun(*this, &MainMenuBar::checkStatusBarState));
   mainWindow->statusBar.signal_hide().
-    connect(SigC::slot(*this, &MainMenuBar::checkStatusBarState));
+    connect(sigc::mem_fun(*this, &MainMenuBar::checkStatusBarState));
 }
 
 void MainMenuBar::addAccelKey(Widget *widget, gint key)

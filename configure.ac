@@ -8,11 +8,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.7.8,
+ 0.8.0,
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="Wed Aug 25 19:55:07 EDT 2004"
+RELEASE_DATE="Thu Aug 26 10:53:03 EDT 2004"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -89,19 +89,16 @@ have_libsndfile=no
 #   check for package gtkmm
 #########################################
 
-gtkmm_need_version=2.2.6
+gtkmm_need_version=2.4.5
 
 echo -n "checking for gtkmm version >= $gtkmm_need_version ..."
 
-GTKMM_PKG_NAME=gtkmm-2.0
-#if pkg-config --exists gtkmm-2.4 ; then
-#  GTKMM_PKG_NAME=gtkmm-2.4
-#fi
+GTKMM_PKG_NAME=gtkmm-2.4
 
-# is gtkmm-2.0 or gtkmm-2.4 there
+# is gtkmm-2.4 there
 if ! pkg-config --exists $GTKMM_PKG_NAME ; then
-    echo
     AC_MSG_WARN([
+
 
   You need  gtkmm installed.  At least version $gtkmm_need_version
   The gtkmm home page is at http://www.gtkmm.org/
@@ -111,8 +108,8 @@ if ! pkg-config --exists $GTKMM_PKG_NAME ; then
 # is it at least version
 elif ! pkg-config --atleast-version=$gtkmm_need_version $GTKMM_PKG_NAME ; then
    GTKMM_VERSION=$(pkg-config --modversion $GTKMM_PKG_NAME)
-   echo
    AC_MSG_WARN([
+
 
   You have version $GTKMM_VERSION of gtkmm.
   You need at least version $gtkmm_need_version of gtkmm.
@@ -136,8 +133,8 @@ echo -n "checking for lib sndfile version >= $sndfile_need_version ..."
 
 # is it there
 if ! pkg-config --exists sndfile ; then
-    echo
     AC_MSG_NOTICE([
+
 
   The libsndfile library was not found.
   Quickplot can't read sound files without libsndfile.
@@ -147,8 +144,8 @@ if ! pkg-config --exists sndfile ; then
 
 # is it at least version
 elif ! pkg-config --atleast-version=$sndfile_need_version sndfile ; then
-   echo
    AC_MSG_WARN([
+
 
   You have version $SNDFILE_VERSION of libsndfile.
   You need at least version $sndfile_need_version of libsndfile.

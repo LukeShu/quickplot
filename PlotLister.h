@@ -30,7 +30,7 @@ private:
 
 
 
-class Row: public SigC::Object
+class Row
 {
 public:
   

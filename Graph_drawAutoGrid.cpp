@@ -198,7 +198,7 @@ void Graph::drawAutoGrid(Glib::RefPtr<Gdk::Drawable> _win,
   _gc->set_foreground(gridColor);
   _gc->set_line_attributes(gridLineWidth, Gdk::LINE_SOLID,
                            Gdk::CAP_ROUND, Gdk::JOIN_ROUND);
-  if(pangolayout.is_null() && showGridNumbers)
+  if(!pangolayout && showGridNumbers)
   {
     pangolayout = create_pango_layout("");
   }

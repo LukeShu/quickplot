@@ -79,20 +79,20 @@ PlotConfig::PlotConfig(MainWindow *w, Plot *p,
   setPlot(p);
 
   showLineCB.signal_clicked().
-    connect( SigC::slot(*this, &PlotConfig::on_showLine));
+    connect( sigc::mem_fun(*this, &PlotConfig::on_showLine));
   lineColorB.signal_pressed().
-    connect( SigC::slot(*this, &PlotConfig::on_lineColor));
+    connect( sigc::mem_fun(*this, &PlotConfig::on_lineColor));
   lineWidthVS.signal_valueChanged().
-    connect( SigC::slot(*this, &PlotConfig::on_lineWidth));
+    connect( sigc::mem_fun(*this, &PlotConfig::on_lineWidth));
   
   showPointsCB.signal_clicked().
-    connect( SigC::slot(*this, &PlotConfig::on_showPoints));
+    connect( sigc::mem_fun(*this, &PlotConfig::on_showPoints));
   pointColorB.signal_pressed().
-    connect( SigC::slot(*this, &PlotConfig::on_pointColor));
+    connect( sigc::mem_fun(*this, &PlotConfig::on_pointColor));
   pointSizeVS.signal_valueChanged().
-    connect( SigC::slot(*this, &PlotConfig::on_pointSize));
+    connect( sigc::mem_fun(*this, &PlotConfig::on_pointSize));
 
-  signal_hide().connect(SigC::slot(*this,&PlotConfig::deleteLater));
+  signal_hide().connect(sigc::mem_fun(*this,&PlotConfig::deleteLater));
 
   Glib::RefPtr<Gdk::Pixbuf> pix =
     Gdk::Pixbuf::create_from_xpm_data(quickplot_icon);
@@ -164,7 +164,7 @@ void PlotConfig::setPlot(Plot *p)
   
   plotChanged_connection =
     plot->signal_changed().
-    connect(SigC::slot(*this,&PlotConfig::on_plotChanged));
+    connect(sigc::mem_fun(*this,&PlotConfig::on_plotChanged));
  
   setValues();
 }

@@ -43,28 +43,28 @@ ButtonBar::ButtonBar(MainWindow *mainWindow_in):
   add(showGraphConfigButton);
   add(savePNGButton);
 
-  openButton.signal_activate().connect(SigC::slot(*app, &App::openDialog));
-  openButton.signal_pressed().connect(SigC::slot(*app, &App::openDialog));
+  openButton.signal_activate().connect(sigc::mem_fun(*app, &App::openDialog));
+  openButton.signal_pressed().connect(sigc::mem_fun(*app, &App::openDialog));
   
   newButton.signal_activate().
-    connect(SigC::slot(*mainWindow,
+    connect(sigc::mem_fun(*mainWindow,
                        &MainWindow::makeNewGraphWithGraphConfig));
   newButton.signal_pressed().
-    connect(SigC::slot(*mainWindow,
+    connect(sigc::mem_fun(*mainWindow,
                        &MainWindow::makeNewGraphWithGraphConfig));
-  savePNGButton.signal_pressed().connect(SigC::slot(*mainWindow,
+  savePNGButton.signal_pressed().connect(sigc::mem_fun(*mainWindow,
                                                     &MainWindow::savePNGFile));
   
   showGraphConfigButton.signal_activate().
-      connect(SigC::slot(*this,
+      connect(sigc::mem_fun(*this,
                          &ButtonBar::on_showGraphConfigButton));
   showGraphConfigButton.signal_pressed().
-      connect(SigC::slot(*this,
+      connect(sigc::mem_fun(*this,
                          &ButtonBar::on_showGraphConfigButton));
   
-  signal_show().connect(SigC::slot(mainWindow->menuBar,
+  signal_show().connect(sigc::mem_fun(mainWindow->menuBar,
                                    &MainMenuBar::checkButtonBarState));
-  signal_hide().connect(SigC::slot(mainWindow->menuBar,
+  signal_hide().connect(sigc::mem_fun(mainWindow->menuBar,
                                    &MainMenuBar::checkButtonBarState));
   
   openButton.show();

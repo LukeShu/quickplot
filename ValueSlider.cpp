@@ -40,10 +40,10 @@ ValueSlider::ValueSlider(int min, int max, int maxmax_in,
   inSettingValues = false;
     
   adjustment.signal_value_changed().
-    connect( SigC::slot(*this, &ValueSlider::on_adjustmentValueChanged));
+    connect( sigc::mem_fun(*this, &ValueSlider::on_adjustmentValueChanged));
   
   entry.signal_activate().
-    connect( SigC::slot(*this, &ValueSlider::on_entryValueChanged));
+    connect( sigc::mem_fun(*this, &ValueSlider::on_entryValueChanged));
 }
 
 void ValueSlider::setValue(int val)
@@ -208,10 +208,10 @@ DoubleValueSlider::DoubleValueSlider(double min, double max, double maxmax_in,
   inSettingValues = false;
     
   adjustment.signal_value_changed().
-    connect( SigC::slot(*this, &DoubleValueSlider::on_adjustmentValueChanged));
+    connect( sigc::mem_fun(*this, &DoubleValueSlider::on_adjustmentValueChanged));
   
   entry.signal_activate().
-    connect( SigC::slot(*this, &DoubleValueSlider::on_entryValueChanged));
+    connect( sigc::mem_fun(*this, &DoubleValueSlider::on_entryValueChanged));
 }
 
 void DoubleValueSlider::setValue(double val)
@@ -361,10 +361,10 @@ LogValueSlider::LogValueSlider(int min, int max, const Glib::ustring& label_text
   inSettingValues = false;
     
   adjustment.signal_value_changed().
-    connect( SigC::slot(*this, &LogValueSlider::on_adjustmentValueChanged));
+    connect( sigc::mem_fun(*this, &LogValueSlider::on_adjustmentValueChanged));
   
   entry.signal_activate().
-    connect( SigC::slot(*this, &LogValueSlider::on_entryValueChanged));
+    connect( sigc::mem_fun(*this, &LogValueSlider::on_entryValueChanged));
 }
 
 void LogValueSlider::setValue(int val)

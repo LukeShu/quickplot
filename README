@@ -6,9 +6,6 @@ The Quickplot homepage:
         http://quickplot.sourceforge.net/
 
 
-
-
-
 Requirements:
 
 
@@ -22,7 +19,10 @@ Requirements:
 
     gtkmm is a C++ wrapper of the GNOME widget API, The GIMP Toolkit
     (GTK).  There's other packages that gtkmm depends on.  See:
-    http://www.gtkmm.org/ for information.
+    http://www.gtkmm.org/ for information. Quickplot version 0.7.8
+    (and below) works with gtkmm-2.2.* and will not work with gtkmm-2.4.*.
+    Quickplot version 0.8.0 (and above) works with gtkmm-2.4.* and will
+    not work with gtkmm-2.2.*.
 
 
   libsndfile (optional)
@@ -36,12 +36,11 @@ Requirements:
     Autotools.  See:   At the time of writing this the GNU Autotools versions
     were found by using the --version option with said program:
 
-      aclocal (GNU automake) 1.7.9
-      libtoolize (GNU libtool) 1.5
-      autoheader (GNU Autoconf) 2.58
-      automake (GNU automake) 1.7.9
-      autoconf (GNU Autoconf) 2.58
+    running: automake --version && autoconf --version && libtool --version
 
+      GNU automake 1.7.9
+      GNU Autoconf 2.59
+      GNU libtool  1.4.3
 
 
 

@@ -188,7 +188,7 @@ CloseSourceMenuItem::CloseSourceMenuItem(Source *s, MainWindow *mainWindow_in):
   set_image(closeImage);
   mainWindow->menuBar.getFileMenu().items().push_back(*this);
   signal_activate().
-    connect(SigC::slot(*this, &CloseSourceMenuItem::deleteSourceLater));
+    connect(sigc::mem_fun(*this, &CloseSourceMenuItem::deleteSourceLater));
   closeImage.show();
   s->closeSourceMenuItems.push_back(this);
   dl.source = s;
