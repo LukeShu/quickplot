@@ -393,10 +393,10 @@ color=#902040>-V</font></b>&nbsp;&nbsp; print the Quickplot version
 number and then exit returning 0 exit status
 
 <li><b><font color=#902040>--with-libsndfile</font></b>&nbsp;&nbsp; if
-@PACKAGE@ is linked with the libsndfile library, print the version of
-the libsndfile library that @PACKAGE@ is linked with, and exit
-returning status 0 if @PACKAGE@ is linked with the libsndfile library
-and 1 if @PACKAGE@ is not linked with the libsndfile library
+%PACKAGE% is linked with the libsndfile library, print the version of
+the libsndfile library that %PACKAGE% is linked with, and exit
+returning status 0 if %PACKAGE% is linked with the libsndfile library
+and 1 if %PACKAGE% is not linked with the libsndfile library
 
 <br>&nbsp;
 

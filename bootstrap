@@ -76,10 +76,6 @@ run()
 }
 
 
-run ./mkRELEASE_DATE
-
-# make configure.ac from configure.as.in and VERSION
-run ./mkconfigure_ac
 
 # WANT_AUTOCONF, WANT_AUTOMAKE and WANT_LIBTOOL will help find usable
 # versions of autoconf, automake and libtoolize on Gentoo GNU/Linux
@@ -92,125 +88,6 @@ export WANT_AUTOCONF=2.58
 export WANT_AUTOMAKE=1.7
 export WANT_LIBTOOL=1.4.3
 
-if [ -x mkMakefile_am ]
-then
-  run ./mkMakefile_am
-fi
-
-run aclocal
-run libtoolize --force --automake
-run autoheader
-run automake --add-missing
-run autoconf
-
-
-# final spew
-if [ $error = 0 ]
-then
-   echo "$script ran successfully"
-else
-   echo "$script did not run successfully"
-fi
-
-exit $error
-#! /bin/sh
-
-# bootstrap, Copyright (c) 2004 Lance Arsenault
-#
-# This program is free software; you can redistribute it
-# and/or modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation; either version 2, or (at
-# your option) any later version.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; see the file COPYING.  If not, see it in
-# the web at http://www.gnu.org/copyleft/gpl.html or write to the Free
-# Software Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA
-# 02111-1307, USA.
-
-
-#---------------------------------------------------------------------
-#                         WHAT'S THIS FOR
-
-# Run this if you just got this package from CVS.
-
-# This is run to generate files (./configure.ac and ./configure)
-# needed to make the files in this directory into something closer to
-# a package for source distribution (packages source tar-ball files).
-# The files that this starts with commonly come from a CVS or other
-# file repository.  This uses the GNU Autotools.
-
-#---------------------------------------------------------------------
-
-
-
-
-########################################################################
-# This block was taken from Daniel Elstner's autogen.sh.
-########################################################################
-dir=`echo "$0" | sed 's,[^/]*$,,'`
-test "x${dir}" = "x" && dir='.'
-if test "x`cd "${dir}" 2>/dev/null && pwd`" != "x`pwd`"
-then
-    echo "This script ($0) must be executed directly from the top $0 source directory."
-    exit 1
-fi
-# end taken from Daniel Elstner
-########################################################################
-
-
-touch stamp-h
-
-script="$0"
-error=0
-
-# This function, run(), just helps by adding more spew for debugging
-# when running programs.  If any thing fails to run it stops running
-# programs and spews what it would like to run.
-run()
-{
-  if [ $error = 0 ]
-  then
-    echo "$script RUNNING: $@"
-    if ! $@
-    then
-      echo
-      echo "-------------------------- ERROR ---------------------------"
-      echo "$script had an error while running: $@"
-      echo "------------------------------------------------------------"
-      error=1
-    fi
-  else
-    echo "+++++ $script DID NOT RUN: $@"
-  fi
-}
-
-
-run ./mkRELEASE_DATE
-
-# make configure.ac from configure.as.in and VERSION
-run ./mkconfigure_ac
-
-# WANT_AUTOCONF, WANT_AUTOMAKE and WANT_LIBTOOL will help find usable
-# versions of autoconf, automake and libtoolize on Gentoo GNU/Linux
-# systems when there are multiple versions installed.  On Gentoo
-# GNU/Linux when there are multiple versions of a package installed
-# the executables are installed as wrappers that parse the
-# WANT_"PACKAGE_NAME" environment variable.
-
-export WANT_AUTOCONF=2.58
-export WANT_AUTOMAKE=1.7
-export WANT_LIBTOOL=1.4.3
-
-if [ -x mkMakefile_am ]
-then
-  run ./mkMakefile_am
-fi
 
 run aclocal
 run libtoolize --force --automake

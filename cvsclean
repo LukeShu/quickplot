@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/sh -x
 
 # Don't run this unless you have the GNU auto tools programs that are
 # needed to replace the files that this script removes.
@@ -8,43 +8,23 @@
 # therefore don't need to be checked into CVS or other repository.
 
 
-# get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
-# VERSION_MICRO, EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
-#. CONFIG
-
-
 if [ -e Makefile ]
 then
   make distclean
 fi
 
 rm -f \
- aclocal.m4 config.cache config.h install-sh config.log \
- Makefile Makefile.in missing mkinstalldirs ltmain.sh \
- config.sub config.guess configure \
- configure.scan autoscan-*x.log \
- libtool config.status autoscan.log depcomp
+ aclocal.m4 config.cache config.h install-sh config.log\
+ Makefile Makefile.in missing mkinstalldirs ltmain.sh\
+ config.sub config.guess configure\
+ configure.scan autoscan-*x.log INSTALL\
+ libtool config.status autoscan.log depcomp config.h* stamp-h*
 
-#rm -f ${TARNAME}-?.*.tar.gz ${TARNAME}-?.*.tar.bz2
+rm -rf autom4te.cache/
 
-rm -f RELEASE_DATE
+
 rm -f File_readSndInt.cpp File_readSndFloat.cpp File_readSndDouble.cpp
 rm -f *_html.cpp *.html
-rm -rf autom4te.cache/
 rm -f *~
-rm -f config.h* stamp-h* Makefile.am
 rm -f *.xpm
-
-# These may need to stay in the future as additions may be added to the
-# auto-generated versions of these files or I understand this better.
-rm -f INSTALL configure.ac
-
-for i in NEWS README AUTHORS ChangeLog 
-do
-  if [ ! -e $i ]
-  then
-    echo "touch $i"
-    touch $i
-  fi
-done
 
