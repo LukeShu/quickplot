@@ -1,5 +1,6 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#include "config.h"
 
 #include <gtkmm.h>
 

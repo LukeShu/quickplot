@@ -1,5 +1,7 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#include "config.h"
+
 #ifdef MINGW
 #include <stdio.h>
 #include <Windows.h>

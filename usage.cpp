@@ -5,7 +5,7 @@
 
 int usage(void)
 {
-  printf("Usage: quickplot\n");
+  printf("Usage: quickplot [FILE1] [OPTIONS] [FILE2] [OPTIONS] ...\n");
 
   return 1;
 }
