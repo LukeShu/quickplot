@@ -1,15 +1,24 @@
 Short term developer notes:
 
-fix helloworld_cpp and gtkmm_helloworld
+remove the drawing of the pick line and pick cross when the graph is
+resized.
 
-Trove Software Map?
+put ebuild on gentoo
+
+
+
+
+
+fix and distribute helloworld_cpp and gtkmm_helloworld
+
+add quick start html doc.
+
+
+remove pick line on Graph resize.
+
 
 add GNU Free Documentation License for docs
 
-
-make quickplot.ebuild.in that is used to make quickplot.ebuild
-
-check source into sourceforge CVS
 
 
 add more (?) to status bar.
@@ -32,7 +41,6 @@ Look for memory leaks.
 
 
 
-delete the GraphTab objects in the graphNotebooks
 
 Need a remove Graph Tab GUI.  Like galean??
 
@@ -55,7 +63,7 @@ takes a while.   Also add progress bar to that.
 
 
 
-add a Graphs pull down menu that runs in parallel with the tabs.
+add a Graphs pull down menu that workd like the tabs.
 
 add a pointer modes button pad. like in the drawing programs.  get it
 from a drawing program along with any thing else we can if possible

@@ -132,18 +132,32 @@ private:
   bool checkScalesQueued;
   bool isDeleting; // flag that says we are in ~Graph()
 
-  //friend class Graph;
+  int old_width, old_height;
 };
 
-
+class MainWindow;
 
 class GraphTab : public HBox
 {
 public:
 
-  GraphTab(int graphNumber);
+  GraphTab(int graphNumber, MainWindow *m, Graph *graph);
 
 
   Label label;
+  Button removeButton;
+  Image closeImage;
 
+  struct DeleteLater
+  {
+    GraphTab *graphTab;
+  } deleteLater;
+  
+  MainWindow *mainWindow;
+  Graph *graph;
+
+private:
+
+  void on_close(void);
+  
 };

@@ -74,7 +74,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
       push_back(Menu_Helpers::
                 ImageMenuElem("_New Graph Tab", newImage, 
                               SigC::slot(*mainWindow,
-                                         &MainWindow::makeNewGraphTab)));
+                                         &MainWindow::makeNewGraphWithGraphConfig)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_n);
 
@@ -234,13 +234,15 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     
     menuList.push_back(Menu_Helpers::
                        ImageMenuElem("_About", aboutImage,
-                                SigC::slot(*mainWindow, &MainWindow::on_about)));
+                                SigC::slot(*mainWindow,
+                                           &MainWindow::on_about)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_a);
 
     menuList.push_back(Menu_Helpers::
                        ImageMenuElem("_Help", helpImage,
-                                SigC::slot(*mainWindow, &MainWindow::on_help)));
+                                SigC::slot(*mainWindow,
+                                           &MainWindow::on_help)));
     // make it so we activate with <alt>m, <control>m, and etc.
     addAccelKey(&(menuList.back()), GDK_h);
 

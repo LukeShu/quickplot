@@ -11,7 +11,7 @@
 #include "Globel.h"
 
 
-bool opVerbose = true; // more spew then default
+bool opVerbose = false; // more spew then default
 bool opSilent = false;  // no spew, even on error
 std::ostream &opSpew = std::cout;
 

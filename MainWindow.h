@@ -92,13 +92,15 @@ public:
   
   
   void makeNewGraphTab(void); // slot
+  void removeGraphTab(Graph *graph);
   
   void makeNewGraphTabWithGraph(Graph *graph);
+  void makeNewGraphWithGraphConfig(void);
   void on_notebookFlip(GtkNotebookPage* page, guint page_num); //slot
 
 private:
 
-  int graphTabCount;
+  int graphTabAddCount;
   
   void on_removedPlot(Graph *graph, Plot *plot);
   

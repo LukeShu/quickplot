@@ -45,10 +45,12 @@ ButtonBar::ButtonBar(MainWindow *mainWindow_in):
   openButton.signal_activate().connect(SigC::slot(*app, &App::openDialog));
   openButton.signal_pressed().connect(SigC::slot(*app, &App::openDialog));
   
-  newButton.signal_activate().connect(SigC::slot(*mainWindow,
-                                                 &MainWindow::makeNewGraphTab));
-  newButton.signal_pressed().connect(SigC::slot(*mainWindow,
-                                                &MainWindow::makeNewGraphTab));
+  newButton.signal_activate().
+    connect(SigC::slot(*mainWindow,
+                       &MainWindow::makeNewGraphWithGraphConfig));
+  newButton.signal_pressed().
+    connect(SigC::slot(*mainWindow,
+                       &MainWindow::makeNewGraphWithGraphConfig));
   savePNGButton.signal_pressed().connect(SigC::slot(*mainWindow,
                                                     &MainWindow::savePNGFile));
   

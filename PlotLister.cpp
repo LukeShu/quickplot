@@ -284,7 +284,8 @@ void PlotLister::on_offPlot(void)
 }
 
 
-Row::Row(MainWindow *mainWindow_in, Table *table_in, int row_in, Plot *plot_in):
+Row::Row(MainWindow *mainWindow_in, Table *table_in,
+         int row_in, Plot *plot_in):
   plotConfigB("Configure Plot"),
   picture(plot_in, true)
 {
@@ -299,6 +300,7 @@ Row::Row(MainWindow *mainWindow_in, Table *table_in, int row_in, Plot *plot_in):
   valueE.set_size_request(300,-1);
   
   labelE.set_text(plot->getLabel());
+  labelE.set_editable(false);
   if(plot->xpick != MAXVALUE)
     on_valueDisplay(plot->xpick, plot->ypick);
   else
@@ -317,16 +319,40 @@ Row::Row(MainWindow *mainWindow_in, Table *table_in, int row_in, Plot *plot_in):
   add(labelE, 1);
   add(picture, 2);
   add(valueE, 3);
+  valueE.set_editable(false);
   add(xMinE, 4);
   add(xMaxE, 5);
   add(yMinE, 6);
   add(yMaxE, 7);
+ 
+  //afterRealizeConnection = yMaxE.signal_expose_event().
+  //  connect(SigC::slot(*this, &Row::afterRealize));
 
   plot->signal_valueDisplay().
     connect(SigC::slot(*this, &Row::on_valueDisplay));
   plotConfigB.signal_pressed().
     connect(SigC::slot(*this, &Row::makePlotConfig));
 }
+
+#if 0
+void Row::afterRealize(void)
+{
+  setLabelSize(xMinE);
+  setLabelSize(xMaxE);  
+  setLabelSize(yMinE);
+  setLabelSize(yMaxE);
+  afterRealizeConnection.disconnect();
+}
+// fix the label widget minimum size to the text of the text in it.
+void Row::setLabelSize(Entry &l)
+{
+  //int x,y;
+  //l.get_layout_offsets(x,y);
+  Glib::RefPtr<Pango::Layout> layout = l.get_layout();
+  printf("width=%d\n", layout->get_width());
+  l.set_size_request(layout->get_width(),-1);
+}
+#endif
 
 void Row::makePlotConfig(void)
 {

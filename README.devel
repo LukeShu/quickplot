@@ -39,7 +39,11 @@ the MainWindow that contains Graph widget objects.
 
    * Graph * : A Widget where plots are drawn.  There is one for each
 Notebook tab.  A Graph has a STL list of Plots (see below).  The
-Notebook keeps a list of all Graphs one in each tab.
+Notebook keeps a list of all Graphs one in each tab.  The dictionary
+(http://dictionary.reference.com/search?q=graph) defines graph to be
+the same as plot.  Here we think of: "Drawing plots on graph paper."
+Not: "Drawing graphs on plot paper."  The dictionary says: graphing:
+To plot (a function) on a graph.  That what Quickplot does.
 
    * GraphConfig * : Is a top level (pop up) Widget used to select
 Fields to plot and other graph configuration in the current Graph.
@@ -154,6 +158,6 @@ to tutorial
 
 * Color(const Glib::ustring& str)  needs documenting.
 
-* how do you get option -geometry without writing lots of code?
+* How do you parse the option -geometry without writing lots of code?
 
-
+* gtkmm in general needs more documentation.

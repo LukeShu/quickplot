@@ -70,7 +70,7 @@ MainWindow::MainWindow(bool makeGraph):
   
   setTitle(NULL);
   
-  graphTabCount = 0;
+  graphTabAddCount = 0;
 
   if(!opShowGraphTabs)
     graphsNotebook.set_show_tabs(false);
@@ -78,7 +78,6 @@ MainWindow::MainWindow(bool makeGraph):
   if(makeGraph)
   {
     makeNewGraphTab();
-  
   }
   
   graphsNotebook.
@@ -277,19 +276,88 @@ void MainWindow::showPlotLister(void)
 
 void MainWindow::makeNewGraphTabWithGraph(Graph *graph)
 {
-  graphTabCount++;
+  graphTabAddCount++;
   graph->show();
   graphsNotebook.add(*graph);
-  GraphTab *graphTab = new GraphTab(graphTabCount);
+  GraphTab *graphTab = new GraphTab(graphTabAddCount, this, graph);
   graphsNotebook.set_tab_label(*graph, *graphTab);
   graphsNotebook.set_current_page(graphsNotebook.page_num(*graph));
   currentGraph = graph;
+
+  if(graphsNotebook.get_n_pages() == 2)
+  {
+    GraphTab *tab = dynamic_cast<GraphTab *>
+      (graphsNotebook.get_tab_label(*graphsNotebook.get_nth_page(0)));
+    if(tab)
+    {
+      tab->removeButton.set_sensitive(true);
+    }
+  }
+  else if(graphsNotebook.get_n_pages() == 1)
+  {
+    GraphTab *tab = dynamic_cast<GraphTab *>
+      (graphsNotebook.get_tab_label(*graphsNotebook.get_nth_page(0)));
+    if(tab)
+    {
+      tab->removeButton.set_sensitive(false);
+    }
+  }
 }
 
 
 void MainWindow::makeNewGraphTab(void)
 {
   makeNewGraphTabWithGraph(new Graph);
+}
+
+void MainWindow::makeNewGraphWithGraphConfig(void)
+{
+  makeNewGraphTab();
+  showGraphConfig();
+    
+  // Calling hide() before show() will make it visible even if the
+  // window was icon-ified. show() alone will not cause the window to
+  // be visible if it is icon-ified.  We think "blinking" the window
+  // is better than not seeing it some times.  There does not appear
+  // to be a function gboolean gtk_window_get_iconified(GtkWindow
+  // *window), or a corrisponding method in GTKmm.
+  graphConfig->hide();
+  graphConfig->show();
+}
+
+
+void MainWindow::removeGraphTab(Graph *graph)
+{
+  // remove Graph and Notebook page.
+  int n = graphsNotebook.get_n_pages();
+
+  // This will not remove the last graph.
+  if(n <= 1) return;
+  
+  int i;
+  for(i=0;i<n;i++)
+  {
+    Widget *g = graphsNotebook.get_nth_page(i);
+
+    if(dynamic_cast<Graph *>(g) == graph)
+    {
+      Widget *label = graphsNotebook.get_tab_label(*graph);
+      graphsNotebook.remove_page(i);
+      delete graph;
+      delete label;
+      break;
+    }
+  }
+
+  if(graphsNotebook.get_n_pages() == 1)
+  {
+    GraphTab *tab = dynamic_cast<GraphTab *>
+      (graphsNotebook.get_tab_label(*graphsNotebook.get_nth_page(0)));
+    if(tab)
+    {
+      tab->removeButton.set_sensitive(false);
+    }
+  }
 }
 
 
@@ -388,7 +456,7 @@ extern "C"
     app->destroyMainWindow(((struct DeleteLater *) data)->mainWindow);
     //opSpew << __LINE__ << " file=" << __FILE__ << std::endl;
     free(data);
-    return ((gint) 0);
+    return ((gboolean) 0);
   }
 }
 

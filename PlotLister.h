@@ -42,7 +42,8 @@ public:
 private:
 
   Button plotConfigB;
-  Entry labelE, valueE, xMinE, xMaxE, yMinE, yMaxE;
+  Entry labelE, valueE;
+  Label xMinE, xMaxE, yMinE, yMaxE;
 
 
   Picture picture;
@@ -54,6 +55,10 @@ private:
   
   void add(Widget &w, int col);
   void makePlotConfig(void);
+  //void setLabelSize(Entry &l);
+  //void afterRealize(void);
+
+  //SigC::Connection afterRealizeConnection;
 };
 
 

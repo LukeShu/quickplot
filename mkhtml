@@ -72,7 +72,7 @@ fi
 
 
 cat << EOF >> ${1}
-Lanceman's <a href="http://quickplot.sourceforge.net/">Quickplot</a>
+<a href="http://quickplot.sourceforge.net/">Quickplot</a>
 &nbsp;&nbsp; version ${VERSION} &nbsp;&nbsp; release date:
 ${RELEASE_DATE} </center>
 

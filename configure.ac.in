@@ -43,7 +43,7 @@ AC_CONFIG_SRCDIR([config.h.in])
 
 
 AC_PROG_CXX
-AC_PROG_CC
+#AC_PROG_CC
 AC_PROG_CPP
 AC_PROG_INSTALL
 AC_PROG_LN_S
@@ -256,6 +256,10 @@ AC_OUTPUT
 AC_MSG_RESULT([
   done configuring: $PACKAGE_NAME   version $VERSION
 
-     linking with gtkmm version:        $GTKMM_VERSION
-     linking with lib sndfile version:  $SNDFILE_VERSION
+     Linking with lib gtkmm version:    $GTKMM_VERSION
+     Linking with lib sndfile version:  $SNDFILE_VERSION
+
+     C++ Compiler:           $CXX $CXXFLAGS
+     Source Directory:       $srcdir
+     Installation prefix:    $prefix
 ])

@@ -99,6 +99,10 @@ Graph::Graph(void)
   
   lastPickerType = NONE;
   buttonPressed = 0;
+
+  // old_width and old_height are used for seeing if there is a
+  // resize.
+  old_width = old_height = SMALL_INT;
 }
 
 // a copy the plots and properties from a graph.
@@ -495,13 +499,21 @@ bool Graph::on_expose_event(GdkEventExpose *expose)
     colormap->alloc_color(black);
     inverted_gc->set_foreground(gridColor);
   }
+
+  if(currentMainWindow->statusBar.is_visible())
+  {
+    currentMainWindow->statusBar.positionEntry.set_text("");
+  }
+
   
   win->clear();
   
   draw(win, gc);
 
     // This is just for zoom boxes and mouse value pick lines.
-  if(lastPickerType != NONE)
+  if(lastPickerType != NONE &&
+     old_width == get_width() &&
+     old_height == get_height() )
   {
     // Need to draw some lines.
 
@@ -522,6 +534,13 @@ bool Graph::on_expose_event(GdkEventExpose *expose)
         win->draw_line(inverted_gc, xpick, 0, xpick, get_height());
       }
     }
+  }
+  else if(old_width != get_width() ||
+          old_height != get_height())
+  {
+    lastPickerType = NONE;
+    old_width = get_width();
+    old_height = get_height();
   }
   
   return true;
@@ -679,6 +698,10 @@ bool Graph::on_motion_notify_event(GdkEventMotion *event)
   if(size() > 0 && isSameScale && currentMainWindow->statusBar.is_visible())
   {
     setStatusXYValues(event->x, event->y);
+  }
+  else if(currentMainWindow->statusBar.is_visible())
+  {
+    currentMainWindow->statusBar.positionEntry.set_text("");
   }
   
   if(!buttonPressed) return true;
@@ -899,6 +922,11 @@ bool Graph::on_button_release_event(GdkEventButton *event)
     // need to show the x,y values with this new scale.
     setStatusXYValues(event->x, event->y);
   }
+  else if(currentMainWindow->statusBar.is_visible())
+  {
+    currentMainWindow->statusBar.positionEntry.set_text("");
+  }
+
   
   buttonPressed = 0;
   return true;
@@ -1022,15 +1050,48 @@ void Graph::setGridColor(const Gdk::Color& color)
 
 
 
-GraphTab::GraphTab(int count)
+GraphTab::GraphTab(int count, MainWindow *mainWindow_in, Graph *graph_in) :
+  closeImage(Stock::CLOSE, ICON_SIZE_MENU)
 {
+  graph = graph_in;
+  mainWindow = mainWindow_in;
+  
+  set_spacing(6);
+  
   char s[16];
   snprintf(s, 16, "Graph %d", count);
   label.set_text(s);
   add(label);
+  add(removeButton);
+
+  removeButton.set_size_request(15,15);
+  removeButton.add(closeImage);
+
+  removeButton.signal_pressed().
+    connect(SigC::slot(*this, &GraphTab::on_close));
+  
+  closeImage.show();
   label.show();
+  removeButton.show();
 }
 
+extern "C"
+{
+  static gboolean GraphTab_deleteLater(gpointer data)
+  {
+    gtk_idle_remove_by_data(data);
+    GraphTab::DeleteLater *d = (GraphTab::DeleteLater *) data;
+    d->graphTab->mainWindow->removeGraphTab(d->graphTab->graph);
+    return ((gboolean) 0);
+  }
+}
+
+
+void GraphTab::on_close(void)
+{
+  deleteLater.graphTab = this;
+  gtk_idle_add(GraphTab_deleteLater, &deleteLater);
+}
 
 
 
