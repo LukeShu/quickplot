@@ -9,7 +9,7 @@
 #if QUICKPLOT_USE_DOUBLE
   typedef double         value_t;
 
-#if defined MINGW || defined Darwin
+#if defined MINGW || defined QP_ARCH_DARWIN
 #  define MAXDOUBLE 1.0e+302
 #  define MINDOUBLE 1.0e-302
   typedef long long int64_t;

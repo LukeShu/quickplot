@@ -2,7 +2,7 @@
  */
 #include "config.h"
 
-#ifdef Darwin
+#ifdef QP_ARCH_DARWIN
 # include <limits.h>
 # include <float.h>
 #else

@@ -38,7 +38,7 @@ and of secondary importance is making static pictures of your
 data.&nbsp; It's a data viewer, not a plot editor.&nbsp; It reads
 ASCII text and sound files.&nbsp; It has lots of command line options,
 making it very shell script friendly.&nbsp; It currently runs on
-GNU/Linux systems.&nbsp;
+GNU/Linux systems and I hear it works on Mac OS X Darwin.&nbsp;
 
 <p>
 <font size=+1><b>Quickplot</b></font> is <a

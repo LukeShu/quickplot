@@ -8,11 +8,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.8.1,
+ 0.8.2,
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="Thu Aug 26 18:17:57 EDT 2004"
+RELEASE_DATE="Thu Aug 26 19:22:36 EDT 2004"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -66,19 +66,20 @@ ARCH="`uname`"
 case "${ARCH}" in
 
   Darwin)
-    AC_DEFINE(Darwin, [],
+    AC_DEFINE(QP_ARCH_DARWIN, [],
    [The OS or architecture which was output\
  from `uname' when configure ran.])
   ;;
 
   Linux)
-  AC_DEFINE(Linux, [],
+  AC_DEFINE(QP_ARCH_LINUX, [],
    [The OS or architecture which was output\
  from `uname' when configure ran.])
   ;;
 
+  # Hope to have a port to IRIX
   IRIX*)
-  AC_DEFINE(IRIX, [],
+  AC_DEFINE(QP_ARCH_IRIX, [],
    [The OS or architecture which was output\
  from `uname' when configure ran.])
   ;;
