@@ -633,7 +633,6 @@ bool Graph::on_button_press_event(GdkEventButton *event)
   //opSpew << "Graph::on_button_press_event() button=" << event->button
   //       << " x=" << event->x << " y=" << event->y << std::endl;
 
-
   if(lastPickerType != NONE && event->button != opZoomButton)
   {
     // Need to undraw some lines.

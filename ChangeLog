@@ -1,4 +1,7 @@
-
+Wed Jan  5 21:25:45 EST 2005  Lance Arsenault <lanceman@users.sourceforge.net>
+	*  === released version 0.8.5 ===
+	* fixed PlotLister bug that caused SegFault
+	
 Wed Jan  5 19:06:46 EST 2005  Lance Arsenault <lanceman@users.sourceforge.net>
         * === released version 0.8.4 ===
 	* appied patch for amd64

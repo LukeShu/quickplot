@@ -43,7 +43,7 @@ Notebook keeps a list of all Graphs one in each tab.  The dictionary
 (http://dictionary.reference.com/search?q=graph) defines graph to be
 the same as plot.  Here we think of: "Drawing plots on graph paper."
 Not: "Drawing graphs on plot paper."  The dictionary says: graphing:
-To plot (a function) on a graph.  That what Quickplot does.
+To plot (a function) on a graph.  That's what Quickplot does.
 
    * GraphConfig * : Is a top level (pop up) Widget used to select
 Fields to plot and other graph configuration in the current Graph.

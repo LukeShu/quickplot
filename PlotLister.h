@@ -10,7 +10,6 @@ class Picture:  public DrawingArea
 public:
   
   Picture(Plot *plot=NULL, bool limit_size=false);
-  ~Picture(void);
   
   bool on_expose_event(GdkEventExpose *);
 
@@ -35,6 +34,7 @@ class Row
 public:
   
   Row(MainWindow *mainWindow, Table *table_in, int row_in, Plot *plot);
+  ~Row(void);
 
   void on_valueDisplay(value_t x, value_t y);
   void printStdout(void);
@@ -52,6 +52,7 @@ private:
   Table *table;
   MainWindow *mainWindow;
   Plot *plot;
+  SigC::Connection valueDisplay_connection, makePlotConfig_connection;
   
   void add(Widget &w, int col);
   void makePlotConfig(void);

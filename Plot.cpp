@@ -591,13 +591,12 @@ void Plot::emitInterpolatedDisplayValues(int X_in)
   // we will interpolate a Y value.
   value_t x_val = (X_in - currentZoomLevel->shiftX)/currentZoomLevel->scaleX;
   value_t xUpper, xLower, yUpper, yLower;
-  
+
   xLower = _x->read(pickerXDequeuer);
   yLower = _y->read(pickerYDequeuer);
   xUpper = _x->read(pickerXDequeuer);
   yUpper = _y->read(pickerYDequeuer);
-  
-  
+ 
   while(xUpper < x_val)
   {
     xLower = xUpper;
@@ -630,7 +629,6 @@ void Plot::emitInterpolatedDisplayValues(int X_in)
   //       << " yLower=" << yLower << " yUpper=" << yUpper
   //      << std::endl;
  
-
   if(xUpper != xLower)
   {
     if(xLower <= x_val && xUpper >= x_val)

@@ -9,7 +9,6 @@ class PlotList
   PlotList(void);
   ~PlotList(void);
 
-
   void add(int X, int Y);
   void rewind(void);
   void get(int &X, int &Y);

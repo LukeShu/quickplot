@@ -354,9 +354,9 @@ Row::Row(MainWindow *mainWindow_in, Table *table_in,
   //afterRealizeConnection = yMaxE.signal_expose_event().
   //  connect(sigc::mem_fun(*this, &Row::afterRealize));
 
-  plot->signal_valueDisplay().
+  valueDisplay_connection = plot->signal_valueDisplay().
     connect(sigc::mem_fun(*this, &Row::on_valueDisplay));
-  plotConfigB.signal_pressed().
+  makePlotConfig_connection = plotConfigB.signal_pressed().
     connect(sigc::mem_fun(*this, &Row::makePlotConfig));
 }
 
@@ -399,6 +399,12 @@ void Row::on_valueDisplay(value_t x, value_t y)
   valueE.set_text(s);
 }
 
+Row::~Row(void)
+{
+  valueDisplay_connection.disconnect();
+  makePlotConfig_connection.disconnect();
+}
+
 void Row::printStdout(void)
 {
   printf("%s\n", valueE.get_text().c_str());
@@ -412,10 +418,6 @@ Picture::Picture(Plot *plot_in, bool limitSize_in)
   gc.clear();
 
   setPlot(plot_in);
-}
-
-Picture::~Picture(void)
-{
 }
 
 bool Picture::on_expose_event(GdkEventExpose *)
