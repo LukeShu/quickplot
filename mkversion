@@ -78,10 +78,11 @@ EOF
    ;;
   esac
 
-
-  echo >> ChangeLog
-  echo "`date +%F\"   \"%R\" \"%Z`   Version $VERSION_MAJOR.$VERSION_MINOR.$VERSION_MICRO   `id -un`" >> ChangeLog
-  echo >> ChangeLog
+  mv ChangeLog ChangeLog_tmp &&\
+  echo "`date +%F\"   \"%R\" \"%Z`   Version $VERSION_MAJOR.$VERSION_MINOR.$VERSION_MICRO   `id -un`" > ChangeLog &&\
+  echo >> ChangeLog &&\
+  cat ChangeLog_tmp >> ChangeLog &&\
+  rm ChangeLog_tmp
 
 # if they have the EDITOR environment variable set than use it.
   editor="emacs"

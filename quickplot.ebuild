@@ -6,12 +6,13 @@
 #run%  ACCEPT_KEYWORDS="~x86" emerge quickplot
 #or
 #run% MAKE_FROM_CVS_SOURCE=yes ACCEPT_KEYWORDS="~x86" emerge quickplot
+# gentoo bug number: 49725
 
 DESCRIPTION="A fast interactive 2-D plotter"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 SRC_URI="mirror://sourceforge/${PN}/${P}.tar.bz2"
 
-LICENSE="GPL"
+LICENSE="GPL-2"
 SLOT="0"
 KEYWORDS="~x86"
 IUSE=""
@@ -24,7 +25,7 @@ DEPEND="\
 # need the GNU Autotools: autoconf, automake and libtool.  Also
 # imagemagick was used to make xpm image file(s) from png files.
 
-if [ "${MAKE_FROM_CVS_SOURCE}" = "yes" ] ; then
+if [ -n "${MAKE_FROM_CVS_SOURCE}" ] ; then
 	DEPEND="${DEPEND} >=sys-devel/autoconf-2.58 \
        >=sys-devel/automake-1.7 \
        >=sys-devel/libtool-1.4.3 \
@@ -42,7 +43,7 @@ src_compile() {
 	if [ ! -e ./configure ] ; then
 		# ./bootstrap calls aclocal, autoconf, automake and libtoolize.
         if ! ./bootstrap ; then
-			if [ "${MAKE_FROM_CVS_SOURCE}" != "yes" ] ; then
+			if [ ! -n "${MAKE_FROM_CVS_SOURCE}" ] ; then
 				die "./bootstrap failed
   Try setting environment variable MAKE_FROM_CVS_SOURCE=yes
   and then run this again.  This may add newer GNU Autotools and imagemagick."
