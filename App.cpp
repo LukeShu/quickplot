@@ -43,6 +43,7 @@ App::App(int *argc, char ***argv):
   Main(argc, argv)
 {
   isInvalid = true;
+  fileSelection = NULL;
   currentMainWindow = NULL;
 
   if(app) return; // error there can only be one app
@@ -212,6 +213,12 @@ App::~App(void)
   sources.clear();
   app = NULL;
 
+  if(fileSelection)
+    {
+      delete fileSelection;
+      fileSelection = NULL;
+    }
+
   if(opVerbose)
     printf("App::~App() line=%d file=%s\n",__LINE__, __FILE__);
 }
@@ -219,17 +226,21 @@ App::~App(void)
 // This gets a full path file name and then calls openFile if it can.
 void App::openDialog(void)
 {
-  FileSelection dialog("Choose a Data File to Open");
-  dialog.set_transient_for(*currentMainWindow);
-  
-  switch(dialog.run())
+  if(!fileSelection)
+    {
+      fileSelection = new FileSelection("Choose a Data File to Open");
+    }
+
+  fileSelection->set_transient_for(*currentMainWindow);
+  switch(fileSelection->run())
   {
     case(RESPONSE_OK):
-      openFile(dialog.get_filename().c_str());
+      openFile(fileSelection->get_filename().c_str());
       break;
     default:
       break; // Closed window or hit cancel.
   }
+  fileSelection->hide();
 }
 
 void App::openFile(const char *filename)

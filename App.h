@@ -35,6 +35,8 @@ public:
 
   // used by createMainWindow() and copyCurrentMainWindow()
   void _createMainWindow(bool makeFirstGraph);
+
+  FileSelection *fileSelection;
   
  public:
 

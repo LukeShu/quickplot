@@ -63,6 +63,7 @@ MainWindow::MainWindow(bool makeGraph):
   mainWindowNumber = ++mainWindowCount;
   
   graphConfig = NULL;
+  savePNGDialog = NULL;
   plotLister = NULL;
   numPlotConfigs = 0;
   
@@ -143,18 +144,21 @@ MainWindow::MainWindow(bool makeGraph):
 
 void MainWindow::savePNGFile(void)
 {
-  FileSelection dialog("Choose a Filename to Save the PNG Image as:");
-  dialog.set_transient_for(*this);
+  if(!savePNGDialog)
+  {
+    savePNGDialog = new FileSelection("Choose a Filename to Save the PNG Image as:");
+    savePNGDialog->set_transient_for(*this);
+  }
   
-  switch(dialog.run())
+  switch(savePNGDialog->run())
   {
     case(RESPONSE_OK):
-      currentGraph->savePNG(dialog.get_filename().c_str());
+      currentGraph->savePNG(savePNGDialog->get_filename().c_str());
       break;
     default:
       break; // Closed window or hit cancel.
   }
-
+  savePNGDialog->hide();
 }
 
 bool MainWindow::on_expose_event(GdkEventExpose *e)
@@ -428,7 +432,12 @@ MainWindow::~MainWindow(void)
     delete plotLister;
     plotLister = NULL;
   }
-  
+
+  if(savePNGDialog)
+  {
+    delete savePNGDialog;
+    savePNGDialog = NULL;
+  }
 
   // remove all Graphs and Notebook pages.
   int n = graphsNotebook.get_n_pages();

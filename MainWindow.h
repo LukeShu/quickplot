@@ -102,6 +102,7 @@ public:
 
 private:
 
+  FileSelection *savePNGDialog;
   int graphTabAddCount;
   
   void on_removedPlot(Graph *graph, Plot *plot);

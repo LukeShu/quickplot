@@ -1,9 +1,5 @@
 Short term developer notes:
 
-Add --silent
-
-
-Make loading sound files an optional in the build.
 
 See if it is easy to add GNOME sounds to the widget actions.
 
@@ -11,15 +7,10 @@ put ebuild in gentoo
 
 release rpm dist
 
-
-Document key bindings
-
-fix and distribute helloworld_cpp and gtkmm_helloworld
+distribute helloworld_cpp and gtkmm_helloworld
 
 add quick start html doc.
 
-
-remove pick line on Graph resize.
 
 
 add GNU Free Documentation License for docs
@@ -42,33 +33,16 @@ the signals too.
 
 
 
-Look for memory leaks.
-
-
-
-
-Need a remove Graph Tab GUI.  Like galean??
-
-
 need to rewrite the GraphNotebook and MainWindow classes.  They are
 too mixed together now.  GraphNotebook should be managing graphs not
 MainWindow.
 
 
-Try preDrawing all the tabs??? Maybe there's no point to that.
+Try preDrawing all the Graphs??? Maybe there's no point to that.
 
 
 
-write in a HTML doc about the need for speed being gotten from
-'quickplot --no-lines --point-size=0'
-
-add "Drawing" feedback to status bar when it is drawing, in case is
-takes a while.   Also add progress bar to that.
-
-
-
-
-add a Graphs pull down menu that workd like the tabs.
+add a Graphs pull down menu that works like the tabs.
 
 add a pointer modes button pad. like in the drawing programs.  get it
 from a drawing program along with any thing else we can if possible
@@ -77,9 +51,8 @@ from a drawing program along with any thing else we can if possible
 add move to other frame option menu to the tab pop up menu.
 
 
-VSplit view and H split view.
+VSplit view and H split view?
 
-use class FieldReader  like dtkDequeuer.
 
 Add the idea of  bool Field::isDependent(Field *f);
 So Plot checks this when it is created.
@@ -109,17 +82,10 @@ log scale??
 
 Clean up the Spew a little, make it prettier.
 
-pointer value shower (display) when samescale or one plot.  on menu
-bar or button bar??
 
-
-
-accelerator keys
 
 look at all other 2D plotters and make a html doc comparing them to
 quickplot.  requirement  free and run on GNU/Linux.
-
-forking the browser for Help and About
 
 
 add help balloons
@@ -128,13 +94,7 @@ load a linear field from a menu
 
 
 
-Se if Plot::drawAutoGrid() will leak memory.
-
-add help balloons
-
-
-have the zooms restored instead of Zooming out when a new plot is added
-or removed.
+See if Plot::drawAutoGrid() will leak memory.
 
 
 start the scope display stuff
@@ -144,21 +104,6 @@ drag files into Graph and than plot it.  Gnome??
 can pick different Zoom levels for Plots on the same graph
 
 convert the html docs to docbook docs
-
-
-
-check help.html OPTIONS work before making a release
-   - check option --grid-color RGB
-
-
-in about.html.in
-<h3>What can Quickplot do other 2D plotters can't do?</h3>
-add a features list with pictures.
-
-
-make a sourceforge tarball release and then fix Download link on index.html
-
-Accelerater keys
 
 
 command line options
@@ -177,50 +122,28 @@ labels from.
 on exit remove the tmp html files??
 
 add an intermediate about top level window before the browser launch as in
-epiphany of galeon.
+epiphany or galeon.
 
 function plot start and stop field markers
 
 
-
-
-
-
------new button
-
-make the about, help and Licesne be a tab like the Graph tabs.
-
-
-use pointSize in Plot
-
-use lineSize in Plot
-
-add skiplines and other options to the command line file loading.
-
-convert the printfs in App_parseArgs to opSpew <<
-
-
+convert opSpew to printf's in code.
 
 no default plots option  --no-default-plots
 
-add an icon when running.
 
 
-add a prefrences menu and dialog widget
+add a prefrences dialog widget
 
 
 add a popup menu to the tab for   remove, move, rename
 
-make it so that plots with all Y and.or X values the same can scale
-and plot well.
 
-add command line option to startup with Plot Selector.
-
-add show tabs to view menu 
+add command line option to startup with Graph Config widget.
 
 
 
-add some kind of filters for fields.  Exmaple takes log10() of data to
+add some kind of filters for fields.  Example takes log10() of data to
 make a new field or replaces the field.
 
 
@@ -228,8 +151,6 @@ resident and non-resident fields?????add file type to Open file
 Dialog.  See gedit's Open Dialog
 
 Change autoGrid font.
-
-save png and xpm
 
 
 add a file open history thingy and/or open history thingy built into

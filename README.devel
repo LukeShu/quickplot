@@ -17,7 +17,7 @@ in the Quickplot binary.
 
 
 
-Classes:
+Main Classes:
 
 
   -- Widgets -- :
@@ -60,7 +60,7 @@ selectable ways.
 
 
 
-  -- Data Objects -- :
+  -- Data -- :
 
 
    * Field * : Virtual base class used to hold data as one field, or
@@ -117,8 +117,6 @@ Each Graph object has it's own ColorGen.
 values, startup values, and default option values.  The variables are
 not in a class and all start with the prefix op, which stands for
 option.
-
-
 
 
 
