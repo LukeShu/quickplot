@@ -1,24 +1,15 @@
 Short term developer notes:
 
 
-bump development version to 0.7.5
-
-
-
 See if it is easy to add GNOME sounds to the widget actions.
 
 put ebuild in gentoo
 
 release rpm dist
 
-distribute helloworld_cpp and gtkmm_helloworld
-
 add quick start html doc.
 
-
-
 add GNU Free Documentation License for docs
-
 
 
 add more (?) to status bar.
@@ -68,28 +59,21 @@ add: Tabs are blue that have plot that have not been seen. Like galean??
 cleanup all error/spew messages so that they can be put in
 error/warning/info dialog GUIs when they happen.
 
-make a zoomlevel history tree.
+make a zoomlevel history tree: gui and state info
 
 
 in tab popup add option menu "open in new frame".
 
 
-put names on the Tabs.
-
 draw a sub-grid under the main grid (dark green default color).
 
 vary the grid number labels font.
 
-zoom history with GUI
-
-log scale??
-
 Clean up the Spew a little, make it prettier.
 
 
-
 look at all other 2D plotters and make a html doc comparing them to
-quickplot.  requirement  free and run on GNU/Linux.
+quickplot.  requirement  free and runs on GNU/Linux.
 
 
 add help balloons
@@ -180,3 +164,6 @@ may save all the settings to a file.
 
 make --geometry option so it does not show the window and then move
 it.
+
+looks like other apps use gnome and KDE, but we have a more generic solution
+which uses GTK.
