@@ -52,8 +52,6 @@ EXTRA_DIST = bootstrap mkconfigure_ac\
  cvsclean mkMakefile_am mkRELEASE_DATE\
  html2CString mkhtml mkversion install_portage\
  configure.ac.in CONFIG\
- quickplot_icon.png screenshot1_small.png\
- screenshot1.png screenshot2.png screenshot3.png\
  TODO README.devel Makefile.am.in quickplot.ebuild\
  RELEASE_DATE\
  help.html.in about.html.in index.html.in\
@@ -64,7 +62,9 @@ EXTRA_DIST = bootstrap mkconfigure_ac\
  about_browser16x16.png\
  newFrame16x16.png closeFrame16x16.png\
  copyFrame16x16.png saveImage16x16.png\
- favicon.ico quickplot.dev mingw.mak mingw_config.h
+ quickplot.dev mingw.mak mingw_config.h\
+ $(html_DATA)
+
 
 SUFFIXES = .png .xpm .html .html.in _html.cpp 
 

@@ -53,7 +53,7 @@ bool File::readSndFile(const FileList *fileList, int fd)
   else
     sndfile = sf_open_fd(fd, SFM_READ, &info, 1 /* close fd */);
 
-  if(!sndfile)
+  if(!sndfile || info.frames < (sf_count_t) 1)
   {
     if(opVerbose)
       opSpew << "quickplot INFO: Can't read file " << fileName << endl
