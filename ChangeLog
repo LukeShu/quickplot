@@ -1,3 +1,12 @@
+Wed Aug 25 19:55:07 EDT 2004  Lance Arsenault <lanceman@users.sourceforge.net>
+
+	* == released version 0.7.8 ===
+	* this may be the last release that uses gtkmm version 2.2.x
+	  we will be using gtkmm version 2.4.x in future releases.
+	  gtkmm version 2.2.x is not does not provide the same interfaces as
+	  gtkmm version 2.4.x.
+
+	
 Thu Aug  5 21:06:09 EDT 2004  Lance Arsenault <lanceman@users.sourceforge.net>
 
 	* === released version 0.7.7 ===

@@ -56,10 +56,8 @@ BUILT_SOURCES =\
  about_html.cpp
 
 
-quickplot_CXXFLAGS = -Wall $(GTKMM_CFLAGS) $(SNDFILE_CFLAGS) -DHTMLDIR=\"$(htmldir)\"
+quickplot_CXXFLAGS = -Wall $(GTKMM_CXXFLAGS) $(SNDFILE_CFLAGS) -DHTMLDIR=\"$(htmldir)\"
 
-#Why won't this work?
-#launchBrowser_CXXFLAGS = -DHTMLDIR=\"$(htmldir)\"
 
 quickplot_LDFLAGS = -Wall $(GTKMM_LIBS) $(SNDFILE_LIBS)
 # -lefence

@@ -12,7 +12,7 @@ AC_INIT([Quickplot],
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="not released yet"
+RELEASE_DATE="Wed Aug 25 19:55:07 EDT 2004"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -93,8 +93,13 @@ gtkmm_need_version=2.2.6
 
 echo -n "checking for gtkmm version >= $gtkmm_need_version ..."
 
-# is gtkmm-2.0 there
-if ! pkg-config --exists gtkmm-2.0 ; then
+GTKMM_PKG_NAME=gtkmm-2.0
+#if pkg-config --exists gtkmm-2.4 ; then
+#  GTKMM_PKG_NAME=gtkmm-2.4
+#fi
+
+# is gtkmm-2.0 or gtkmm-2.4 there
+if ! pkg-config --exists $GTKMM_PKG_NAME ; then
     echo
     AC_MSG_WARN([
 
@@ -104,8 +109,8 @@ if ! pkg-config --exists gtkmm-2.0 ; then
 ])
 
 # is it at least version
-elif ! pkg-config --atleast-version=$gtkmm_need_version gtkmm-2.0 ; then
-   GTKMM_VERSION=$(pkg-config --modversion gtkmm-2.0)
+elif ! pkg-config --atleast-version=$gtkmm_need_version $GTKMM_PKG_NAME ; then
+   GTKMM_VERSION=$(pkg-config --modversion $GTKMM_PKG_NAME)
    echo
    AC_MSG_WARN([
 
@@ -115,7 +120,7 @@ elif ! pkg-config --atleast-version=$gtkmm_need_version gtkmm-2.0 ; then
 
 ])
 else
-  GTKMM_VERSION=$(pkg-config --modversion gtkmm-2.0)
+  GTKMM_VERSION=$(pkg-config --modversion $GTKMM_PKG_NAME)
   have_gtkmm=yes
   echo " yes"
 fi
@@ -175,12 +180,11 @@ esac
 #  get library gtkmm compiler options
 #########################################
 
-#AC_DEFINE_UNQUOTED(GTKMM_VERSION, "$GTKMM_VERSION", 
-#  [The version of gtkmm we're linking quickplot with.])
-GTKMM_CFLAGS=$(pkg-config --cflags gtkmm-2.0)
-AC_SUBST(GTKMM_CFLAGS)
-GTKMM_LIBS=$(pkg-config --libs gtkmm-2.0)
+GTKMM_CXXFLAGS=$(pkg-config --cflags $GTKMM_PKG_NAME)
+AC_SUBST(GTKMM_CXXFLAGS)
+GTKMM_LIBS=$(pkg-config --libs $GTKMM_PKG_NAME)
 AC_SUBST(GTKMM_LIBS)
+
 
 
 #########################################
