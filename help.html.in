@@ -310,7 +310,12 @@ loaded using the GUI defaults plot will not be made if this is set.
 <li><b><font color=#902040>--no-grid</font></b> or <b><font
 color=#902040>-G</font></b>&nbsp;&nbsp; start quickplot with out
 drawing graph grid lines, by default, in the graphs
- 
+
+<li><b><font color=#902040>--no-gui</font></b>&nbsp;&nbsp; start
+quickplot with out showing any of the standard GUI's (graphical user
+interfaces).  This is the same as uses the options --no-buttons
+--no-menubar --no-statusbar and --no-tabs.
+
 <li><b><font color=#902040>--no-lines</font></b> or <b><font
 color=#902040>-i</font></b>&nbsp;&nbsp; start quickplot to plot
 without drawing lines in the graphs by default

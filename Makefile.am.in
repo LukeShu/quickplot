@@ -126,3 +126,4 @@ MAKE_RELEASE_DATE:
 
 mingw_config.h: config.h
 	cp $^ $@
+

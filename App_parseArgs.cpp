@@ -212,6 +212,14 @@ int App::parseArgs1(int argc, char **argv)
       opShowAutoGrid = false;
       i++;
     }
+    else if(!strcmp("--no-gui",argv[i]))
+    {
+      opShowButtons = false;
+      opShowMenuBar = false;
+      opShowGraphTabs = false;
+      opShowStatusBar = false;
+      i++;
+    }
     else if(!strcmp("--no-lines",argv[i]) || !strcmp("-i",argv[i]))
     {
       opShowLines = false;
@@ -407,6 +415,8 @@ int App::parseArgs2(int argc, char **argv)
        !strcmp("--no-buttons",argv[i]) || !strcmp("-B",argv[i])
        ||
        !strcmp("--no-grid",argv[i]) || !strcmp("-G",argv[i])
+       ||
+       !strcmp("--no-gui",argv[i])
        ||
        !strcmp("--no-lines",argv[i]) || !strcmp("-i",argv[i])
        ||
