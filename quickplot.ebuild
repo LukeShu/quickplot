@@ -14,10 +14,6 @@ DEPEND="\
 >=dev-util/pkgconfig-0.15 \
 >=media-libs/libsndfile-1.0.5"
 
-src_unpack() {
-
-	unpack ${P}.tar.bz2 || die
-}
 
 src_compile() {
 

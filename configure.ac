@@ -14,11 +14,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.8.2,
+ 0.8.3,
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="Thu Aug 26 19:22:36 EDT 2004"
+RELEASE_DATE="Sun Dec  5 18:31:53 EST 2004"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -64,7 +64,7 @@ AC_PROG_MAKE_SET
 
 ARCH="`uname`"
 
-#These three I know so far
+#These three we know so far
 # Linux
 # IRIX or IRIX64
 # Darwin
