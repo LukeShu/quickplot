@@ -80,7 +80,7 @@ that one can make pretty pictures with.</p>
 
 Quickplot uses the GNU Autotools (./configure) to build and install.
 To build Quickplot from the distribution source tarball
-(example: quickplot-%VERSION%.bz2) the following packages are required to be
+(example: quickplot-%VERSION%.tar.bz2) the following packages are required to be
 installed:
 
 <ul>
