@@ -101,7 +101,7 @@ PlotConfig::PlotConfig(MainWindow *w, Plot *p,
   closeButton.signal_activate().connect(SigC::slot(*this, &PlotConfig::hide));
   closeButton.add_accelerator("activate", get_accel_group(),
                               GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
-  
+  //closeButton.accelerate(*this); 
   x = x_in;
   y = y_in;
 

@@ -100,6 +100,7 @@ PlotLister::PlotLister(MainWindow *mainWindow_in):
   closeButton.add_accelerator("activate", get_accel_group(),
                               GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
 
+  //closeButton.accelerate(*this);
   show_all_children();
   
   

@@ -210,8 +210,9 @@ App::~App(void)
   }
   sources.clear();
   app = NULL;
-  
-  //printf("line=%d file=%s\n",__LINE__, __FILE__);
+
+  if(opVerbose)
+    printf("App::~App() line=%d file=%s\n",__LINE__, __FILE__);
 }
 
 // This gets a full path file name and then calls openFile if it can.

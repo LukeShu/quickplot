@@ -1,7 +1,7 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
 
-//#include <stdio.h>
+#include <stdio.h>
 #include <iostream>
 #include <values.h>
 #include <stdlib.h>
@@ -307,7 +307,7 @@ void MainWindow::makeNewGraphTabWithGraph(Graph *graph)
 
 void MainWindow::makeNewGraphTab(void)
 {
-  makeNewGraphTabWithGraph(new Graph);
+  makeNewGraphTabWithGraph(new Graph(this));
 }
 
 void MainWindow::makeNewGraphWithGraphConfig(void)
@@ -605,12 +605,13 @@ void GraphsNotebook::copy(GraphsNotebook *graphsNotebook)
   for(i=0;i<n;i++)
   {
     mainWindow->makeNewGraphTab();
-    Label *toLabel = dynamic_cast<Label *>
+    GraphTab *toLabel = dynamic_cast<GraphTab *>
       (get_tab_label(*mainWindow->currentGraph));
-    Label *fromLabel = dynamic_cast<Label *>
+    GraphTab *fromLabel = dynamic_cast<GraphTab *>
       (graphsNotebook->get_tab_label(*(graphsNotebook->get_nth_page(i))));
+    
     if(toLabel && fromLabel)
-      toLabel->set_text(fromLabel->get_text());
+      toLabel->setText(fromLabel->label.get_text().c_str());
   }
 
   // Set up to do the graph plot coping later, after the Graphs are

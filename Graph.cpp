@@ -35,8 +35,10 @@ using namespace Gtk;
 
 
 
-Graph::Graph(void)
+Graph::Graph(MainWindow *mainWindow_in)
 {
+  mainWindow = mainWindow_in;
+  
   isDeleting = false;
 
   pickerType = INTERPOLATED;
@@ -162,6 +164,14 @@ Plot *Graph::createPlot(Field *x, Field *y)
                                      // list.
   checkZoomLevelForNewPlot(plot);
   setPickerType();
+
+  if(size() == 1)
+  {
+    GraphTab *tab = dynamic_cast<GraphTab *>
+      (mainWindow->graphsNotebook.get_tab_label(*this));
+    if(tab)
+      tab->setText(y->source->getBaseFileName());
+  }
   
   m_signal_addedPlot.emit(this);
 
@@ -1074,6 +1084,55 @@ GraphTab::GraphTab(int count, MainWindow *mainWindow_in, Graph *graph_in) :
   label.show();
   removeButton.show();
 }
+
+// Checks size and that it's not the same as another in this main window.
+void GraphTab::setText(const char *str)
+{
+  if(!str || !str[0]) return;
+  
+  const size_t maxSize = 20;
+  char s[maxSize];
+
+  // truncated copy.
+  snprintf(s, maxSize, "%s", str);
+  
+  int n = mainWindow->graphsNotebook.get_n_pages();
+
+  int j;
+  for(j=2;j<1000; j++)
+  {
+    int i;
+    for(i=0;i<n;i++)
+    {
+      GraphTab *tab = dynamic_cast<GraphTab *>
+        (mainWindow->graphsNotebook
+         .get_tab_label(*(mainWindow->graphsNotebook.get_nth_page(i))));
+      //printf("comparing \"%s\" \"%s\"\n",tab->label.get_text().c_str(), s);
+      if(tab && !strcmp(tab->label.get_text().c_str(), s) && tab != this)
+        break;
+    }
+    
+    if(i != n) // We have a matching label
+    {
+      // Put a number at the end of the label
+
+      // clear the end of the string.
+      if(j<10)
+        s[maxSize-5] = '\0';
+      else if(j<100)
+        s[maxSize-6] = '\0';
+      else
+        s[maxSize-7] = '\0';
+      
+      sprintf(&s[strlen(s)], " (%d)", j);
+    }
+    else // no matching labels
+      break;
+  }
+ 
+  label.set_text(s);
+}
+
 
 extern "C"
 {

@@ -192,6 +192,8 @@ Plot::Plot(Graph *graph_in, Plot *plot):
   {
     zoomBackIn();
   }
+
+  resize();
 }
 
 Plot::Plot(Graph *graph_in, Field *X, Field *Y):

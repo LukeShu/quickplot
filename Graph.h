@@ -4,12 +4,13 @@
 
 class ColorGen;
 class Field;
+class MainWindow;
 
 class Graph : public DrawingArea, public std::list<Plot *>
 {
  public:
 
-  Graph(void);
+  Graph(MainWindow *mainWindow_in);
   void copy(Graph *graph);
   ~Graph(void);
 
@@ -88,6 +89,8 @@ class Graph : public DrawingArea, public std::list<Plot *>
   };
   
   PICKER_TYPE pickerType, highestPickerType;
+
+  MainWindow *mainWindow;
   
 protected:
   
@@ -135,7 +138,6 @@ private:
   int old_width, old_height;
 };
 
-class MainWindow;
 
 class GraphTab : public HBox
 {
@@ -143,7 +145,8 @@ public:
 
   GraphTab(int graphNumber, MainWindow *m, Graph *graph);
 
-
+  void setText(const char *str);
+  
   Label label;
   Button removeButton;
   Image closeImage;

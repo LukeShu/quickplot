@@ -181,7 +181,7 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   closeButton.signal_activate().connect(SigC::slot(*this, &GraphConfig::hide));
   closeButton.add_accelerator("activate", get_accel_group(),
                               GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
-  
+  //closeButton.accelerate(*this);  
 
   signal_show().connect(SigC::slot(mainWindow->menuBar,
                                    &MainMenuBar::checkGraphConfigState));
