@@ -77,6 +77,7 @@ int sLaunchBrowser(const char *doc, const char *fileName_in="")
 
 char *browsers[] =
 {
+  "firefox",
   "galeon",
   "konqueror",
   "mozilla",
@@ -86,7 +87,6 @@ char *browsers[] =
   /*
   "amaya",
   "browsex",
-  "firefox",
   "light",
   */
   NULL
