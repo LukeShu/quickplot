@@ -178,7 +178,7 @@ seem to vary with window size.</p>
 color=#902040>OPTIONS</font>] [file2] [<font
 color=#902040>OPTIONS</font>] ...</b>
 
-<p> If no -p or --plot option is given than the default initial plots
+<p> If no -p or --plot option is given then the default initial plots
 will be up to 12 plots.&nbsp; The default initial plots will be of all
 fields, except the first field in the order that the field was loaded
 from a file plotted against the first field in the file.&nbsp; If a
