@@ -3,7 +3,14 @@
 #include "config.h"
 
 #include <iostream>
-#include <values.h>
+
+#ifdef Darwin
+# include <limits.h>
+# include <float.h>
+#else
+# include <values.h>
+#endif
+
 #include <list>
 #include <iomanip>
 

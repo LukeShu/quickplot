@@ -4,7 +4,14 @@
 
 //#include <stdio.h>
 #include <iostream>
-#include <values.h>
+
+#ifdef Darwin
+# include <limits.h>
+# include <float.h>
+#else
+# include <values.h>
+#endif
+
 #include <stdlib.h>
 
 #include <gtkmm.h>

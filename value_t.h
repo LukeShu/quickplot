@@ -4,10 +4,12 @@
 // This is the type that is used to scale values as they are plotted
 // though they may be stored as a different type in the Field.
 
-#if 1
+#define QUICKPLOT_USE_DOUBLE 1
+
+#if QUICKPLOT_USE_DOUBLE
   typedef double         value_t;
 
-#ifdef MINGW
+#if defined MINGW || defined Darwin
 #  define MAXDOUBLE 1.0e+302
 #  define MINDOUBLE 1.0e-302
   typedef long long int64_t;
@@ -30,7 +32,7 @@
 #  define POW            pow
 
 
-#else
+#else /* #if QUICKPLOT_USE_DOUBLE */
 
   typedef float         value_t;
 
@@ -49,7 +51,7 @@
 #  define LOG10          log10f
 #  define POW            powf
 
-#endif
+#endif /* #else  #if QUICKPLOT_USE_DOUBLE */
 
 
 // This is the type that is used to count the values as they are

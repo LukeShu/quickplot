@@ -8,11 +8,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.8.0,
+ 0.8.1,
  [Lance Arsenault <lanceman@users.sourceforge.net>],
  quickplot)
 
-RELEASE_DATE="Thu Aug 26 10:53:03 EDT 2004"
+RELEASE_DATE="Thu Aug 26 18:17:57 EDT 2004"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -54,10 +54,42 @@ AC_PROG_MAKE_SET
 # -- checks for library functions
 # -- checks for system services
 
+##########################################################
 
-#########################################
+ARCH="`uname`"
+
+#These three I know so far
+# Linux
+# IRIX or IRIX64
+# Darwin
+
+case "${ARCH}" in
+
+  Darwin)
+    AC_DEFINE(Darwin, [],
+   [The OS or architecture which was output\
+ from `uname' when configure ran.])
+  ;;
+
+  Linux)
+  AC_DEFINE(Linux, [],
+   [The OS or architecture which was output\
+ from `uname' when configure ran.])
+  ;;
+
+  IRIX*)
+  AC_DEFINE(IRIX, [],
+   [The OS or architecture which was output\
+ from `uname' when configure ran.])
+  ;;
+
+
+esac
+
+
+##################################################
 #     check for program pkg-config
-#########################################
+##################################################
 
 
 AC_CHECK_PROG(PKGCONFIG, pkg-config, [yes], [no])

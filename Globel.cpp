@@ -2,7 +2,13 @@
  */
 #include "config.h"
 
-#include <values.h>
+#ifdef Darwin
+# include <limits.h>
+# include <float.h>
+#else
+# include <values.h>
+#endif
+
 #include <iostream>
 #include <gdkmm/color.h>
 #include <gdkmm/colormap.h>

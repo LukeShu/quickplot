@@ -25,6 +25,6 @@ rm -rf autom4te.cache/
 
 rm -f File_readSndInt.cpp File_readSndFloat.cpp File_readSndDouble.cpp mingw_config.h
 rm -f *_html.cpp *.html
-rm -f *~
+rm -f *~ *.o
 rm -f *.xpm
 

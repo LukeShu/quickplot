@@ -2,7 +2,12 @@
  */
 #include "config.h"
 
-#include <values.h>
+#ifdef Darwin
+# include <limits.h>
+# include <float.h>
+#else
+# include <values.h>
+#endif
 
 #include <gtkmm.h>
 
