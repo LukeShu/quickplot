@@ -14,11 +14,11 @@ AC_PREREQ(2.58)
 # AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
 
 AC_INIT([Quickplot],
- 0.8.6,
- [Lance Arsenault <lanceman@users.sourceforge.net>],
+ 0.8.7,
+ [lanceman@users.sourceforge.net],
  quickplot)
 
-RELEASE_DATE="Thu Jan  6 20:26:45 EST 2005"
+RELEASE_DATE="Fri Jan  7 14:33:35 EST 2005"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
@@ -167,6 +167,7 @@ fi
 #########################################
 
 sndfile_need_version=1.0.5
+have_libsndfile=no
 
 echo -n "checking for lib sndfile version >= $sndfile_need_version ..."
 
@@ -227,12 +228,12 @@ AC_SUBST(GTKMM_LIBS)
 #  get library sndfile compiler options
 #########################################
 
+
 AC_ARG_WITH([libsndfile],
       AS_HELP_STRING([--with-libsndfile],
       [link with the libsndfile library, http://www.mega-nerd.com/libsndfile/\
  (default is Yes if it is found, No if not)]),
       [use_libsndfile=$withval], [use_libsndfile=$have_libsndfile])
-
 
 case "$use_libsndfile" in
     y* | Y* )
@@ -263,7 +264,6 @@ if test x${use_libsndfile} = xyes ; then
    SNDFILE_LIBS=$(pkg-config --libs sndfile)
    SNDFILE_VERSION=$(pkg-config --modversion sndfile)
 fi
-
 
 if test "$USE_LIBSNDFILE" == "1"
 then

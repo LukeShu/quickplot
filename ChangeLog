@@ -1,3 +1,9 @@
+Fri Jan  7 14:33:35 EST 2005  Lance Arsenault <lanceman@users.sourceforge.net>
+	* === released version 0.8.7 ===
+	* fixed configure libsndfile bug which excluded the
+	use of libsndfile in some cases when it should not
+	have
+
 Thu Jan  6 20:26:45 EST 2005  Lance Arsenault <lanceman@users.sourceforge.net>
 	* === released version 0.8.6 ===
 	* added --with-html-dir=DIR configure option
