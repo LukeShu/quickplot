@@ -64,7 +64,7 @@ EXTRA_DIST = bootstrap mkconfigure_ac\
  about_browser16x16.png\
  newFrame16x16.png closeFrame16x16.png\
  copyFrame16x16.png saveImage16x16.png\
- favicon.ico quickplot.dev
+ favicon.ico quickplot.dev mingw.mak mingw_config.h
 
 SUFFIXES = .png .xpm .html .html.in _html.cpp 
 
@@ -123,3 +123,6 @@ dist: MAKE_RELEASE_DATE
 
 MAKE_RELEASE_DATE:
 	./mkRELEASE_DATE
+
+mingw_config.h: config.h
+	cp $^ $@
