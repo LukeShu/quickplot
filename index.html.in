@@ -1,0 +1,97 @@
+
+<head>
+<title>Quickplot</title>
+</head>
+
+<body>
+
+<table width="100%">
+<tr>
+<td>
+<table cellpadding="16" width="100%">
+<tr>
+<td>
+
+<center>
+<h1><img src="quickplot_icon.png"> &nbsp; Quickplot &nbsp; <img
+src="quickplot_icon.png"></h1>
+</center>
+
+</td>
+</tr>
+</table>
+
+</td>
+</tr>
+</table>
+
+
+<table cellpadding="16" width="100%">
+<tr>
+<td>
+
+
+<font size=+1><b>Quickplot</b></font> is <a
+href="http://www.gnu.org/copyleft/gpl.html" >GNU GPL free
+software</a>.  Quickplot is a fast interactive 2D plotter with
+infinite zooming, value picking, pipe input, and unlimited plots
+displayed.  Quickplot is meant for looking at your data quickly and of
+secondary importance is making static pictures of your data.  It
+currently runs on GNU/Linux systems.
+
+</td>
+<td>
+
+<img src="screenshot1_small.png">
+
+</td>
+</tr>
+<tr>
+<td>
+
+<ul>
+<b>
+  <li>Screen shots <a href="screenshot1.png">1</a> <a
+     href="screenshot2.png">2</a> <a href="screenshot3.png">3</a> 
+  <li><a
+     href="about.html">About page</a> 
+  <li><a
+     href="help.html">Help page</a>
+  <li><a
+     href="https://sourceforge.net/project/showfiles.php?group_id=82651"
+     >Downloads page</a>
+  <li><a href="ChangeLog">ChangeLog</a>
+  <li><a
+     href="https://sourceforge.net/cvs/?group_id=82651">SourceForge CVS
+     page</a>
+</b>
+</ul>
+
+
+</td>
+<td>
+
+<center>
+<font size=+1><b>Quickplot is hosted by</b></font><br>
+
+<table cellpadding="4">
+<tr>
+<td>
+<a href="http://sourceforge.net"><img
+src="http://sourceforge.net/sflogo.php?group_id=YOUR_GROUP_ID_GOES_HERE&amp;type=7"
+width="210" height="62" border="0" alt="SourceForge.net Logo" /></a>
+</tr>
+</td>
+</table>
+
+</center>
+
+
+</td>
+</tr>
+</table>
+
+
+
+<br> &nbsp;
+

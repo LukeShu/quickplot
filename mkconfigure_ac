@@ -1,0 +1,33 @@
+#!/bin/sh
+
+# This file should go away as I learn more about GNU Autotools.
+
+########################################################################
+# Replace @VARIABLE@ in configure.ac.in to make configure.ac from file
+# CONFIG.
+########################################################################
+echo "making configure.ac from configure.ac.in and CONFIG"
+
+# get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
+# VERSION_MICRO, EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
+source CONFIG
+
+# get the release date
+source RELEASE_DATE
+
+rm -f configure.ac
+
+
+echo "# configure.ac  Generated from configure.ac.in and CONFIG by $0" > configure.ac
+cat configure.ac.in | sed \
+-e "s/@PACKAGE@/${PACKAGE}/g" \
+-e "s/@TARNAME@/${TARNAME}/g" \
+-e "s/@EMAIL@/${EMAIL}/g" \
+-e s^@HOMEPAGE@^${HOMEPAGE}^g \
+-e s/@VERSION_MAJOR@/${VERSION_MAJOR}/g \
+-e s/@VERSION_MINOR@/${VERSION_MINOR}/g \
+-e s/@VERSION_MICRO@/${VERSION_MICRO}/g \
+-e s/@EBUILD_CATEGORY_DIR@/${EBUILD_CATEGORY_DIR}/g \
+-e "s^@RELEASE_DATE@^${RELEASE_DATE}^g" \
+>> configure.ac
+

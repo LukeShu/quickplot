@@ -1,0 +1,83 @@
+#! /bin/sh
+
+########################################################################
+# Replace @VARIABLE@ in *.html.in to make *.html from file
+# CONFIG and RELEASE_DATE.
+########################################################################
+
+if [ "$1" = "" ]
+then
+  echo "Usage: $0 FILE.html"
+  exit 1
+fi
+
+
+echo "making $1 from CONFIG and RELEASE_DATE by running: $0 $*"
+
+# get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
+# VERSION_MICRO and EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
+source CONFIG
+
+# get the release date
+source RELEASE_DATE
+
+
+
+###################################################################
+#                    HEADER
+###################################################################
+cat << EOF > ${1}
+<html>
+<!-- ${1}  Generated from ${1}.in, CONFIG, and RELEASE_DATE by running: $0 $* !-->
+EOF
+###################################################################
+
+
+
+
+###################################################################
+#                    BODY
+###################################################################
+cat ${1}.in | sed \
+-e "s/@PACKAGE@/${PACKAGE}/g" \
+-e "s/@TARNAME@/${TARNAME}/g" \
+-e "s^@HOMEPAGE@^${HOMEPAGE}^g" \
+-e s/@VERSION@/${VERSION}/g \
+-e "s^@RELEASE_DATE@^${RELEASE_DATE}^g" \
+>> ${1}
+###################################################################
+
+
+
+
+###################################################################
+#                    FOOTER
+###################################################################
+cat << EOF >> ${1}
+<html>
+<!-- generated footer  !-->
+
+<center> 
+
+<hr>
+EOF
+
+if [ ${1} != index.html ]
+then
+  cat << EOF >> ${1}
+<a href="index.html">Top</a>
+<hr>
+EOF
+fi
+
+
+cat << EOF >> ${1}
+Lanceman's <a href="http://quickplot.sourceforge.net/">Quickplot</a>
+&nbsp;&nbsp; version ${VERSION} &nbsp;&nbsp; release date:
+${RELEASE_DATE} </center>
+
+</body>
+</html>
+
+EOF
+###################################################################

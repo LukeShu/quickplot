@@ -1,0 +1,242 @@
+Short term developer notes:
+
+fix helloworld_cpp and gtkmm_helloworld
+
+Trove Software Map?
+
+
+make quickplot.ebuild.in that is used to make quickplot.ebuild
+
+check source into sourceforge CVS
+
+
+add more (?) to status bar.
+
+remove the use of Field::getName() , and use just getLabel().
+
+
+Log scales:
+add taking logs and/or Log scales with --log command line option??
+
+add taking the Log of the data to the GUI.
+
+
+Fix the Graph signals so that all mainWindows graphConfigs do not get
+the signals too.
+
+
+
+Look for memory leaks.
+
+
+
+delete the GraphTab objects in the graphNotebooks
+
+Need a remove Graph Tab GUI.  Like galean??
+
+
+need to rewrite the GraphNotebook and MainWindow classes.  They are
+too mixed together now.  GraphNotebook should be managing graphs not
+MainWindow.
+
+
+Try preDrawing all the tabs??? Maybe there's no point to that.
+
+
+
+write in a HTML doc about the need for speed being gotten from
+'quickplot --no-lines --point-size=0'
+
+add "Drawing" feedback to status bar when it is drawing, in case is
+takes a while.   Also add progress bar to that.
+
+
+
+
+add a Graphs pull down menu that runs in parallel with the tabs.
+
+add a pointer modes button pad. like in the drawing programs.  get it
+from a drawing program along with any thing else we can if possible
+(this is a Biggie).
+
+add move to other frame option menu to the tab pop up menu.
+
+
+VSplit view and H split view.
+
+use class FieldReader  like dtkDequeuer.
+
+Add the idea of  bool Field::isDependent(Field *f);
+So Plot checks this when it is created.
+
+
+add: Tabs are blue that have plot that have not been seen. Like galean??
+
+
+cleanup all error/spew messages so that they can be put in
+error/warning/info dialog GUIs when they happen.
+
+make a zoomlevel history tree.
+
+
+in tab popup add option menu "open in new frame".
+
+
+put names on the Tabs.
+
+draw a sub-grid under the main grid (dark green default color).
+
+vary the grid number labels font.
+
+zoom history with GUI
+
+log scale??
+
+Clean up the Spew a little, make it prettier.
+
+pointer value shower (display) when samescale or one plot.  on menu
+bar or button bar??
+
+
+
+accelerator keys
+
+look at all other 2D plotters and make a html doc comparing them to
+quickplot.  requirement  free and run on GNU/Linux.
+
+forking the browser for Help and About
+
+
+add help balloons
+
+load a linear field from a menu
+
+
+
+Se if Plot::drawAutoGrid() will leak memory.
+
+add help balloons
+
+
+have the zooms restored instead of Zooming out when a new plot is added
+or removed.
+
+
+start the scope display stuff
+
+drag files into Graph and than plot it.  Gnome??
+
+can pick different Zoom levels for Plots on the same graph
+
+convert the html docs to docbook docs
+
+
+
+check help.html OPTIONS work before making a release
+   - check option --grid-color RGB
+
+
+in about.html.in
+<h3>What can Quickplot do other 2D plotters can't do?</h3>
+add a features list with pictures.
+
+
+make a sourceforge tarball release and then fix Download link on index.html
+
+Accelerater keys
+
+
+command line options
+
+  --usage prints all option flags
+  --help  prints all option flags with short explaination 
+
+
+
+fix skip line option to work with --skip-lines 2,4,6-10  etc.
+
+fix --label option to work with  --labels LINE   LINE is the line to read the
+labels from.
+
+
+on exit remove the tmp html files??
+
+add an intermediate about top level window before the browser launch as in
+epiphany of galeon.
+
+function plot start and stop field markers
+
+
+
+
+
+
+-----new button
+
+make the about, help and Licesne be a tab like the Graph tabs.
+
+
+use pointSize in Plot
+
+use lineSize in Plot
+
+add skiplines and other options to the command line file loading.
+
+convert the printfs in App_parseArgs to opSpew <<
+
+
+
+no default plots option  --no-default-plots
+
+add an icon when running.
+
+
+add a prefrences menu and dialog widget
+
+
+add a popup menu to the tab for   remove, move, rename
+
+make it so that plots with all Y and.or X values the same can scale
+and plot well.
+
+add command line option to startup with Plot Selector.
+
+add show tabs to view menu 
+
+
+
+add some kind of filters for fields.  Exmaple takes log10() of data to
+make a new field or replaces the field.
+
+
+resident and non-resident fields?????add file type to Open file
+Dialog.  See gedit's Open Dialog
+
+Change autoGrid font.
+
+save png and xpm
+
+
+add a file open history thingy and/or open history thingy built into
+the file open dialog.
+
+        * long term file open history 
+        * long and short term directory history
+
+
+
+######### later ##############
+
+make a better icon and set of icons
+        * use convert to make a set of icons from one large png file.
+
+find a models for the state of the Quickplot program so that it
+may save all the settings to a file.
+
+
+
+
+######################### Tried to and stumped as to how to do #############
+
+make --geometry option so it does not show the window and then move
+it.

@@ -1,0 +1,159 @@
+
+Here's the code developer notes on the structure of Quickplot and
+other developer notes.
+
+
+Quickplot Documents:
+
+  We maintain HTML files *.html.in.  We generate *.html files and some
+*.cpp files that embed the some of the html documents as strings into
+the quickplot program binary.  With the html documents in the program
+there will be less problems with uninstalled or lost documentation
+files.  Binary installations of Quickplot can just include the one
+binary executable file.  Additional HTML files will be installed too,
+but if not, there is at least an HTML 'help' and an HTML 'about' file
+in the Quickplot binary.
+
+
+
+
+Classes:
+
+
+  -- Widgets -- :
+
+
+   * App * : The top managing class.  This is a Gtk::Main and is a
+std::list of MainWindow objects, which are top level windows
+(Gtk::Window).
+
+   * MainWindow * : The Main top level gtkmm Window widget.
+
+   * MainMenuBar * : MainWindow main menu bar.  There is one per
+MainWindow.  It can be showing or not.
+
+   * ButtonBar * : Main window button bar. It can be showing or not.
+
+   * GraphNotebook * : There is one gtkmm "tabbed" container widget in
+the MainWindow that contains Graph widget objects.
+
+   * Graph * : A Widget where plots are drawn.  There is one for each
+Notebook tab.  A Graph has a STL list of Plots (see below).  The
+Notebook keeps a list of all Graphs one in each tab.
+
+   * GraphConfig * : Is a top level (pop up) Widget used to select
+Fields to plot and other graph configuration in the current Graph.
+Each GraphConfig is associated with a MainWindow.
+
+   * PlotConfig * : Is a top level (pop up) Widget that configures a
+plot.  You can change line width, point Size, line and point color and
+turn on and off the showing of points and lines.
+
+   * PlotLister * : Is a top level (pop up) Widget that lists all the
+plots in a Graph, and shows the mouse pointer plot values in
+selectable ways.
+
+
+
+
+  -- Data Objects -- :
+
+
+   * Field * : Virtual base class used to hold data as one field, or
+one series of values.
+
+   * EditableField * : Virtual base class that is a Field which values
+can be removed or inserted.
+
+   * ?DynamicField? * : A Field that changes values and length with
+time.  There must be an interrupt (interval timer) set in order to
+keep plotting it.
+
+   * ListField * : An EditableField that holds values which does not
+have a known relation between values.  The values are in a linked
+list.
+
+   * ArrayField * : A Field like ListField which uses one or more
+arrays to store the points.  This Field cannot be edited, but may be
+read faster and will use less memory than any other Field.
+
+   * LinearField * : A Field that has values related by a linear
+function.  Like for example time sampled at a regular interval.  The
+values are not stored, just the functional parameters and the values
+are computed when requested.
+
+
+   * Source * : Virtual base class that is a source of data for the
+plotter. A container, and manager of Fields.  The Source is a
+std::list of all the fields that where loaded from a source. The
+global sources is a STL list of Sources.
+
+   * File * : Files is a source created by reading files in from the
+file system, or by reading standard input, stdin.  Sound files can
+only be read from regular files and not stdin.  When a sound file is
+read a LinearField is added as the field before the sound data.
+
+   * Plot * : A Plot keeps two Fields, one for X and one for Y.  Each
+Plot stores the many properties associated with a 2-D (X Y) plot. A
+Plot keeps a (non-STL) list of ZoomLevels.
+
+   * ZoomLevel * : A class that keeps the scale and shift of a Plot.
+There are many ZoomLevels in a Plot.
+
+
+
+
+  -- Developer configuration code --:
+
+
+   class ColorGen : has all the default colors that quickplot uses.
+Each Graph object has it's own ColorGen.
+
+   The files Globel.cpp and Globel.h have many default parameter
+values, startup values, and default option values.  The variables are
+not in a class and all start with the prefix op, which stands for
+option.
+
+
+
+
+
+------------------------------------------------------------
+
+
+
+
+Plotter VS. Scope
+
+Plotter is a Scope with N beam points one for each value.
+Plotters do not sweep in X or Y.
+
+A scope is one X-Y channel in a plot with one point that can sweep.
+
+
+
+
+------------------------------------------------------------
+
+Things to help gtkmm
+
+*add to reference pages
+  -Widget images
+  -examples or links to examples
+  -what header files are needed.  gtkmm.h seems to be it.
+
+*see what else QT does that can be added to gtkmm and/or gtkmm docs.
+
+*add NoteBook, save image, setting the window icon, and other examples
+to tutorial
+
+* RadioButton Group sucks!!!!!
+   -needs a get_active() to find the button of interest.
+   -It can't be used after a button is removed.
+   -it has no useful methods.
+
+* Color(const Glib::ustring& str)  needs documenting.
+
+* how do you get option -geometry without writing lots of code?
+
+

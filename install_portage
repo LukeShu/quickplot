@@ -1,0 +1,90 @@
+#!/bin/bash
+
+# This script makes a Gentoo ebuild for this package.
+
+# Make a tar ball, `make dist', before running this.  You may need to
+# run this as root.
+
+#run%  ACCEPT_KEYWORDS="~x86" emerge package
+
+########################################################################
+# This block was taken from Daniel Elstner's autogen.sh.
+########################################################################
+dir=`echo "$0" | sed 's,[^/]*$,,'`
+test "x${dir}" = "x" && dir='.'
+if test "x`cd "${dir}" 2>/dev/null && pwd`" != "x`pwd`"
+then
+    echo "This script ($0) must be executed directly from the top $0 source directory."
+    exit 1
+fi
+# end taken from Daniel Elstner
+########################################################################
+
+# get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
+# VERSION_MICRO, EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
+source CONFIG
+
+PORTAGE_DIR=/usr/portage
+EBUILD_DIR=${PORTAGE_DIR}/${EBUILD_CATEGORY_DIR}/${TARNAME}
+
+script="$0"
+error=0
+
+# This function, run(), just helps by adding more spew for debugging
+# when running programs.  If any thing fails to run it stops running
+# programs and spews what it would like to run.
+run()
+{
+  if [ $error = 0 ]
+  then
+    echo "$script RUNNING: $@"
+    if ! $@
+    then
+      echo
+      echo "-------------------------- ERROR ---------------------------"
+      echo "$script had an error while running: $@"
+      echo "------------------------------------------------------------"
+      error=1
+    fi
+  else
+    echo "+++++ $script DID NOT RUN: $@"
+  fi
+}
+
+
+if [ -e ${EBUILD_DIR} ]
+then
+    echo "directory ${EBUILD_DIR} exists"
+    echo -n "Do you wish to clobber it (Y/N) [N]? "
+    read a
+    case $a in
+        Y* | y*)
+            continue
+            ;;
+        *)
+            echo "$script exiting with no changes."
+            exit 1
+            ;;
+    esac
+fi
+
+
+run mkdir -p ${EBUILD_DIR}
+run rm -f ${EBUILD_DIR}/files/* ${EBUILD_DIR}/MANIFEST
+run cp ${TARNAME}.ebuild ${EBUILD_DIR}/${TARNAME}-${VERSION}.ebuild
+run cp ${TARNAME}-${VERSION}.tar.bz2 ${PORTAGE_DIR}/distfiles/
+run cd ${EBUILD_DIR}
+run ebuild ${TARNAME}-${VERSION}.ebuild digest
+
+
+# final spew
+if [ $error = 0 ]
+then
+   echo "$script ran successfully"
+else
+   echo "$script did not run successfully"
+fi
+
+exit $error
+
+

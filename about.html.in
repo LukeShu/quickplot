@@ -1,0 +1,174 @@
+
+<head><title>About Quickplot</title></head>
+<body>
+
+<center>
+<h1>Quickplot</h1>
+
+Version @VERSION@
+<p>
+<font size=+2>A fast interactive 2D plotter.</font>
+
+</center>
+
+
+
+<p><br>
+
+<h3>Quickplot Homepage</h3>
+
+<blockquote> <a
+href="http://quickplot.sourceforge.net/">http://quickplot.sourceforge.net/</a
+</blockquote>
+
+
+
+<br>
+
+<h3>What good is Quickplot?</h3>
+
+<blockquote> You can very quickly <em>swim</em> through data with
+Quickplot.&nbsp;  I wrote it to do my dynamics work and if other people can
+use it, that's great. </blockquote>
+
+
+<br>
+
+<h3>What can Quickplot do other 2D plotters can't do?</h3>
+
+<blockquote>
+
+The difference between this 2D plotter and most 2D plotters is that
+the primary purpose of Quickplot is to help you quickly interact with
+your data.&nbsp; Of secondary importance is to make a pretty static
+picture of your data.&nbsp; Features that distinguish Quickplot
+include: one click zooming, any number of plots with different scales
+displayed at one time, value picking for any number of plots with
+different scales displayed at one time, and reading data from standard
+input.&nbsp; These features become indispensable when you're looking
+at data sets with 10,000 to 1,000,000 and more data points.&nbsp; You
+can't look at a 2D plot with 100,000 points unless you can quickly
+zoom.&nbsp; If you need to look at hundreds of files each with 100,000
+points, the command line options in Quickplot may save your
+sanity.
+
+<p> Quickplot is more like an interactive data <b>browser</b> than an
+interactive picture <b>editor</b>.</p>
+
+<p> All future versions of Quickplot will keep the <em>show me the
+data quickly</em> theme.&nbsp; So all future additions to this program
+must preserve this quick and lean theme.&nbsp; This does not rule out
+the additions that make this program a more full-featured 2D plotter
+that one can make pretty pictures with.</p>
+
+</blockquote>
+
+
+
+<br>
+
+<h3>Installation prerequisites</h3>
+
+<blockquote>
+
+Quickplot uses the GNU Autotools (./configure) to build and install.
+To build Quickplot the following packages are required to be
+installed:
+
+<ul>
+
+<li><b><a href="http://www.gtkmm.org/">gtkmm</a></b>&nbsp;&nbsp;
+   has many prerequisites, but comes with most GNU/Linux
+distributions.&nbsp; gtkmm is the official C++ interface for the
+popular GUI library <a href="http://www.gtk.org/">GTK+</a>.
+
+<li><b><a
+href="http://www.mega-nerd.com/libsndfile/">libsndfile</a></b>&nbsp;&nbsp;
+is a C library for reading and writing files containing sampled sound
+(such as MS Windows WAV and the Apple/SGI AIFF format) through one
+standard library interface.
+
+</ul>
+
+</blockquote>
+
+
+
+
+<br>
+
+<h3>The name and history of this program</h3>
+
+<blockquote> We call it <em>Lanceman's Quickplot</em> in order to
+distinguish it from another program called Quickplot which predates
+this program.&nbsp; It used to be on NeXT computuers.&nbsp; It may
+have died with NeXT.&nbsp; This is a complete rewrite, by the original
+author, of the Lanceman's Quickplot which first appeared in 1998, and
+managed to find its way into the <a
+href="http://www.debian.org/">Debian GNU/Linux</a> distribution soon
+after.
+
+<p> Quickplot started out in 1998 as an Athena Widgets X11 GUI
+program, in 2003 it was rewritten as a <a
+href="http://www.trolltech.com/products/qt/">QT</a> GUI program, and
+in 2004 it was changed to a <a href="http://www.gtk.org/">GTK+</a> GUI
+program using the <a href="http://www.gtkmm.org/">gtkmm</a> C++ wrapper
+to GTK+.
+
+</blockquote>
+
+
+
+<br>
+
+<h3>Authors</h3>
+
+<blockquote>
+<b>Lance Arsenault</b>&nbsp;&nbsp;
+<a href="http://quickplot.sourceforge.net/lanceman/">http://quickplot.sourceforge.net/lanceman/</a>
+
+
+<p>
+I'm open for anyone to help.
+</p>
+
+
+</blockquote>
+
+
+
+
+<br>
+
+<h3>Copy Right and Legal Notice</h3>
+
+<blockquote>
+
+Quickplot is free software, distributed under the terms of
+the <a href=http://www.gnu.org/copyleft/gpl.html>GNU General Public
+License</a> (v2+).
+
+<p>Quickplot -- a fast interactive 2D plotter<br>
+
+Copyright (C) 1998, 1999, 2003, 2004 Lance Arsenault<br> 
+
+<p>Quickplot is free software; you can redistribute it
+and/or modify it under the terms of the GNU General Public License as
+published by the <a href="http://www.fsf.org/">Free Software
+Foundation</a>; either version 2, or (at your option) any later
+version.
+
+<p>Quickplot is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.&nbsp;  See the GNU
+General Public License for more details.
+
+<p>You should have received a copy of the <a
+href=http://www.gnu.org/copyleft/gpl.html>GNU General Public
+License</a> along with Quickplot, in a file named <a
+href="COPYING">COPYING</a>; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307,
+USA.  </blockquote>
+
+
+<br>&nbsp;

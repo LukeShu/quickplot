@@ -1,0 +1,68 @@
+
+2004-04-22   21:35 EST   Version 0.7.0   lanceman
+
+
+  The last release of Quickplot was version 0.6.5.  In this version, 0.7.0,
+  we changed the widget API we use from QT to GTK using GTKmm
+  (http://www.gtkmm.org/).  Most of the code was rewritten when going from
+  version 0.6.5 to 0.7.0. 
+
+  Some command line options are not interpreted the same.  
+
+	
+  Fixed:
+	
+	reading WAV sound files works for more WAV files types
+
+	the plot manager has been replaced with a better GUI
+
+	
+  Added features include:
+
+	Graph Tabs -- kind of like page tabs in a web browser
+
+	multiple main window frames. Like Emacs has "New Frame".  Each
+	main window frame uses the same plot data, but the plots are not
+	the same, kind of like Emacs buffers are shared between frames.
+	
+	reads many sound file types using the package libsndfile
+	(http://www.mega-nerd.com/libsndfile/)
+	
+	can plot any field against any field -- version 0.6.5 could not
+	plot the same field against itself or fields against fields with
+	a different number of values
+
+	zoom levels do not change when plots are added or removed until
+	it's zoomed back all the way out, or is forced to by the plots
+	added
+
+	by default the scales are set to fit all plots in a graph so long
+	as the span of x,y values in all the plots are within an order of
+	magnitude of each other.  We retained the "same scales" and
+	"different scales" options in addition to this new default called
+	"auto scale".
+
+	added the use of the GNU autotools (./configure) to build and install
+
+	added the default GTK command line options
+
+	
+
+  Lost features:
+
+	the QT command line options -- we no longer use QT
+
+	No longer saves xpm image files, since PNG files are much better
+	for most purposes, and you can always convert png files to xpm
+	files using `convert' from http://www.imagemagick.org/
+
+	The action of the mouse buttons has changed.
+
+
+
+2004-04-23   14:17 EDT   Version 0.7.1   lanceman
+
+
+     Just minor edits to docs and scripts.
+
+

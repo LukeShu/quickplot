@@ -1,0 +1,55 @@
+#!/bin/sh
+
+# get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
+# VERSION_MICRO, EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
+source CONFIG
+
+
+
+# nodist_quickplot_SOURCES is the same as in Makefile.am.in
+nodist_quickplot_SOURCES="\
+File_readSndInt.cpp \
+File_readSndFloat.cpp \
+File_readSndDouble.cpp \
+help_html.cpp \
+about_html.cpp"
+
+function check_exclude()
+{
+    for j in ${nodist_quickplot_SOURCES} ; do
+        if [ $1 = $j ] ; then
+            return 0
+        fi
+    done
+    return 1
+}
+
+
+quickplot_SOURCES=""
+
+for i in *.cpp *.h ; do
+    if [ ! -L $i ] ; then
+        if ! check_exclude $i ; then
+            quickplot_SOURCES="${quickplot_SOURCES} $i"
+        fi
+    fi
+done
+
+
+webimages="`echo *.png`"
+htmlfiles=""
+for i in *.html.in
+do
+  htmlfiles="${htmlfiles} ${i%%.in}"
+done
+
+
+
+echo "# Makefile.am  Generated from Makefile.am.in by running $0" > Makefile.am
+echo >> Makefile.am
+cat Makefile.am.in | sed \
+ -e "s/@nodist_quickplot_SOURCES@/$nodist_quickplot_SOURCES/g" \
+ -e "s/@quickplot_SOURCES@/$quickplot_SOURCES/g" \
+ -e "s/@webimages@/$webimages/g" \
+ -e "s/@htmlfiles@/$htmlfiles/g" \
+ >> Makefile.am

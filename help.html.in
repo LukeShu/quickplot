@@ -1,0 +1,403 @@
+
+<head>
+<title>Quickplot Help</title>
+</head>
+
+<body>
+
+
+<center>
+<h1>Quickplot Help</h1>
+</center>
+
+Quickplot can load data from GUIs (graphical user interfaces), the
+command line, or by reading the data from standard input.&nbsp; Data
+is loaded into fields.&nbsp; A field represents a series of numbers,
+like for example the values for one variable.&nbsp; Any two fields may be
+plotted against each other.
+
+<br><br>
+
+
+<h3>Zooming</h3>
+
+<blockquote>
+
+<li><b>Zooming In</b>&nbsp;&nbsp; Put the pointer (mouse) on a corner
+of plot region you want to zoom to.&nbsp; Press the right mouse button
+and hold and drag the zoom box.&nbsp; Release the right mouse button
+then it is at another corner of the zoom region.&nbsp; Now Quickplot
+will zoom into that zoom region.
+
+<p> You can zoom in as many times as you like, or calculations will
+permit.&nbsp; In all cases we've seen round off problems don't happen
+until you are looking past at one data point in the plot window.&nbsp;
+Quickplot will print a warning message to standard output if this
+happens.&nbsp; This happens when you zoom in so far as to make it so
+that the pixel distance between two adjacent points is about 10 <sup>
+9 </sup> pixels.&nbsp; Quickplot culls out points that are not
+adjacent to the plot window or in the plot window.&nbsp; Quickplot
+linearly interpolates lines to points adjacent to points in the plot
+window or on other sides of the plot window.  <li><b>Zooming Out</b>
+&nbsp;&nbsp; Put the pointer (mouse) in the plot window.&nbsp; Press
+the right mouse button and hold and drag the zoom box.&nbsp; Release
+the right mouse button then it (the zoom box) is past one edge of the
+plot window.&nbsp; Now Quickplot will zoom out to the previous zoom
+level.</p>
+
+<p> Or to zoom out to a full view (top zoom level) of the plot: Put
+the pointer (mouse) in the plot window.&nbsp; Press the right mouse
+button and hold and drag the zoom box.&nbsp; Release the right mouse
+button then the zoom box is past two edges (a corner) of the plot
+window.&nbsp; Now Quickplot will zoom out to the top zoom level (no
+zoom).&nbsp;</p>
+
+</blockquote>
+
+
+<br>
+<h3>Graph Value Picking</h3>
+
+<blockquote>
+The left mouse button is used for picking and displaying
+X and Y values from the graph.  
+</blockquote>
+
+<br>
+<h3>Loadable File Formats</h3>
+<ul>
+
+<li><b>ASCII text</b>&nbsp;&nbsp; Quickplot can load ASCII text (plan
+text) files.&nbsp; The number of fields (numbers) on each line must be
+the same.&nbsp; Any number of non-number characters other than a new
+line character may used to separate numbers on a given line.&nbsp; The
+characters in numbers can only be the following 15 characters
+".+-eE0123456789".&nbsp;
+
+Example:
+<blockquote>
+<pre>
+-1   -1.3    -1
+0    1.1e-2   0
+2    1.2E-2   1
+30   1.3e+2   3
+</pre>
+</blockquote>
+
+The above example has three fields and four values for each
+field.&nbsp; A file may have any counting number of fields, that's
+1,2,3,4 or more fields.&nbsp; If a file is loaded with a single field
+an additional field, with the same number of values as the field in
+the file, will be added before the field from the file.&nbsp;
+Quickplot can read ASCII text files from standard input.
+
+<p>
+
+<li><b><a href="http://www.mega-nerd.com/libsndfile/">libsndfile</a>
+sound file</b>&nbsp;&nbsp; Using the package libsndfile Quickplot can
+read many sound file formats.&nbsp; An incomplete list of readable
+sound file formats includes: Microsoft WAV, SGI/Apple AIFF/AIFC, and
+Sun/DEC/NeXT AU/SND..&nbsp; See the <a
+href="http://www.mega-nerd.com/libsndfile/">libsndfile home-page</a>
+for a full list of supported sound file formats.&nbsp; 
+
+<p>
+
+When loading a sound file the first field (sequence) loaded will be
+the time sequence, then each sound channel will follow in separate
+fields.
+
+Quickplot may be a little slow with sound files larger than thirty
+seconds long.&nbsp; Thirty seconds of sound sampled at 44KHZ with one
+channel would load 1.32 million data points.&nbsp; Quickplot cannot
+read sound files from standard input.  </ul>
+
+
+
+<br>
+<h3>Quickly looking at a hundred thousand, a million, or more data points?</h3>
+<blockquote>
+
+If you need to look at large files quickly, try running Quickplot
+including the two options '--no-lines' and '--point-size=0' in the
+command line.&nbsp; This will make the plot drawing and redrawing as
+fast as it can be at the expense of having points that are just one
+pixel in size, which should be no problem if you have that many
+points.&nbsp; Once you zoom to a picture that you like you can
+increase the point size or add lines, using the GUI (graphical user
+interface), if you need to.&nbsp; Quickplot loads the entire file into
+memory for any file loaded, so you may need to be careful of your
+memory usage when working with large files.
+
+<p> By default plots created in Quickplot with 1,000,000 or more
+points will by drawn without lines and points of size one pixel,
+unless the user has included one or more of the following options in
+the command line: --no-lines, --no-points, --line-width, or
+--point-size.&nbsp; For plots with less than 1,000,000 points the
+default line width is 3 pixels and the default point size is 5 pixels.
+</p>
+
+<p> On a 2.4 Gig Hz Pentium 4 (with <a
+href="http://www.gentoo.org/">Gentoo GNU/Linux</a>) with 256 Megabytes
+of RAM it has been observed to take 8 seconds to load and display an
+ASCII text file with 1 million data points; after startup it was
+observed to take about one second to redraw with the one million
+points in view.&nbsp; When repeating this with lines of width 3 pixels
+and points of size 5 pixels the loading time is about the same and the
+drawing time increases by about 3 seconds.&nbsp; Drawing time didn't
+seem to vary with window size.</p>
+
+</blockquote>
+
+
+
+<br>
+<h3>Command Line Options</h3>
+
+<b>Usage: quickplot [<font color=#902040>OPTIONS</font>] [file1] [<font
+color=#902040>OPTIONS</font>] [file2] [<font
+color=#902040>OPTIONS</font>] ...</b>
+
+<p> If no -p or --plot option is given than the default initial plots
+will be up to 12 plots.&nbsp; The default initial plots will be of all
+fields, except the first field in the order that the field was loaded
+from a file plotted against the first field in the file.&nbsp; If a
+file contains one field (like a sound file) than a field that contains
+a linear (time) sequence of values will be generated before the file's
+field is loaded.  If standard input is read it will be the first file
+loaded.</p>
+
+<p></p>
+
+
+<b><font color=#902040>OPTIONS</font></b></p>
+
+<ul>
+
+<li><b><font color=#902040>--about</font></b> or <b><font
+color=#902040>-a</font></b>&nbsp;&nbsp; display some information
+about Quickplot
+
+<li><b><font color=#902040>--canvas-color RGB</font></b> or <b><font
+color=#902040>-c RGB</font></b>&nbsp;&nbsp; start quickplot with the
+graph background (canvas) color RGB.  Examples: --canvas-color #FF0000
+or --canvas-color "red" would make it red.
+
+<li><b><font color=#902040>--different-scales</font></b> or <b><font
+color=#902040>-d</font></b>&nbsp;&nbsp;
+load plots on the same graph with different scales.  By default
+Quickplot will load plots on the same graph with the same scale if the
+span of x,y values in all the plots are within an order of magnitude
+of each other.
+
+<li> <b><font color=#902040>--geometry GEOMETRY</font></b> or <b><font
+color=#902040>-geometry GEOMETRY</font></b>&nbsp;&nbsp; create the
+initial window with the given geometry GEOMETRY, see man page X(1) for
+the GEOMETRY format.  Example: quickplot --geometry=1000x300-0+20
+
+<li> <b><font color=#902040>--grid-color RGB</font></b> or <b><font
+color=#902040>-C RGB</font></b>&nbsp;&nbsp; start quickplot with the grid
+color RGB. Example: --grid-color #00FF00 would make it green.
+
+<blockquote>
+<b><font color=#902040>RGB</font></b> may be in one of these formats:
+<ul>
+<li>#RGB (each of R, G and B is a single hex digit)
+<li>#RRGGBB
+<li>#RRRGGGBBB
+<li>#RRRRGGGGBBBB
+<li>A name from the X color database, which may be
+    in /usr/X11R6/lib/X11/rgb.txt. Example colors are
+   "steelblue" and "gainsboro".
+</ul>
+</blockquote>
+
+<li><b><font color=#902040>--grid-line-width SIZE</font></b> or
+<b><font color=#902040>-g SIZE</font></b>&nbsp;&nbsp; start quickplot
+using plot grid width SIZE in pixels
+
+<li><b><font color=#902040>--help</font></b> or <b><font
+color=#902040>-h</font></b>&nbsp;&nbsp; display this help
+
+<li><b><font color=#902040>--label-separator CHAR</font></b> or
+<b><font color=#902040>-b CHAR</font></b>&nbsp;&nbsp; when reading
+labels from the last file in the augment list before this option flag
+use <b><font color=#902040>CHAR</font></b> as the label (single
+character) separator.  The default label separator is ' ' (space).  If
+this file is not an ASCII text file this will be ignored.  See option:
+<a href="#option_L"><b>--labels</b> or
+<b>-L</b></a>.
+
+<a name=option_L> <li><b><font color=#902040>--labels</font></b> or
+<b><font color=#902040>-L</font></b>&nbsp;&nbsp; read labels from the
+first line not skipped of the last file in the augment list before
+this option flag.  If this file is not an ASCII text file this will be
+ignored.
+
+<li><b><font color=#902040>--line-width SIZE</font></b> or <b><font
+color=#902040>-I SIZE</font></b>&nbsp;&nbsp; start quickplot using
+plot line width SIZE in pixels
+
+<li><b><font color=#902040>--linear-field [L_OPTIONS]</font></b> or
+<b><font color=#902040>-l [L_OPTIONS]</font></b>&nbsp;&nbsp; make a
+field that is a uniformly changing linear sequence of values, like for
+example time.&nbsp; The number of values will be gotten from the
+previous file's values loaded.&nbsp; The field generated will be added
+as the first field of the previous file.  For sound files this option
+is ignored.
+
+<br>
+<b><font color=#902040>L_OPTIONS</font></b>
+
+<blockquote>
+
+The L_OPTIONS only have an effect after the --linear-field (or -l)
+option and they act on the field made from that argument.&nbsp; The
+L_OPTIONS are:
+
+<ul>
+
+<li><b><font color=#902040>--start VALUE</font></b> or <b><font
+color=#902040>-r VALUE</font></b>&nbsp;&nbsp; set the first value in the
+sequence to VALUE.&nbsp; The The default first value will be zero.
+
+<li><b><font color=#902040>--step SIZE</font></b> or <b><font
+color=#902040>-t SIZE</font></b>&nbsp;&nbsp; set the sequence step size to
+SIZE.&nbsp; The default is 1.
+
+</ul>
+</blockquote>
+
+<!--
+<li><b><font color=#902040>--log</font></b>&nbsp; &nbsp; take the log
+(base 10) of the values in all fields in the previous file read.&nbsp;
+If you want plots with log scales and some without log scales you can
+list the file twice in the command line, once without the --log option
+after and once with.&nbsp; When loading sound files this option is
+ignored.
+-->
+
+<li><b><font color=#902040>--no-buttons</font></b> or <b><font
+color=#902040>-B</font></b>&nbsp;&nbsp; start quickplot with no
+button bar
+
+<li><b><font color=#902040>--no-default-plots</font></b>&nbsp;&nbsp;
+by default when no --plot or -p options are given Quickplot will make
+some plots with the files loaded at start up.  This option will cause
+Quickplot not to make these default plots.&nbsp;&nbsp; When files are
+loaded using the GUI defaults plot will not be made if this is set.
+
+<li><b><font color=#902040>--no-grid</font></b> or <b><font
+color=#902040>-G</font></b>&nbsp;&nbsp; start quickplot with out
+drawing graph grid lines, by default, in the graphs
+ 
+<li><b><font color=#902040>--no-lines</font></b> or <b><font
+color=#902040>-i</font></b>&nbsp;&nbsp; start quickplot to plot
+without drawing lines in the graphs by default
+ 
+<li><b><font color=#902040>--no-menubar</font></b> or <b><font
+color=#902040>-M</font></b>&nbsp;&nbsp; start quickplot with no
+menubar
+
+<li><b><font color=#902040>--no-pipe</font></b> or <b><font
+color=#902040>-N</font></b>&nbsp;&nbsp; don't read data in from
+standard input
+
+<li><b><font color=#902040>--no-points</font></b> or <b><font
+color=#902040>-o</font></b>&nbsp;&nbsp; start quickplot to plot
+without drawing points in the graphs by default
+
+<li><b><font color=#902040>--no-statusbar</font></b>&nbsp;&nbsp; start
+Quickplot with no status bar displayed.  The Quickplot status bar is a
+thin widget at the bottom of the main Quickplot window which displays
+pointer x, y graph values and mode information.
+
+<li><b><font color=#902040>--no-tabs</font></b>&nbsp;&nbsp; start
+Quickplot with no graph tabs displayed.  Quickplot uses a notebook
+like widget to let you select and view multiple graphs.
+
+<li><b><font color=#902040>--number-of-plots NUM</font></b> or
+<b><font color=#902040>-n NUM</font></b>&nbsp;&nbsp; set the possible
+initial number of plots to NUM.&nbsp; The default possible initial
+number of plots is 12.
+
+<li><b><font color=#902040>--pipe </font></b> or <b><font
+color=#902040>-P</font></b>&nbsp;&nbsp; read in data from standard
+input.&nbsp; By default Quickplot looks for data from standard input
+and stops looking if no data is found in some short amount of
+time.&nbsp; This option will cause Quickplot to wait for standard
+input indefinitely.
+
+<li><b><font color=#902040>--plot LIST </font></b> or <b><font
+color=#902040>-p LIST</font></b>&nbsp;&nbsp; plot the following list
+of fields, LIST, at startup.&nbsp; example: --plot "0 1 3 4" will plot
+field 1 VS field 0 and field 4 VS field 3.&nbsp; DataFields are
+numbered, starting at 0, in the order that they are read in from a
+file or created, as in the case of option --linear-field.&nbsp; A
+separate Graph Tab will be created for each --plot (or -p) option
+given.
+
+<li><b><font color=#902040>--point-size SIZE</font></b> or <b><font
+color=#902040>-O SIZE</font></b>&nbsp;&nbsp; start quickplot using
+plot point size SIZE in pixels
+
+<li><b><font color=#902040>--print-about</font></b>&nbsp;&nbsp;
+prints the About HTML document to standard output and then exits.
+
+<li><b><font color=#902040>--print-help</font></b>&nbsp;&nbsp; prints
+this Help HTML document to standard output and then exits.
+
+<li><b><font color=#902040>--same-scale</font></b> or <b><font
+color=#902040>-s</font></b>&nbsp;&nbsp; plot all start-up plots on
+the same scale
+
+<li><b><font color=#902040>--skip-lines NUM</font></b> or <b><font
+color=#902040>-S NUM</font></b>&nbsp; &nbsp; skip the first NUM lines
+in the previous file read. The previous file in the argument list
+should be an ASCII text file.
+ 
+<li><b><font color=#902040>--verbose</font></b> or <b><font
+color=#902040>-v</font></b>&nbsp;&nbsp; spew more to stdout
+
+
+<li><b><font color=#902040>--version</font></b> or <b><font
+color=#902040>-V</font></b>&nbsp;&nbsp; print the Quickplot version
+number and then exit
+
+
+<br>&nbsp;
+
+<li><b><font color=#902040>GTK+ OPTIONS</font></b><br> The following
+GTK+ options are parsed by the <a
+href="http://www.gtkmm.org/">gtkmm</a> and <a
+href="http://www.gtk.org/">GTK+</a> APIs (application programming
+interfaces), which Quickplot uses.
+
+<blockquote>
+
+  <table> <!-- We got this list from running `galeon --help'. Where
+               does GTK+ keep this info??? !-->
+
+  <tr><td valign=top>--gdk-debug=FLAGS</td><td valign=top>      &nbsp;&nbsp;Gdk debugging flags to set</td></tr>
+  <tr><td valign=top>--gdk-no-debug=FLAGS</td><td valign=top>   &nbsp;&nbsp;Gdk debugging flags to unset</td></tr>
+  <tr><td valign=top>--display=DISPLAY</td><td valign=top>      &nbsp;&nbsp;X display to use</td></tr>
+  <tr><td valign=top>--screen=SCREEN</td><td valign=top>        &nbsp;&nbsp;X screen to use</td></tr>
+  <tr><td valign=top>--sync</td><td valign=top>                 &nbsp;&nbsp;Make X calls synchronous</td></tr>
+  <tr><td valign=top>--name=NAME</td><td valign=top>            &nbsp;&nbsp;Program name as used by the window manager</td></tr>
+  <tr><td valign=top>--class=CLASS</td><td valign=top>          &nbsp;&nbsp;Program class as used by the window manager</td></tr>
+  <tr><td valign=top>--gxid-host=HOST</td><td valign=top>             </td></tr>
+  <tr><td valign=top>--gxid-port=PORT</td><td valign=top>             </td></tr>
+  <tr><td valign=top>--gtk-debug=FLAGS</td><td valign=top>      &nbsp;&nbsp;Gtk+ debugging flags to set</td></tr>
+  <tr><td valign=top>--gtk-no-debug=FLAGS</td><td valign=top>   &nbsp;&nbsp;Gtk+ debugging flags to unset</td></tr>
+  <tr><td valign=top>--g-fatal-warnings</td><td valign=top>     &nbsp;&nbsp;Make all warnings fatal</td></tr>
+  <tr><td valign=top>--gtk-module=MODULE</td><td valign=top>    &nbsp;&nbsp;Load an additional Gtk module</td></tr>
+
+  </table>
+
+</blockquote>
+
+
+</ul>
+
+&nbsp;<br>
+

@@ -1,0 +1,102 @@
+Quickplot -- A fast interactive 2-D plotter.
+
+
+The Quickplot homepage:
+
+        http://quickplot.sourceforge.net/
+
+
+
+
+Requirements:
+
+
+  pkg-config
+
+    You need the program pkg-config in your PATH.  See:
+    http://www.freedesktop.org/Software/pkgconfig .
+
+
+  gtkmm and dependence
+
+    gtkmm is a C++ wrapper of the GNOME widget API, The GIMP Toolkit
+    (GTK).  There's other packages that gtkmm depends on.  See:
+    http://www.gtkmm.org/ for information.
+
+
+  GNU Autotools (for developing)
+
+    To add source and make a new confgiure script you need the GNU
+    Autotools.  See:   At the time of writing this the GNU Autotools versions
+    were found by using the --version option with said program:
+
+      aclocal (GNU automake) 1.7.9
+      libtoolize (GNU libtool) 1.5
+      autoheader (GNU Autoconf) 2.58
+      automake (GNU automake) 1.7.9
+      autoconf (GNU Autoconf) 2.58
+
+
+
+
+
+To build and install:
+
+
+        ./configure --prefix=PREFIX_DIR
+        make
+        make install
+
+
+
+PREFIX_DIR could be for example /usr/local which would cause the
+installed binary exicutable file to be installed at
+/usr/local/bin/quickplot and the put some html files and images in
+the directory /usr/local/share/doc/quickplot/html/
+
+There's lots of options to the configure script that can be seen by
+running:  `./configure --help'.
+
+
+
+
+
+For developing:
+
+
+   to build:
+
+        ./bootstrap
+        ./configure --prefix=PREFIX_DIR
+        make
+        make install
+
+
+
+   to clean for CVS:
+
+        ./cvsclean
+
+
+
+
+----------------------------------------------------------------------------
+
+Copyright (c) 2004  Lance Arsenault
+
+This file is part of Quickplot.
+
+Quickplot is free software; you can redistribute it and/or
+modify it under the terms of the GNU General Public License as
+published by the Free Software Foundation; either version 2, or (at
+your option) any later version.
+
+This is distributed in the hope that it will be useful, but WITHOUT
+ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+
+You should have received a copy of the GNU General Public License
+along with this software; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+USA
