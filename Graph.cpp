@@ -173,7 +173,10 @@ Plot *Graph::createPlot(Field *x, Field *y)
     GraphTab *tab = dynamic_cast<GraphTab *>
       (mainWindow->graphsNotebook.get_tab_label(*this));
     if(tab)
-      tab->setText(y->source->getBaseFileName());
+      {
+	tab->setText(y->source->getBaseFileName());
+	mainWindow->graphsNotebook.m_signal_tabLabelChanged.emit(this);
+      }
   }
   
   m_signal_addedPlot.emit(this);

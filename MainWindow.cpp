@@ -752,3 +752,9 @@ void GraphsNotebook::copy(GraphsNotebook *graphsNotebook)
   d->from = graphsNotebook;
   gtk_idle_add(copyGraphNotebooks, d);
 }
+
+SigC::Signal1<void, Graph *> GraphsNotebook::signal_tabLabelChanged(void)
+{
+  return m_signal_tabLabelChanged;
+}
+

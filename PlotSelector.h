@@ -67,7 +67,7 @@ extern "C"
 }
 
 
-class PlotSelector : public Frame
+class PlotSelector : public VBox
 {
 public:
   
@@ -84,6 +84,10 @@ public:
 
   void queueRedraw(void);
 
+protected:
+
+  // We need to connect the signals after the widget is first drawn.
+  virtual void on_map(void);
   
 private:
 
@@ -93,7 +97,6 @@ private:
 
   RadioButton *newFieldButton(XY xy, Source *s, Field *f);
 
-  VBox topVBox;
   Frame topLabelFrame;
   Label topLabel;
   
@@ -129,6 +132,8 @@ private:
   MainWindow *mainWindow;
 
   friend class ConnectFieldsDrawingArea;
+
+  bool wasMapped;
 };
 
 

@@ -64,7 +64,7 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
 
   /********************* stacking the widgets ***********************/
 
-  set_default_size(315, 600);
+  //set_default_size(315, 300);
   set_border_width(5);
   //topVBox.set_border_width(5);
   topLabel.set_size_request(-1, 30);
@@ -84,12 +84,14 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   //rFrame.set_shadow_type(SHADOW_ETCHED_IN);
   //showGridOM.set_label("Show Grid");
 
-     
-  add(topVBox);
+  add(notebook);
+  notebook.append_page(topVBox, "Configure Graph", "menu label");
+
   topVBox.pack_start(topLabelFrame, PACK_SHRINK);
   topVBox.pack_start(topHBox, PACK_SHRINK);
   topVBox.pack_start(lowerVBox, PACK_SHRINK);
-  topVBox.pack_start(plotSelector, PACK_EXPAND_WIDGET);
+
+  notebook.append_page(plotSelector, "Select Fields to Plot", "menu label");
   
   topLabelFrame.add(topLabel);
   
@@ -180,6 +182,9 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
     signal_switch_page().
     connect(SigC::slot(*this, &GraphConfig::on_notebookFlip));
 
+  mainWindow->graphsNotebook.signal_tabLabelChanged().
+    connect(SigC::slot(*this, &GraphConfig::on_tabLabelChanged));
+
   signal_show().connect(SigC::slot(mainWindow->menuBar,
                                    &MainMenuBar::checkGraphConfigState));
   signal_hide().connect(SigC::slot(mainWindow->menuBar,
@@ -200,6 +205,14 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
 
   // need to get key presses.
   add_events(Gdk::KEY_PRESS_MASK);
+}
+
+void GraphConfig::on_tabLabelChanged(Graph *graph)
+{
+  if(mainWindow->currentGraph == graph)
+    {
+      setTitle();
+    }
 }
 
 void GraphConfig::setValuesFromGraph(void)

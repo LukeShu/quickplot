@@ -28,6 +28,7 @@ private:
   MainWindow *mainWindow;
 
   VBox topVBox;
+  Notebook notebook;
   Frame topLabelFrame;
   Label topLabel;
   HBox topHBox;
@@ -63,6 +64,7 @@ private:
   void on_showGridNumbers(void);
   void on_showLines(void);
   void on_showPoints(void);
+  void on_tabLabelChanged(Graph *graph);
 
   void on_sameScaleChange(Graph *graph);
   void on_showPlotConfig(void);

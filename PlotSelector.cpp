@@ -50,16 +50,14 @@ PlotSelector::PlotSelector(Window *graphConfig,
   scrolledWindow.set_size_request(-1, 100);
   drawArea.set_size_request(30, 10);
   topLabel.set_size_request(-1, 30);
-  set_shadow_type(SHADOW_ETCHED_IN);
   
   //labelBox.set_size_request(-1, 40);
 
-  add(topVBox);
-  topVBox.pack_start(topLabelFrame, PACK_SHRINK);
+  pack_start(topLabelFrame, PACK_SHRINK);
   topLabelFrame.add(topLabel);
   
-  topVBox.pack_start(labelBox, PACK_SHRINK);
-  topVBox.add(scrolledWindow);
+  pack_start(labelBox, PACK_SHRINK);
+  add(scrolledWindow);
   labelBox.pack_start(xLabel, PACK_SHRINK);
   labelBox.pack_start(blankLabel, PACK_EXPAND_PADDING);
   labelBox.pack_start(yLabel, PACK_SHRINK);
@@ -69,12 +67,24 @@ PlotSelector::PlotSelector(Window *graphConfig,
   scrolledHBox.pack_start(xBox, PACK_SHRINK);
   scrolledHBox.pack_start(drawAreaFrame, PACK_EXPAND_WIDGET);
   scrolledHBox.pack_start(yBox, PACK_SHRINK);
-  
+
   xBox.pack_start(xFrame, PACK_SHRINK);
   xFrame.add(xNoneRadioButton);
   
   yBox.pack_start(yFrame, PACK_SHRINK);
   yFrame.add(yNoneRadioButton);
+
+  fixNoneButtons = false;
+
+  wasMapped = false;
+}
+
+// We need to connect the signals after the widget is first drawn.
+void PlotSelector::on_map(void)
+{
+  VBox::on_map();
+
+  if(wasMapped) return;
 
   Source::signal_addedSource().
     connect(SigC::slot(*this, &PlotSelector::on_addSource));
@@ -84,15 +94,17 @@ PlotSelector::PlotSelector(Window *graphConfig,
   mainWindow->graphsNotebook.
     signal_switch_page().
     connect(SigC::slot(*this, &PlotSelector::on_notebookFlip));
-  
+
   std::list<Source *>::const_iterator source = sources.begin();
   for(;source != sources.end(); source++)
-  {    
+  {
     xBox.pack_start(*newSourceButtons(X, *source), PACK_SHRINK);
     yBox.pack_start(*newSourceButtons(Y, *source), PACK_SHRINK);
   }
 
-  fixNoneButtons = false;
+  show_all_children();
+
+  wasMapped = true;
 }
 
 PlotSelector::~PlotSelector(void)
@@ -194,7 +206,7 @@ bool PlotSelector::on_expose_event(GdkEventExpose *e)
   //opSpew << "scrolledHBox.get_height()=" << scrolledHBox.get_height()<< std::endl;
   //opSpew << "scrolledWindow.get_height()=" << scrolledWindow.get_height() << std::endl;
 
-  return Frame::on_expose_event(e);
+  return VBox::on_expose_event(e);
 }
 
 void PlotSelector::queueRedraw(void)
@@ -214,7 +226,6 @@ void PlotSelector::on_addSource(Source *s)
 {
   xBox.pack_start(*newSourceButtons(X, s), PACK_SHRINK);
   yBox.pack_start(*newSourceButtons(Y, s), PACK_SHRINK);
-
   
   drawArea.queueRedraw();
   
@@ -308,13 +319,14 @@ Frame *PlotSelector::newSourceButtons(PlotSelector::XY xy, Source *source)
     str += " (";
     str += ((*field)->getName())?(*field)->getName():"";
     str += ")";
-    
+
     FieldButton *b = newFieldButton(xy, source, (*field), str.c_str());
     vBox->pack_start(*b, PACK_SHRINK);
 
     b->signal_toggled().
       connect(SigC::slot(*b, &FieldButton::clicked));
   }
+
   return f;
 }
 
@@ -427,6 +439,7 @@ ConnectFieldsDrawingArea(PlotSelector *ps):
 
 void ConnectFieldsDrawingArea::queueRedraw(void)
 {
+  // need to make share that the widget is realized before doing this.
   GdkRectangle rec =
     {
       0, 0, get_width(), get_height()
@@ -681,12 +694,12 @@ bool SizingScrolledWindow::on_expose_event(GdkEventExpose *e)
 void SizingScrolledWindow::queueRedraw(bool needsResizing_in)
 {
   if(needsResizing_in)
-  {
-    needsResizing = true;
-    oldWindowHeight = window->get_height();
-    childHeight = SMALL_INT;
-    resizeCount = 0;
-  }
+    {
+      needsResizing = true;
+      oldWindowHeight = window->get_height();
+      childHeight = SMALL_INT;
+      resizeCount = 0;
+    }
   
   
   GdkRectangle rec =

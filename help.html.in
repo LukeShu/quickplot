@@ -444,8 +444,8 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 <ul>
 
 <li><b>a</b>&nbsp;&nbsp; show information <b><u>a</u></b>bout Quickplot using a web browser</li>
-<li><b>b</b>&nbsp;&nbsp; toggles the visablity of the <b><u>b</u></b>utton bar</li>
-<li><b>c</b>&nbsp;&nbsp; <b><u>c</u></b>opies the main window frame</li>
+<li><b>b</b>&nbsp;&nbsp; toggles the visibility of the <b><u>b</u></b>utton bar</li>
+<li><b>c</b>&nbsp;&nbsp; <b><u>c</u></b>opies the current focused main window frame</li>
 <li><b>d</b>&nbsp;&nbsp; <b><u>d</u></b>elete the main window. This will not close the last main window.</li>
 <li><b>f</b>&nbsp;&nbsp; makes a new main window <b><u>f</u></b>rame</li></li>
 <li><b>g</b>&nbsp;&nbsp; show/hide the <b><u>g</u></b>raph configuration widget</li>
@@ -456,8 +456,8 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 <li><b>o</b>&nbsp;&nbsp; <b><u>o</u></b>pen a data file</li>
 <li><b>p</b>&nbsp;&nbsp; show/hide the <b><u>p</u></b>lot lister widget</li>
 <li><b>q</b>&nbsp;&nbsp; <b><u>q</u></b>uit</li>
-<li><b>s</b>&nbsp;&nbsp; toggles the visiablity of the <b><u>s</u></b>tatus bar</li>
-<li><b>t</b>&nbsp;&nbsp; toggles the visiablity of the graph <b><u>t</u></b>abs</li>
+<li><b>s</b>&nbsp;&nbsp; toggles the visibility of the <b><u>s</u></b>tatus bar</li>
+<li><b>t</b>&nbsp;&nbsp; toggles the visibility of the graph <b><u>t</u></b>abs</li>
 <li><b>esc</b>&nbsp;&nbsp; close the current focused window. This will not close the last main window.</li>
 
 
