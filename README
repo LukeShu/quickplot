@@ -8,6 +8,7 @@ The Quickplot homepage:
 
 
 
+
 Requirements:
 
 
@@ -65,7 +66,6 @@ running:  `./configure --help'.
 
 
 
-
 For developing:
 
 
@@ -85,9 +85,49 @@ For developing:
 
 
 
+Building on Windows:
+   
+   Options:
+
+     1. Skip building it and get the windows binary release which
+   you can get to from the Quickplot homepage,
+   http://quickplot.sourceforge.net/.
+
+
+     For all other windows build options you need to install gtkmm
+   first.  How you install gtkmm will likely determine how you install
+   Quickplot  See http://www.gtkmm.org/ for information on gtkmm.  If
+   you want Quickplot to read sound files get libsndfile at
+   http://www.mega-nerd.com/libsndfile/.
+
+     2. Bloodshed Dev-C++ -- quickplot.dev is a Dev-C++ project file.
+   You can get the Bloodshed IDE (integrated development environment)
+   package Dev-C++ from the homepage at http://www.bloodshed.net/, or
+   try: http://prdownloads.sourceforge.net/dev-cpp/.
+
+     3. MinGW -- You can also use the MinGW without the Dev-C++ IDE.
+   For instructions on installing MinGW see http://www.mingw.org/.
+   From the MinGW xterm-like thingy you can run: untar the quickplot
+   tarball and cd to dirstory that is created (quickplot-VERSION/) and
+       run:
+              ./configure
+              make
+              make install
+
+     4. CYGWIN -- http://www.cygwin.com/.  I haven't gotten a good
+   build of gtkmm on cygwin yet, but quickplot builds just fine until
+   it trys to link to the gtk and gtkmm libraries, which I haven't built
+   with cygwin.
+
+     5. MS Visual C++ -- We are not into blowing $2,000 on software we
+   don't use.  If your into it send a patch with a project file.
+
+
+
+
 ----------------------------------------------------------------------------
 
-Copyright (c) 2004  Lance Arsenault
+Copyright (c) 2004  Lance Arsenault <lanceman@users.sourceforge.net>
 
 This file is part of Quickplot.
 
