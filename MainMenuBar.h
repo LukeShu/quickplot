@@ -36,6 +36,8 @@ class MainMenuBar : public MenuBar
   
 private:
 
+  void addAccelKey(Widget *widget, gint key);
+  
   Menu fileMenu, /* editMenu, */ viewMenu, helpMenu;
   
   // File Menu

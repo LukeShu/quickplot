@@ -36,6 +36,8 @@ using namespace Gtk;
 #include "copyFrame16x16.xpm"
 #include "saveImage16x16.xpm"
 
+// accel_key 	GDK keyval of the accelerator. are found in gdk/gdkkeysyms.h
+
 MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
   openImage(Stock::OPEN, ICON_SIZE_MENU),
   newImage(Stock::NEW, ICON_SIZE_MENU),
@@ -47,7 +49,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
   showStatusBarItem("_Status Bar", true),
   showGraphConfigItem("_Graph Configure", true),
   showPlotListerItem("_Plot Lists", true),
-  deleteFrameMenuItem(closeImage, "Delete Frame")
+  deleteFrameMenuItem(closeImage, "_Delete Frame", true)
 {
   mainWindow = mainWindow_in;
   
@@ -64,12 +66,17 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
       push_back(Menu_Helpers::
                 ImageMenuElem("_Open File ...", openImage, 
                               SigC::slot(*app, &App::openDialog)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_o);
+
     
     menuList.
       push_back(Menu_Helpers::
-                ImageMenuElem("New Graph _Tab", newImage, 
+                ImageMenuElem("_New Graph Tab", newImage, 
                               SigC::slot(*mainWindow,
                                          &MainWindow::makeNewGraphTab)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_n);
 
 
     Glib::RefPtr<Gdk::Pixbuf> pix =
@@ -81,6 +88,8 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
                 ImageMenuElem("New _Frame (Empty)", newFrameImage, 
                               SigC::slot(*app,
                                          &App::createMainWindow)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_f);
 
     
     pix = Gdk::Pixbuf::create_from_xpm_data(copyFrame16x16);
@@ -91,6 +100,8 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
                 ImageMenuElem("New Frame (_Copy This)", copyFrameImage, 
                               SigC::slot(*app,
                                          &App::copyCurrentMainWindow)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_c);
 
     
     pix = Gdk::Pixbuf::create_from_xpm_data(closeFrame16x16);
@@ -102,8 +113,10 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     closeImage.show();
     deleteFrameMenuItem.show();
     if(app->size() < 1)
-      // app->size() in increased after the MainWindow is created.
       deleteFrameMenuItem.set_sensitive(false);
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_d);
+    addAccelKey(&(menuList.back()), GDK_Escape);
 
 
     pix = Gdk::Pixbuf::create_from_xpm_data(saveImage16x16);
@@ -111,19 +124,24 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
 
     menuList.
       push_back(Menu_Helpers::
-                ImageMenuElem("_Save PNG Image File ...", saveImage, 
+                ImageMenuElem("Save PNG _Image File ...", saveImage, 
                               SigC::slot(*mainWindow,
                                          &MainWindow::savePNGFile)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_i);
+
     
     menuList.push_back(Menu_Helpers::SeparatorElem());
 
 
     menuList.
       push_back(Menu_Helpers::ImageMenuElem("_Quit",
-                                            Gtk::Menu::AccelKey("<control>q"),
                                             quitImage,
                                             SigC::slot(*app,
                                                        &App::quit)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_q);
+    
     menuList.push_back(Menu_Helpers::SeparatorElem());
     menuList.push_back(Menu_Helpers::SeparatorElem());
 
@@ -148,7 +166,9 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
       showMenuBarItem.set_active();
     showMenuBarItem.signal_activate().
       connect(SigC::slot(*this, &MainMenuBar::on_showMenuBarItem));
-
+    // make it so we activate with <alt>m, <control>m, and etc.    
+    addAccelKey(&showMenuBarItem, GDK_m);
+    
     
     menuList.push_back(showButtonBarItem);
     showButtonBarItem.show();
@@ -156,7 +176,9 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
       showButtonBarItem.set_active();
     showButtonBarItem.signal_activate().
       connect(SigC::slot(*this, &MainMenuBar::on_showButtonBarItem));
-
+     // make it so we activate with <alt>m, <control>m, and etc.    
+     addAccelKey(&showButtonBarItem, GDK_b);
+    
     
     menuList.push_back(showGraphTabsItem);
     showGraphTabsItem.show();
@@ -164,6 +186,8 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
       showGraphTabsItem.set_active();
     showGraphTabsItem.signal_activate().
       connect(SigC::slot(*this, &MainMenuBar::on_showGraphTabsItem));
+    // make it so we activate with <alt>m, <control>m, and etc.    
+    addAccelKey(&showGraphTabsItem, GDK_t);
 
     
     menuList.push_back(showStatusBarItem);
@@ -172,6 +196,8 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
       showStatusBarItem.set_active();
     showStatusBarItem.signal_activate().
       connect(SigC::slot(*this, &MainMenuBar::on_showStatusBarItem));
+    // make it so we activate with <alt>m, <control>m, and etc.    
+    addAccelKey(&showStatusBarItem, GDK_s);
 
     
     menuList.push_back(Menu_Helpers::SeparatorElem());
@@ -183,13 +209,19 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
       showGraphConfigItem.set_active();
     showGraphConfigItem.signal_activate().
       connect(SigC::slot(*this, &MainMenuBar::on_showGraphConfigItem));
+    // make it so we activate with <alt>m, <control>m, and etc.    
+    addAccelKey(&showGraphConfigItem, GDK_g);
+
 
     menuList.push_back(showPlotListerItem);
     showPlotListerItem.show();
     showPlotListerItem.set_active(false);
     showPlotListerItem.signal_activate().
       connect(SigC::slot(*this, &MainMenuBar::on_showPlotListerItem));
+    // make it so we activate with <alt>m, <control>m, and etc.    
+    addAccelKey(&showPlotListerItem, GDK_p);
     
+    viewMenu.accelerate(*mainWindow);
   }
 
   { // Help menu
@@ -203,9 +235,15 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     menuList.push_back(Menu_Helpers::
                        ImageMenuElem("_About", aboutImage,
                                 SigC::slot(*mainWindow, &MainWindow::on_about)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_a);
+
     menuList.push_back(Menu_Helpers::
                        ImageMenuElem("_Help", helpImage,
                                 SigC::slot(*mainWindow, &MainWindow::on_help)));
+    // make it so we activate with <alt>m, <control>m, and etc.
+    addAccelKey(&(menuList.back()), GDK_h);
+
   }
   
   signal_show().
@@ -217,6 +255,27 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     connect(SigC::slot(*this, &MainMenuBar::checkStatusBarState));
   mainWindow->statusBar.signal_hide().
     connect(SigC::slot(*this, &MainMenuBar::checkStatusBarState));
+}
+
+void MainMenuBar::addAccelKey(Widget *widget, gint key)
+{
+  // this one makes it happen with just the key alone.
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::LOCK_MASK, ACCEL_MASK);
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::CONTROL_MASK, ACCEL_MASK);
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::SHIFT_MASK, ACCEL_MASK);
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::MOD1_MASK, ACCEL_MASK);
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::MOD2_MASK, ACCEL_MASK);
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::MOD3_MASK, ACCEL_MASK);
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::MOD4_MASK, ACCEL_MASK);
+  widget->add_accelerator("activate", mainWindow->get_accel_group(),
+                         key, Gdk::MOD5_MASK, ACCEL_MASK);
 }
 
 MainMenuBar::~MainMenuBar(void)

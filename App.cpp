@@ -217,7 +217,7 @@ App::~App(void)
 // This gets a full path file name and then calls openFile if it can.
 void App::openDialog(void)
 {
-  FileSelection dialog("Choose a file");
+  FileSelection dialog("Choose a Data File to Open");
   dialog.set_transient_for(*currentMainWindow);
   
   switch(dialog.run())

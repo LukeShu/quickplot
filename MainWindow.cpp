@@ -144,7 +144,7 @@ MainWindow::MainWindow(bool makeGraph):
 
 void MainWindow::savePNGFile(void)
 {
-  FileSelection dialog("Save Graph Image as PNG File:");
+  FileSelection dialog("Choose a Filename to Save the PNG Image as:");
   dialog.set_transient_for(*this);
   
   switch(dialog.run())

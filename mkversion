@@ -1,14 +1,9 @@
 #!/bin/sh
 
-# Don't run this unless you have the GNU auto tools programs that are
-# needed to replace the files that this script removes.
-
 # This is an interactive script.  This is used just to edit CONFIG
 # and optionally edits ChangeLog.  Use `make dist' to make the release.
 # You can also directly edit CONFIG.  This just keeps your version
 # numbers in a consist sequence.
-
-# todo: add managing of library version numbers.
 
 
 ########################################################################

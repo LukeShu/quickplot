@@ -33,8 +33,8 @@ ButtonBar::ButtonBar(MainWindow *mainWindow_in):
   openButton("_Open File ...", true),
   newButton("_New Graph Tab", true),
   showGraphConfigButton(opShowGraphConfig?
-                        "Hide _Config":"Show _Config", true),
-  savePNGButton("_Save PNG Image ...", true)
+                        "Hide Config":"Show Config", true),
+  savePNGButton("Save PNG _Image ...", true)
 {
   mainWindow = mainWindow_in;
   add(openButton);
@@ -73,11 +73,11 @@ ButtonBar::ButtonBar(MainWindow *mainWindow_in):
 void ButtonBar::checkGraphConfigButton(void)
 {
   if(mainWindow->graphConfig && mainWindow->graphConfig->is_visible() &&
-     showGraphConfigButton.get_label() != "Hide _Config")
-    showGraphConfigButton.set_label("Hide _Config");
+     showGraphConfigButton.get_label() != "Hide Config")
+    showGraphConfigButton.set_label("Hide Config");
   else if((!mainWindow->graphConfig || !mainWindow->graphConfig->is_visible()) &&
-          showGraphConfigButton.get_label() != "Show _Config")
-    showGraphConfigButton.set_label("Show _Config");
+          showGraphConfigButton.get_label() != "Show Config")
+    showGraphConfigButton.set_label("Show Config");
 }
 
 void ButtonBar::on_showGraphConfigButton(void)

@@ -24,6 +24,11 @@ fi
 # VERSION_MICRO, EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
 source CONFIG
 
+if [ "${QUICKPLOT_VERSION}" != "" ]
+then
+  VERSION=${QUICKPLOT_VERSION}
+fi
+
 PORTAGE_DIR=/usr/portage
 EBUILD_DIR=${PORTAGE_DIR}/${EBUILD_CATEGORY_DIR}/${TARNAME}
 
@@ -59,7 +64,7 @@ then
     read a
     case $a in
         Y* | y*)
-            continue
+            echo "okay clobbering"
             ;;
         *)
             echo "$script exiting with no changes."

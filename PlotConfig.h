@@ -30,6 +30,9 @@ private:
   
   MainWindow *mainWindow;
 
+
+  Button closeButton;
+  
   VBox vBox;
   Picture picture;
   HBox hBox;

@@ -93,7 +93,13 @@ PlotLister::PlotLister(MainWindow *mainWindow_in):
     noninterpolatedMI.signal_activate().
       connect(SigC::slot(*this, &PlotLister::on_noninterpolated));
   }
-  
+
+  // We just use the closeButton to get <escape> to close the window.
+  // We don't show the closeButton.
+  closeButton.signal_activate().connect(SigC::slot(*this, &PlotLister::hide));
+  closeButton.add_accelerator("activate", get_accel_group(),
+                              GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
+
   show_all_children();
   
   

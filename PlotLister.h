@@ -102,7 +102,8 @@ private:
   OptionMenu pickerTypeOM;
   Menu pickerTypeM;
   MenuItem  offPlotMI, interpolatedMI, noninterpolatedMI;
-  
+
+  Button closeButton;
   Button printToStdoutB;
   ScrolledWindow scrolledWindow;
   Table table;

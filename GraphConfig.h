@@ -26,6 +26,8 @@ private:
   
   MainWindow *mainWindow;
 
+
+  Button closeButton;
   
   VBox topVBox;
   Frame topLabelFrame;

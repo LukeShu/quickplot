@@ -4,6 +4,8 @@ fix helloworld_cpp and gtkmm_helloworld
 
 Trove Software Map?
 
+add GNU Free Documentation License for docs
+
 
 make quickplot.ebuild.in that is used to make quickplot.ebuild
 

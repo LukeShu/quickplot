@@ -173,6 +173,13 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
     connect(SigC::slot(*this, &GraphConfig::on_notebookFlip));
 
 
+  // We just use the closeButton to get <escape> to close the window.
+  // We don't show the closeButton.
+  closeButton.signal_activate().connect(SigC::slot(*this, &GraphConfig::hide));
+  closeButton.add_accelerator("activate", get_accel_group(),
+                              GDK_Escape, Gdk::LOCK_MASK, ACCEL_MASK);
+  
+
   signal_show().connect(SigC::slot(mainWindow->menuBar,
                                    &MainMenuBar::checkGraphConfigState));
   signal_hide().connect(SigC::slot(mainWindow->menuBar,

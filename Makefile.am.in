@@ -71,7 +71,7 @@ SUFFIXES = .png .xpm .html .html.in _html.cpp
 .html_html.cpp:
 	cat $< | ./html2CString $@
 
-.PHONY: rmRELEASE_DATE homepage
+.PHONY: MAKE_RELEASE_DATE homepage
 
 
 $(nodist_html_DATA): mkhtml CONFIG RELEASE_DATE
@@ -98,10 +98,8 @@ File_readSndDouble.cpp: File_readSndShort.cpp
 	echo "#define TYPE_DOUBLE" >> File_readSndDouble.cpp
 	cat File_readSndShort.cpp >> File_readSndDouble.cpp
 
-RELEASE_DATE: mkRELEASE_DATE
-	./mkRELEASE_DATE
 
-configure.ac: mkconfigure_ac CONFIG RELEASE_DATE
+configure.ac: mkconfigure_ac CONFIG
 	./mkconfigure_ac
 
 # ./mkMakefile_am finds all the *.cc *.h quickplot source files.
@@ -111,9 +109,9 @@ Makefile.am: mkMakefile_am Makefile.am.in
 homepage: $(homepagefiles)
 	tar -cjf quickplot_homepage-${VERSION}.tar.bz2 $(homepagefiles)
 
-dist: rmRELEASE_DATE
+dist: MAKE_RELEASE_DATE
 
 
-rmRELEASE_DATE:
-	rm -f RELEASE_DATE
+MAKE_RELEASE_DATE:
+	./mkRELEASE_DATE
 
