@@ -1095,7 +1095,8 @@ void GraphTab::setText(const char *str)
 
   // truncated copy.
   snprintf(s, maxSize, "%s", str);
-  
+  size_t end = strlen(s);
+
   int n = mainWindow->graphsNotebook.get_n_pages();
 
   int j;
@@ -1114,7 +1115,10 @@ void GraphTab::setText(const char *str)
     
     if(i != n) // We have a matching label
     {
-      // Put a number at the end of the label
+      // Put a different number at the end of the label.
+
+      if(strlen(s) > end)
+	s[end] = '\0';
 
       // clear the end of the string.
       if(j<10)
