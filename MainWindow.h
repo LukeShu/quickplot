@@ -81,6 +81,8 @@ private:
 
 public:
 
+  bool commonKeyPress(GdkEventKey* event);
+
   // create statusBar before menuBar
   StatusBar statusBar;
   MainMenuBar menuBar;

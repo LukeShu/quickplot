@@ -1,5 +1,7 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#include "config.h"
+
 #include <list>
 #include <iomanip>
 
@@ -550,13 +552,14 @@ bool GraphConfig::on_key_press_event(GdkEventKey* event)
   switch(event->keyval)
     {
     case GDK_Escape:
-    case GDK_g:
       {
 	hide();
 	return true;
 	break;
       }
     default:
+      if(mainWindow->commonKeyPress(event))
+        return true;
       break;
     }
 

@@ -21,6 +21,8 @@ private:
 
   void init(const FileList *fileList);
   
+#ifdef USE_LIBSNDFILE
+
   // This will not work with stdin.
   bool readSndFile(const FileList *fileList, int fd=-1);
 
@@ -36,6 +38,9 @@ private:
   void readSndDouble (::SNDFILE *sf, int samplerate,
                       count_t numberOfValues, int channels,
                       const FileList *fileList);
+
+#endif // #ifdef USE_LIBSNDFILE
+
 
   // This will work with stdin.
   bool readASCIIFile(FILE *file, const FileList *fileList);

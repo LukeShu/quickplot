@@ -287,13 +287,14 @@ bool PlotLister::on_key_press_event(GdkEventKey* event)
   switch(event->keyval)
     {
     case GDK_Escape:
-    case GDK_p:
       {
 	hide();
 	return true;
 	break;
       }
     default:
+      if(mainWindow->commonKeyPress(event))
+        return true;
       break;
     }
 

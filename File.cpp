@@ -1,5 +1,6 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#include "config.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -8,7 +9,6 @@
 #include <values.h>
 #include <list>
 #include <iomanip>
-//#include <algorithm>
 
 #include <gtkmm.h>
 
@@ -99,10 +99,16 @@ void File::init(const FileList *fileList)
 
   error = 0;
 
+#ifdef USE_LIBSNDFILE
+
   // readSndFile() or readASCIIFile() may set error.
   if(!isStdin && readSndFile(fileList))
     isValid = !error;
-  else if(readASCIIFile(isStdin ? stdin : NULL, fileList))
+  else
+
+#endif // #ifdef USE_LIBSNDFILE
+
+  if(readASCIIFile(isStdin ? stdin : NULL, fileList))
     isValid = !error;
   else
     isValid = false;

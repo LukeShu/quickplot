@@ -10,7 +10,7 @@
 
 Version @VERSION@
 <p>
-<font size=+2>A fast interactive 2D plotter.</font>
+<font size=+2>A fast interactive 2D plotter</font>
 
 </center>
 
@@ -90,17 +90,18 @@ installed:
 distributions.&nbsp; gtkmm is the official C++ interface for the
 popular GUI library <a href="http://www.gtk.org/">GTK+</a>.
 
-<li><b><a
-href="http://www.mega-nerd.com/libsndfile/">libsndfile</a></b>&nbsp;&nbsp;
-is a C library for reading and writing files containing sampled sound
-(such as MS Windows WAV and the Apple/SGI AIFF format) through one
-standard library interface.
+<li><b><a href="http://www.mega-nerd.com/libsndfile/">libsndfile</a>
+(optional)</b>&nbsp;&nbsp; is a C library for reading and writing
+files containing sampled sound (such as microsoft WAV and the
+Apple/SGI AIFF format) through one standard library
+interface. Quickplot will not read sound files without libsndfile.
 
 </ul>
 
-To build Quickplot from the <a
+To build and develop Quickplot from the <a
      href="https://sourceforge.net/cvs/?group_id=82651">CVS source</a>
-the following packages are required to be installed:
+the following packages, in addition to the above packages, are
+required to be installed:
 
 <ul>
 
@@ -117,12 +118,12 @@ href="http://www.imagemagick.org/">ImageMagick</a></b>&nbsp;&nbsp; The
 <em>convert</em> program (from ImageMagick) is used to make xpm images
 from PNG images in the Quickplot source.
 
+
 </ul>
 
 
 
 </blockquote>
-
 
 
 

@@ -1,5 +1,6 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#include "config.h"
 
 #include <list>
 #include <values.h>
@@ -53,10 +54,9 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
 {
   mainWindow = mainWindow_in;
   
-  items().push_back(Menu_Helpers::MenuElem("_File", fileMenu));
-  //items().push_back(Menu_Helpers::MenuElem("_Edit", editMenu));
-  items().push_back(Menu_Helpers::MenuElem("_View", viewMenu));
-  items().push_back(Menu_Helpers::MenuElem("_Help", helpMenu));
+  items().push_back(Menu_Helpers::MenuElem("File", fileMenu));
+  items().push_back(Menu_Helpers::MenuElem("View", viewMenu));
+  items().push_back(Menu_Helpers::MenuElem("Help", helpMenu));
 
 
   { // File menu
@@ -151,10 +151,6 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     // Initializes menu accelerators.  So <control>q will work even if
     // the menu bar is not showing.
     fileMenu.accelerate(*mainWindow);
-  }
-
-  { // Edit menu
-
   }
   
   { // View menu

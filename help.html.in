@@ -51,7 +51,7 @@ the pointer (mouse) in the plot window.&nbsp; Press the right mouse
 button and hold and drag the zoom box.&nbsp; Release the right mouse
 button then the zoom box is past two edges (a corner) of the plot
 window.&nbsp; Now Quickplot will zoom out to the top zoom level (no
-zoom).&nbsp;</p>
+zoom).</p>
 
 </blockquote>
 
@@ -61,8 +61,27 @@ zoom).&nbsp;</p>
 
 <blockquote>
 The left mouse button is used for picking and displaying
-X and Y values from the graph.  
+X and Y values from the graph.&nbsp; Just try it and see.
+
+<p> There are three modes of number display value picking, which may
+be selected on the Plot List pop-up window:
+
+<ul>
+
+<li><b>Pick Pointer Values</b>&nbsp;&nbsp; shows values where the mouse
+pointer is in the scale of the respective plot</li>
+
+<li><b>Interpolate Plot Values</b>&nbsp;&nbsp; shows values where the
+X position of the mouse pointer is with the Y value displayed being a
+linearly interpolated value</li>
+
+<li><b>Pick Plot Point Values</b>&nbsp;&nbsp; shows X and Y plot point
+positions that are closest to mouse pointer X position.</li>
+
+</ul>
+</p>
 </blockquote>
+
 
 <br>
 <h3>Loadable File Formats</h3>
@@ -194,7 +213,7 @@ of each other.
 <li> <b><font color=#902040>--geometry GEOMETRY</font></b> or <b><font
 color=#902040>-geometry GEOMETRY</font></b>&nbsp;&nbsp; create the
 initial window with the given geometry GEOMETRY, see man page X(1) for
-the GEOMETRY format.  Example: quickplot --geometry=1000x300-0+20
+the GEOMETRY format.  Example: quickplot --geometry=1000x300-0+30
 
 <li> <b><font color=#902040>--grid-color RGB</font></b> or <b><font
 color=#902040>-C RGB</font></b>&nbsp;&nbsp; start quickplot with the grid
@@ -343,14 +362,18 @@ color=#902040>-O SIZE</font></b>&nbsp;&nbsp; start quickplot using
 plot point size SIZE in pixels
 
 <li><b><font color=#902040>--print-about</font></b>&nbsp;&nbsp;
-prints the About HTML document to standard output and then exits.
+prints the About HTML document to standard output and then exits
 
 <li><b><font color=#902040>--print-help</font></b>&nbsp;&nbsp; prints
-this Help HTML document to standard output and then exits.
+this Help HTML document to standard output and then exits
 
 <li><b><font color=#902040>--same-scale</font></b> or <b><font
 color=#902040>-s</font></b>&nbsp;&nbsp; plot all start-up plots on
 the same scale
+
+<li><b><font color=#902040>--silent</font></b>&nbsp;&nbsp; don't spew
+even on error.&nbsp; The --silent option will override the effect of
+the --verbose option.
 
 <li><b><font color=#902040>--skip-lines NUM</font></b> or <b><font
 color=#902040>-S NUM</font></b>&nbsp; &nbsp; skip the first NUM lines
@@ -358,13 +381,17 @@ in the previous file read. The previous file in the argument list
 should be an ASCII text file.
  
 <li><b><font color=#902040>--verbose</font></b> or <b><font
-color=#902040>-v</font></b>&nbsp;&nbsp; spew more to stdout
-
+color=#902040>-v</font></b>&nbsp;&nbsp; spew more to standard output
 
 <li><b><font color=#902040>--version</font></b> or <b><font
 color=#902040>-V</font></b>&nbsp;&nbsp; print the Quickplot version
-number and then exit
+number and then exit returning 0 exit status
 
+<li><b><font color=#902040>--with-libsndfile</font></b>&nbsp;&nbsp; if
+@PACKAGE@ is linked with the libsndfile library, print the version of
+the libsndfile library that @PACKAGE@ is linked with, and exit
+returning status 0 if @PACKAGE@ is linked with the libsndfile library
+and 1 if @PACKAGE@ is not linked with the libsndfile library
 
 <br>&nbsp;
 
@@ -399,6 +426,39 @@ interfaces), which Quickplot uses.
 
 
 </ul>
+
+
+
+<br>
+<h3>Key Bindings</h3>
+
+<blockquote>
+Quickplot has GUIs for all of the following immutable keyboard short-cuts:
+
+
+<ul>
+
+<li><b>a</b>&nbsp;&nbsp; show information <b><u>a</u></b>bout Quickplot using a web browser</li>
+<li><b>b</b>&nbsp;&nbsp; toggles the visablity of the <b><u>b</u></b>utton bar</li>
+<li><b>c</b>&nbsp;&nbsp; <b><u>c</u></b>opies the main window frame</li>
+<li><b>d</b>&nbsp;&nbsp; <b><u>d</u></b>elete the main window. This will not close the last main window.</li>
+<li><b>f</b>&nbsp;&nbsp; makes a new main window <b><u>f</u></b>rame</li></li>
+<li><b>g</b>&nbsp;&nbsp; show/hide the <b><u>g</u></b>raph configuration widget</li>
+<li><b>h</b>&nbsp;&nbsp; show <b><u>h</u></b>elp using a web browser</li>
+<li><b>i</b>&nbsp;&nbsp; save a PNG <b><u>i</u></b>mage of the graph</li>
+<li><b>m</b>&nbsp;&nbsp; show/hide the <b><u>m</u></b>enu bar</li>
+<li><b>n</b>&nbsp;&nbsp; make a <b><u>n</u></b>ew graph</li>
+<li><b>o</b>&nbsp;&nbsp; <b><u>o</u></b>pen a data file</li>
+<li><b>p</b>&nbsp;&nbsp; show/hide the <b><u>p</u></b>lot lister widget</li>
+<li><b>q</b>&nbsp;&nbsp; <b><u>q</u></b>uit</li>
+<li><b>s</b>&nbsp;&nbsp; toggles the visiablity of the <b><u>s</u></b>tatus bar</li>
+<li><b>t</b>&nbsp;&nbsp; toggles the visiablity of the graph <b><u>t</u></b>abs</li>
+<li><b>esc</b>&nbsp;&nbsp; <b><u>d</u></b>elete the main window. This will not close the last main window.</li>
+
+
+</ul>
+</blockquote>
+
 
 &nbsp;<br>
 

@@ -1,5 +1,6 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#include "config.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -109,11 +110,28 @@ void showHelp(void)
 int App::parseArgs1(int argc, char **argv)
 {  
   int i;
+
+  // look for just option --silent
+  for(i=1;i<argc;)
+  {
+    if(!strcmp("--silent",argv[i]))
+      {
+	opSilent=true;
+        opVerbose=false;
+      }
+    i++;
+  }
+
   for(i=1;i<argc;)
   {
     char *s;
-    
-    if(!strcmp("--about",argv[i]) || !strcmp("-a",argv[i]) )
+
+    if(!strcmp("--silent", argv[i]))
+    {
+      // Already handled above.
+      i++;
+    }
+    else if(!strcmp("--about",argv[i]) || !strcmp("-a",argv[i]) )
     {
       showAbout();
     }
@@ -238,13 +256,17 @@ int App::parseArgs1(int argc, char **argv)
     }
     else if(!strcmp("--verbose",argv[i]) || !strcmp("-v",argv[i]))
     {
-      opVerbose = true;
+      if(!opSilent)
+      {
+        opVerbose = true;
+        opSilent = false;
+      }
       i++;
     }
     else if(!strcmp("--version",argv[i]) || !strcmp("-V",argv[i]))
     {
       printf("%s\n", VERSION);
-      return -1;
+      exit(0);
     }
     else if(!strcmp("--print-about",argv[i]))
     {
@@ -261,6 +283,17 @@ int App::parseArgs1(int argc, char **argv)
       opShowMenuBar = false;
       i++;
     }
+    else if(!strcmp("--with-libsndfile",argv[i]))
+    {
+      if(!opSilent)
+        printf("%s\n", SNDFILE_VERSION);
+#ifdef USE_LIBSNDFILE
+      exit(0);
+#else
+      exit(1);
+#endif
+    }
+
     // looking for all other single '-' options not handled above.
     else if(strlen(argv[i]) > (size_t) 2 &&
             argv[i][0] == '-' &&
@@ -386,6 +419,8 @@ int App::parseArgs2(int argc, char **argv)
        !strcmp("--no-tabs",argv[i])
        ||
        !strcmp("--same-scale",argv[i]) || !strcmp("-s",argv[i])
+       ||
+       !strcmp("--silent", argv[i])
        ||
        !strcmp("--verbose",argv[i]) || !strcmp("-v",argv[i])
        )

@@ -81,7 +81,12 @@ fi
 #  Looking for packages using pkg-config
 #########################################
 
-pkg_lib_error=0
+# set if we have a valid version of gtkmm
+have_gtkmm=no
+
+# set if we have a valid version of libsndfile
+have_libsndfile=no
+
 
 #########################################
 #   check for package gtkmm
@@ -93,7 +98,6 @@ echo -n "checking for gtkmm version >= $gtkmm_need_version ..."
 
 # is gtkmm-2.0 there
 if ! pkg-config --exists gtkmm-2.0 ; then
-    pkg_lib_error=1
     echo
     AC_MSG_WARN([
 
@@ -104,7 +108,6 @@ if ! pkg-config --exists gtkmm-2.0 ; then
 
 # is it at least version
 elif ! pkg-config --atleast-version=$gtkmm_need_version gtkmm-2.0 ; then
-   pkg_lib_error=1
    GTKMM_VERSION=$(pkg-config --modversion gtkmm-2.0)
    echo
    AC_MSG_WARN([
@@ -116,6 +119,7 @@ elif ! pkg-config --atleast-version=$gtkmm_need_version gtkmm-2.0 ; then
 ])
 else
   GTKMM_VERSION=$(pkg-config --modversion gtkmm-2.0)
+  have_gtkmm=yes
   echo " yes"
 fi
 
@@ -130,40 +134,39 @@ echo -n "checking for lib sndfile version >= $sndfile_need_version ..."
 
 # is it there
 if ! pkg-config --exists sndfile ; then
-    pkg_lib_error=1
     echo
-    AC_MSG_WARN([
+    AC_MSG_NOTICE([
 
-  You need lib sndfile installed.  At least version $sndfile_need_version
+  The libsndfile library was not found.
+  Quickplot can't read sound files without libsndfile.
   The lib sndfile home page is at http://www.mega-nerd.com/libsndfile/
 
 ])
 
 # is it at least version
 elif ! pkg-config --atleast-version=$sndfile_need_version sndfile ; then
-   pkg_lib_error=1
-   SNDFILE_VERSION=$(pkg-config --modversion sndfile)
    echo
    AC_MSG_WARN([
 
-  You have version $SNDFILE_VERSION of lib sndfile.
-  You need at least version $sndfile_need_version of lib sndfile.
+  You have version $SNDFILE_VERSION of libsndfile.
+  You need at least version $sndfile_need_version of libsndfile.
+  Quickplot can't read sound files without lib sndfile.
   The lib sndfile home page is at http://www.mega-nerd.com/libsndfile/
 
 ])
 else
-  SNDFILE_VERSION=$(pkg-config --modversion sndfile)
+  have_libsndfile=yes
   echo " yes"
 fi
 
 
 #########################################
-#  fail if any lib package is needed
+#  fail if gtkmm package is needed
 #########################################
 
-case "$pkg_lib_error" in
-    1)
-  AC_MSG_ERROR([see WARNING(s) above: configure failed.
+case "$have_gtkmm" in
+    no)
+  AC_MSG_ERROR([see WARNING(s) above: a usable version of gtkmm was not found: configure failed.
 ])
     ;;
 esac
@@ -186,15 +189,66 @@ AC_SUBST(GTKMM_LIBS)
 #  get library sndfile compiler options
 #########################################
 
+ AC_DEFUN([TEST_OPTION_LIBSNDFILE],
+          [AC_ARG_WITH([libsndfile],
+                       AS_HELP_STRING([--with-libsndfile],
+                                      [use libsndfile (default is Yes if it is found, No if not)]),
+                       [ac_cv_use_libsndfile=$withval], [ac_cv_use_libsndfile=$have_libsndfile])
+          AC_CACHE_CHECK([whether to use libsndfile],
+                         [ac_cv_use_libsndfile], [ac_cv_use_libsndfile=$have_libsndfile])])
+
+TEST_OPTION_LIBSNDFILE
+
+case "$ac_cv_use_libsndfile" in
+    y* | Y* )
+    ac_cv_use_libsndfile=yes
+    ;;
+    * )
+    ac_cv_use_libsndfile=no
+    ;;
+esac
+
+
+case "$ac_cv_use_libsndfile" in
+    yes )
+      if test "$have_libsndfile" == "no"
+      then
+     AC_MSG_ERROR([
+  A usable version of the libsndfile package was not found: configure failed.
+
+               ])
+      else
+        # Using libsndfile with quickplot
+        USE_LIBSNDFILE=1
+        SNDFILE_CFLAGS=$(pkg-config --cflags sndfile)
+        SNDFILE_LIBS=$(pkg-config --libs sndfile)
+        SNDFILE_VERSION=$(pkg-config --modversion sndfile)
+      fi
+    ;;
+    no )
+   # Not using libsndfile with quickplot
+   USE_LIBSNDFILE=0
+   SNDFILE_CFLAGS=""
+   SNDFILE_LIBS=""
+   SNDFILE_VERSION="none"
+  ;;
+esac
+
+if test "$USE_LIBSNDFILE" == "1"
+then
+  AC_DEFINE_UNQUOTED(USE_LIBSNDFILE, [],
+   [If we are linking with the libsndfile package USE_LIBSNDFILE will be defined.])
+fi
+
 AC_DEFINE_UNQUOTED(SNDFILE_VERSION, "$SNDFILE_VERSION", 
-  [The version of lib sndfile we're linking @TARNAME@ with.])
-SNDFILE_CFLAGS=$(pkg-config --cflags sndfile)
+         [The version of libsndfile we're linking @PACKAGE@ with.])
 AC_SUBST(SNDFILE_CFLAGS)
-SNDFILE_LIBS=$(pkg-config --libs sndfile)
 AC_SUBST(SNDFILE_LIBS)
 
 
+#########################################
 # extra variables
+#########################################
 
 RELEASE_DATE="@RELEASE_DATE@"
 # put RELEASE_DATE in Makefile
@@ -254,12 +308,15 @@ AC_OUTPUT
 #echo "configure done"
 
 AC_MSG_RESULT([
-  done configuring: $PACKAGE_NAME   version $VERSION
+  done configuring: $PACKAGE_NAME version $VERSION
 
-     Linking with lib gtkmm version:    $GTKMM_VERSION
-     Linking with lib sndfile version:  $SNDFILE_VERSION
+     Linking with lib gtkmm version:   $GTKMM_VERSION
 
-     C++ Compiler:           $CXX $CXXFLAGS
-     Source Directory:       $srcdir
-     Installation prefix:    $prefix
+     Linking with libsndfile?:         $ac_cv_use_libsndfile
+     Linking with libsndfile version:  $SNDFILE_VERSION
+
+
+     C++ Compiler:         $CXX
+     Compiler Flags        $CXXFLAGS
+     Installation prefix:  $prefix
 ])

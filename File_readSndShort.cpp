@@ -1,5 +1,8 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#include "config.h"
+
+#ifdef USE_LIBSNDFILE
 
 #include <iostream>
 #include <values.h>
@@ -140,3 +143,5 @@ readSndTYPE(::SNDFILE *sndfile, int samplerate,
   free(data);
   free(field);
 }
+
+#endif // #ifdef USE_LIBSNDFILE

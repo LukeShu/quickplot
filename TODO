@@ -1,15 +1,18 @@
 Short term developer notes:
 
-What does the "Configure plots" button on the PlotConfig widget do?
+Add --silent
 
 
-See if it easy to add GNOME sounds to the widget actions.
+Make loading sound files an optional in the build.
 
-put ebuild on gentoo
+See if it is easy to add GNOME sounds to the widget actions.
+
+put ebuild in gentoo
 
 release rpm dist
 
 
+Document key bindings
 
 fix and distribute helloworld_cpp and gtkmm_helloworld
 

@@ -542,23 +542,18 @@ void MainWindow::deletePlotConfig(PlotConfig *plotConfig)
   }
 }
 
-// Widget Key Accelerators don't work all the time, so we get the key
-// strokes the hard way.  Also there is no way to use Widget Key
-// Accelerators with Gtk::Window.
-bool MainWindow::on_key_press_event(GdkEventKey* event)
+// This is used by other top level windows.
+bool MainWindow::commonKeyPress(GdkEventKey* event)
 {
-  // Can add checks on GdkModifierType in event->state.
-
   switch(event->keyval)
-    {
-    case GDK_Escape:
+  {
     case GDK_d:
       if(app->size() > 1)
-	{
-	  deleteLater();
-	  return true;
-	}
-      break;
+      {
+	deleteLater();
+	return true;
+      }
+    break;
     case GDK_q:
       app->quit();
       return true;
@@ -635,6 +630,32 @@ bool MainWindow::on_key_press_event(GdkEventKey* event)
       break;
 
     default:
+      return false;
+      break;
+    }
+  return false;
+}
+
+
+// Widget Key Accelerators don't work all the time, so we get the key
+// strokes the hard way.  Also there is no way to use Widget Key
+// Accelerators with Gtk::Window.
+bool MainWindow::on_key_press_event(GdkEventKey* event)
+{
+  // Can add checks on GdkModifierType in event->state.
+
+  switch(event->keyval)
+    {
+    case GDK_Escape:
+      if(app->size() > 1)
+	{
+	  deleteLater();
+	  return true;
+	}
+      break;
+    default:
+      if(commonKeyPress(event))
+        return true;
       break;
     }
 
