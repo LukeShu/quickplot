@@ -207,6 +207,18 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   add_events(Gdk::KEY_PRESS_MASK);
 }
 
+void GraphConfig::on_map(void)
+{
+  Window::on_map();
+
+  // This is to force the PlotSelector widget to be realized so that
+  // all it's needed data is setup so that some methods in the
+  // PlotSelector object do not cause a segfault when called from the
+  // callbacks in here.
+  if(!plotSelector.wasMapped)
+    notebook.set_current_page(1);
+}
+
 void GraphConfig::on_tabLabelChanged(Graph *graph)
 {
   if(mainWindow->currentGraph == graph)

@@ -24,7 +24,7 @@
 
 # Run this if you just got this package from CVS.
 
-# This is run to generate files (./configure.ac and ./configure)
+# This is run to generate files (./configure and Makefile.in)
 # needed to make the files in this directory into something closer to
 # a package for source distribution (packages source tar-ball files).
 # The files that this starts with commonly come from a CVS or other

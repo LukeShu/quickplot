@@ -111,8 +111,13 @@ private:
   Frame xFrame, yFrame;
   RadioButton xNoneRadioButton, yNoneRadioButton;
   Frame drawAreaFrame;
+
 public:
+
   ConnectFieldsDrawingArea drawArea;
+
+  bool wasMapped;
+
 private:
  
   int x,y;
@@ -132,8 +137,6 @@ private:
   MainWindow *mainWindow;
 
   friend class ConnectFieldsDrawingArea;
-
-  bool wasMapped;
 };
 
 

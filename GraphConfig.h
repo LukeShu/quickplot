@@ -55,6 +55,8 @@ private:
 public:
   PlotSelector plotSelector;
 
+  void on_map(void);
+
 private:
 
   void on_sameScaleOn(void);
