@@ -19,7 +19,7 @@ DEPEND=">=dev-util/pkgconfig-0.15
 
 src_unpack() {
 	unpack ${A}
-	epatch ${FILESDIR}/${P}-gcc-3.4.patch
+#	epatch ${FILESDIR}/${P}-gcc-3.4.patch
 }
 
 src_compile() {
