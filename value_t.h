@@ -7,6 +7,13 @@
 #if 1
   typedef double         value_t;
 
+#ifdef MINGW
+#  define MAXDOUBLE 1.0e+302
+#  define MINDOUBLE 1.0e-302
+  typedef long long int64_t;
+#endif
+
+
 #  define MAXVALUE       MAXDOUBLE
 #  define MINVALUE       MINDOUBLE
 

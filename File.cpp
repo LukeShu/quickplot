@@ -12,7 +12,6 @@
 
 #include <gtkmm.h>
 
-
 using namespace Gtk;
 #include "errorStr.h"
 #include "value_t.h"
@@ -39,7 +38,11 @@ using namespace Gtk;
 #include "File.h"
 #include "errorStr.h"
 
-#define DIR_CHAR '/'
+#ifdef MINGW  /* MinGW on windoz */
+#  define DIR_CHAR '\\'
+#else
+#  define DIR_CHAR '/'
+#endif
 
 File::File(const char *filename)
 {

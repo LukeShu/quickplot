@@ -22,7 +22,7 @@ fi
 
 # get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
 # VERSION_MICRO, EBUILD_CATEGORY_DIR, EMAIL, and HOMEPAGE
-source CONFIG
+. CONFIG
 
 
 echo "Generating the release version number for:"

@@ -650,6 +650,9 @@ int App::parseArgs2(int argc, char **argv)
   
   if(readStdin == CHECK)
   { // Check for standard input
+#if MINGW
+    readStdin = NO;
+#else
     fd_set rfds;
     struct timeval tv = { 0/* sec */, 200000 /* usec */ };
     FD_ZERO(&rfds);
@@ -657,6 +660,7 @@ int App::parseArgs2(int argc, char **argv)
     
     if(select(1, &rfds, NULL, NULL, &tv) == 1)
       readStdin = YES;
+#endif
   }
   
   if(readStdin == YES)

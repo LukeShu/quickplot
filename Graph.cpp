@@ -5,7 +5,9 @@
 #include <values.h>
 
 #include <gtkmm.h>
-#include <sndfile.h>
+#ifdef USE_LIBSNDFILE
+#  include <sndfile.h>
+#endif
 
 
 using namespace Gtk;

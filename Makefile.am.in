@@ -6,8 +6,8 @@ homepagefiles = @webimages@ @htmlfiles@\
  RELEASE_DATE TODO quickplot.ebuild
 
 htmldir = $(datadir)/doc/quickplot/html
-nodist_html_DATA = help.html about.html index.html
-html_DATA =\
+#nodist_html_DATA = help.html about.html index.html
+html_DATA = help.html about.html index.html\
  quickplot_icon.png screenshot1_small.png\
  screenshot1.png screenshot2.png screenshot3.png\
  ChangeLog favicon.ico COPYING
@@ -15,10 +15,15 @@ html_DATA =\
 bin_PROGRAMS = quickplot
 
 quickplot_SOURCES = @quickplot_SOURCES@
-nodist_quickplot_SOURCES = @nodist_quickplot_SOURCES@
 BUILT_SOURCES = quickplot_icon.xpm about_browser16x16.xpm\
  newFrame16x16.xpm closeFrame16x16.xpm copyFrame16x16.xpm\
- saveImage16x16.xpm
+ saveImage16x16.xpm\
+ File_readSndInt.cpp\
+ File_readSndFloat.cpp\
+ File_readSndDouble.cpp\
+ help_html.cpp\
+ about_html.cpp
+
 
 quickplot_CXXFLAGS = -Wall $(GTKMM_CFLAGS) $(SNDFILE_CFLAGS)\
  -DHTMLDIR=\"$(htmldir)\"
@@ -80,21 +85,21 @@ $(nodist_html_DATA): mkhtml CONFIG RELEASE_DATE
 
 File_readSndInt.cpp: File_readSndShort.cpp
 	rm -f File_readSndInt.cpp
-	echo "// File_readSndInt.cpp  Generated from make\
+	echo "// File_readSndInt.cpp  Generated from $(MAKE)\
  and File_readSndShort.cpp" >> File_readSndInt.cpp
 	echo "#define TYPE_INT" >> File_readSndInt.cpp
 	cat File_readSndShort.cpp >> File_readSndInt.cpp
 
 File_readSndFloat.cpp: File_readSndShort.cpp
 	rm -f File_readSndFloat.cpp
-	echo "// File_readSndInt.cpp  Generated from make\
+	echo "// File_readSndInt.cpp  Generated from $(MAKE)\
  and File_readSndShort.cpp" >> File_readSndFloat.cpp
 	echo "#define TYPE_FLOAT" >> File_readSndFloat.cpp
 	cat File_readSndShort.cpp >> File_readSndFloat.cpp
 
 File_readSndDouble.cpp: File_readSndShort.cpp
 	rm -f File_readSndDouble.cpp
-	echo "// File_readSndDouble.cpp  Generated from make\
+	echo "// File_readSndDouble.cpp  Generated from $(MAKE)\
  and File_readSndShort.cpp" >> File_readSndDouble.cpp
 	echo "#define TYPE_DOUBLE" >> File_readSndDouble.cpp
 	cat File_readSndShort.cpp >> File_readSndDouble.cpp

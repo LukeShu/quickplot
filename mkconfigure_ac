@@ -10,10 +10,10 @@ echo "making configure.ac from configure.ac.in and CONFIG"
 
 # get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
 # VERSION_MICRO, EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
-source CONFIG
+. CONFIG
 
 # get the release date
-source RELEASE_DATE
+. RELEASE_DATE
 
 rm -f configure.ac
 

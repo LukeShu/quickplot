@@ -1,5 +1,66 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
+#ifdef MINGW
+#include <stdio.h>
+#include <Windows.h>
+#include <winbase.h>
+char *browsers[] =
+{
+  "mozilla.exe",
+  "explorer.exe",
+  NULL
+};
+ 
+
+int launchBrowser(const char *url)
+{
+  return 0;
+}
+
+int sLaunchBrowser(const char *doc, const char *fileName_in="")
+{
+  STARTUPINFO si;
+  PROCESS_INFORMATION pi;
+    ZeroMemory( &si, sizeof(si) );
+    si.cb = sizeof(si);
+    ZeroMemory( &pi, sizeof(pi) );
+
+
+  int i=0;
+  for(;browsers[i];i++)
+  {
+    char command[128];
+    snprintf(command, 128, "%s %s", browsers[i], fileName_in);
+     if(
+         CreateProcess( NULL,  // No module name (use command line). 
+        command,          // Command line. 
+        NULL,             // Process handle not inheritable. 
+        NULL,             // Thread handle not inheritable. 
+        FALSE,            // Set handle inheritance to FALSE. 
+        CREATE_NEW_CONSOLE, // creation flags. 
+        NULL,             // Use parent's environment block. 
+        NULL,             // Use parent's starting directory. 
+        &si,              // Pointer to STARTUPINFO structure.
+        &pi )             // Pointer to PROCESS_INFORMATION structure.
+        )
+        {
+        
+
+        printf("ran: %s\n", command);
+        
+        
+       break;
+       }
+   }
+   
+    // Close process and thread handles. 
+    CloseHandle( pi.hProcess );
+    CloseHandle( pi.hThread );
+
+  return 0;
+}
+
+#else // #if MINGW
 
 #include <stdio.h>
 #include <sys/types.h>
@@ -111,7 +172,7 @@ int sLaunchBrowser(const char *doc, const char *fileName_in="")
   free(filename);
   return 0; //success
 }
-
+#endif
 
 //#define test
 #ifdef test
@@ -139,4 +200,4 @@ int main(int argc, char **argv)
 
   return 0;
 }
-#endif
+#endif // #else // #if MINGW

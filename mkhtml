@@ -16,10 +16,10 @@ echo "making $1 from CONFIG and RELEASE_DATE by running: $0 $*"
 
 # get PACKAGE, TARNAME, VERSION_MAJOR, VERSION_MINOR,
 # VERSION_MICRO and EBUILD_CATEGORY_DIR, EMAIL and HOMEPAGE
-source CONFIG
+. CONFIG
 
 # get the release date
-source RELEASE_DATE
+. RELEASE_DATE
 
 
 

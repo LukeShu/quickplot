@@ -45,7 +45,7 @@ private:
     closeImage, quitImage, aboutImage, helpImage, saveImage;
 
   // View Menu
-  CheckMenuItem showMenuBarItem, showButtonBarItem,
+  Gtk::CheckMenuItem showMenuBarItem, showButtonBarItem,
     showGraphTabsItem, showStatusBarItem, showGraphConfigItem,
     showPlotListerItem;
 
