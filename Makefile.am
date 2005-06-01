@@ -13,6 +13,7 @@ homepagefiles =\
  about.html\
  help.html\
  index.html\
+ COPYING\
  ChangeLog\
  README\
  README.devel\
