@@ -44,7 +44,8 @@ using namespace Gtk;
 
 
 
-Graph::Graph(MainWindow *mainWindow_in)
+Graph::Graph(MainWindow *mainWindow_in):
+  win(0)
 {
   mainWindow = mainWindow_in;
   
@@ -89,14 +90,13 @@ Graph::Graph(MainWindow *mainWindow_in)
   lineWidth   = opLineWidth;
   pointSize  = opPointSize;
 
-  
   checkScalesQueued = false;
-
 
   // We'll have to see about how to get a theme color here.
   // set the default colors.
   gushort r, g, b;
   colorGen.getBackgroundColor(r, g, b);
+
   backgroundColor.set_red(r);
   backgroundColor.set_green(g);
   backgroundColor.set_blue(b);
@@ -105,7 +105,7 @@ Graph::Graph(MainWindow *mainWindow_in)
   gridColor.set_red(r);
   gridColor.set_green(g);
   gridColor.set_blue(b);
-  
+
   pangolayout.clear(); // set to null.
   
   lastPickerType = NONE;
@@ -502,34 +502,41 @@ void Graph::draw(Glib::RefPtr<Gdk::Drawable> _win,
 bool Graph::on_expose_event(GdkEventExpose *expose)
 {
   if(!win)
-  {
-    win = get_window();
-    gc = Gdk::GC::create(win);
-    inverted_gc = Gdk::GC::create(win);
-    //inverted_gc->set_function(Gdk::INVERT);
-    inverted_gc->set_function(Gdk::XOR);
-    
-    Glib::RefPtr<Gdk::Colormap> colormap = get_default_colormap();
-    
-    colormap->alloc_color(backgroundColor);
-    win->set_background(backgroundColor);
-    
-    colormap->alloc_color(gridColor);
-
-    Gdk::Color black;
-    black.set_rgb(0,0,0);
-    colormap->alloc_color(black);
-    inverted_gc->set_foreground(gridColor);
-  }
+    {
+      win = get_window();
+      gc = Gdk::GC::create(win);
+      inverted_gc = Gdk::GC::create(win);
+      //inverted_gc->set_function(Gdk::INVERT);
+      inverted_gc->set_function(Gdk::XOR);
+      
+      Glib::RefPtr<Gdk::Colormap> colormap = get_default_colormap();
+      
+      colormap->alloc_color(backgroundColor);
+      win->set_background(backgroundColor);
+      
+      colormap->alloc_color(gridColor);
+      
+      Gdk::Color black;
+      black.set_rgb(0,0,0);
+      colormap->alloc_color(black);
+      inverted_gc->set_foreground(gridColor);
+    }
+  else
+    {
+      // It may be that this should not have to be called, but this
+      // seems to fix a bug: The first Graph produced from a loaded
+      // file from the command line will not have the right background
+      // color.
+      win->set_background(backgroundColor);
+    }
 
   if(currentMainWindow->statusBar.is_visible())
   {
     currentMainWindow->statusBar.positionEntry.set_text("");
   }
 
-  
   win->clear();
-  
+
   draw(win, gc);
 
     // This is just for zoom boxes and mouse value pick lines.

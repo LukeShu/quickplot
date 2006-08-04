@@ -76,7 +76,7 @@ icon_DATA    = quickplot_icon.png
 
 EXTRA_DIST =\
  bootstrap\
- cvsclean\
+ svnclean\
  html2CString\
  install_portage\
  TODO\
@@ -99,7 +99,9 @@ EXTRA_DIST =\
  quickplot.dev\
  mingw.mak\
  mingw_config.h\
- $(html_DATA)
+ $(html_DATA)\
+ VERSION\
+ VERSION.in
 
 
 SUFFIXES = .png .xpm .html .html.in _html.cpp 
@@ -157,11 +159,13 @@ File_readSndDouble.cpp: File_readSndShort.cpp
 	echo "#define TYPE_DOUBLE" >> $@
 	cat $< >> $@
 
-homepage: $(homepagefiles) dist
+homepage: $(homepagefiles)
 	tar -cjf quickplot_homepage-${VERSION}.tar.bz2 $(homepagefiles)
+
+quickplot-${VERSION}.tar.bz2.md5 quickplot-${VERSION}.tar.gz.md5 md5: \
+                quickplot-${VERSION}.tar.bz2 quickplot-${VERSION}.tar.gz
 	md5sum quickplot-${VERSION}.tar.bz2 > quickplot-${VERSION}.tar.bz2.md5
 	md5sum quickplot-${VERSION}.tar.gz > quickplot-${VERSION}.tar.gz.md5
-
 
 mingw_config.h: config.h
 	cp $^ $@

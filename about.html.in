@@ -104,7 +104,7 @@ interface. Quickplot will not read sound files without libsndfile.
 </ul>
 
 To build and develop Quickplot from the <a
-     href="https://sourceforge.net/cvs/?group_id=82651">CVS source</a>
+     href="https://sourceforge.net/svn/?group_id=82651">SVN source</a>
 the following packages, in addition to the above packages, are
 required to be installed:
 
@@ -127,7 +127,6 @@ from PNG images in the Quickplot source.
 </ul>
 
 
-
 </blockquote>
 
 
@@ -138,21 +137,24 @@ from PNG images in the Quickplot source.
 
 <blockquote> We call it <em>Lanceman's Quickplot</em> in order to
 distinguish it from another program called Quickplot which predates
-this program.&nbsp; It used to be on NeXT computers.&nbsp; It may
-have died with NeXT.
+this program.&nbsp; It used to be on NeXT computers.&nbsp; It may have
+died with NeXT.
 
-<p>This is a complete rewrite, by the original
-author, of the Lanceman's Quickplot which first appeared in 1998, and
-managed to find its way into the <a
-href="http://www.debian.org/">Debian GNU/Linux</a> distribution soon
-after.</p>
+<p>This is a complete rewrite, by the original author, of the
+Lanceman's Quickplot which first appeared in 1998, and managed to find
+its way into the <a href="http://www.debian.org/">Debian GNU/Linux</a>
+distribution soon after.</p>
 
 <p> Quickplot started out in 1998 as an Athena Widgets X11 GUI
 program, in 2003 it was rewritten as a <a
 href="http://www.trolltech.com/products/qt/">QT</a> GUI program, and
 in 2004 it was changed to a <a href="http://www.gtk.org/">GTK+</a> GUI
-program using the <a href="http://www.gtkmm.org/">gtkmm</a> C++ wrapper
-to GTK+.</p>
+program using the <a href="http://www.gtkmm.org/">gtkmm</a> C++
+wrapper to GTK+.</p>
+
+<p> In the far future Quickplot will support plotting when data is
+still being acquired and in with difference data interfaces, like an
+oscilloscope.</p>
 
 </blockquote>
 

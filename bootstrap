@@ -22,7 +22,7 @@
 #---------------------------------------------------------------------
 #                         WHAT'S THIS FOR
 
-# Run this if you just got this package from CVS.
+# Run this if you just got this package from SVN.
 
 # This is run to generate files (./configure and Makefile.in)
 # needed to make the files in this directory into something closer to
@@ -101,6 +101,9 @@ run autoconf
 if [ $error = 0 ]
 then
    echo "$script ran successfully"
+   echo "-----------------------------------------"
+   echo "  Now you are ready to run './configure'"
+   echo "-----------------------------------------"
 else
    echo "$script did not run successfully"
 fi

@@ -15,34 +15,19 @@ Requirements:
     http://www.freedesktop.org/Software/pkgconfig .
 
 
-  gtkmm and dependence
+  gtkmm and other dependence
 
     gtkmm is a C++ wrapper of the GNOME widget API, The GIMP Toolkit
     (GTK).  There's other packages that gtkmm depends on.  See:
     http://www.gtkmm.org/ for information. Quickplot version 0.7.8
-    (and below) works with gtkmm-2.2.* and will not work with gtkmm-2.4.*.
-    Quickplot version 0.8.0 (and above) works with gtkmm-2.4.* and will
-    not work with gtkmm-2.2.*.
+    (and below) works with gtkmm-2.2.* and will not work with
+    gtkmm-2.4.*.  Quickplot version 0.8.0 (and above) works with
+    gtkmm-2.4.* and will not work with gtkmm-2.2.*.
 
 
   libsndfile (optional)
 
     See: http://www.mega-nerd.com/libsndfile/
-
-
-  GNU Autotools (for developing)
-
-    To add source and make a new confgiure script you need the GNU
-    Autotools.  See:   At the time of writing this the GNU Autotools versions
-    were found by using the --version option with said program:
-
-    running: automake --version && autoconf --version && libtool --version
-
-      GNU automake 1.7.9
-      GNU Autoconf 2.59
-      GNU libtool  1.4.3
-
-
 
 
 To build and install:
@@ -56,19 +41,43 @@ To build and install:
 
 PREFIX_DIR could be for example /usr/local which would cause the
 installed binary exicutable file to be installed at
-/usr/local/bin/quickplot and the put some html files and images in
-the directory /usr/local/share/doc/quickplot/html/
+/usr/local/bin/quickplot and the put some html files and images in the
+directory /usr/local/share/doc/quickplot/html/
 
 There's lots of options to the configure script that can be seen by
-running:  `./configure --help'.
+running: `./configure --help'.
 
 
 
 
-For developing:
+For developing Quickplot for the source repository:
 
 
-   to build:
+   Required packages:
+
+   GNU Autotools (for developing)
+
+     To add source and make a new confgiure script you need the GNU
+     Autotools.  See: At the time of writing this the GNU Autotools
+     versions were found by using the --version option with said
+     program:
+
+    running: automake --version && autoconf --version && libtool --version
+
+      GNU automake 1.7.9
+      GNU Autoconf 2.59
+      GNU libtool  1.4.3
+
+
+   Quickplot uses the ImageMagick convert program from http://www.imagemagick.org/
+   to make xpm images files from png files.
+
+
+   Check-out the current source from the SourceForge Subversion (SVN) repository run:
+     svn co https://svn.sourceforge.net/svnroot/quickplot/trunk quickplot
+
+
+   to build and install from the source repository:
 
         ./bootstrap
         ./configure --prefix=PREFIX_DIR
@@ -77,15 +86,14 @@ For developing:
 
 
 
-   to clean for CVS:
+   to clean for SVN run the script:
 
-        ./cvsclean
-
+        ./svnclean
 
 
 
 Building on Windows: This may happen some day.
-   
+
    Options:
 
      1. Skip building it and get the windows binary release which
@@ -119,7 +127,7 @@ Building on Windows: This may happen some day.
    with cygwin.
 
      5. MS Visual C++ -- We are not into blowing $2,000 on software we
-   don't use.  If your into it send a patch with a project file.
+   don't use.  If your into it send a patch with a VC++ project file.
 
 
 

@@ -1,7 +1,7 @@
 /* Copyright (c) 1998, 1999, 2003, 2004  Lance Arsenault, (GNU GPL (v2+))
  */
 class Source;
-class FileReader;
+class FieldReader;
 
 class Field
 {
@@ -33,7 +33,7 @@ class Field
   // find the minimum values in the range of indexes.  Indexing starts
   // at 0.  i_max=-1 means upto the numberOfValues.
   virtual value_t min(count_t i_max=((count_t) -1), count_t i_min=0);
-  
+
   // Is monotonically increasing, like time.
   virtual inline bool isIncreasing(void) { return _isIncreasing; }
   virtual inline bool isDecreasing(void) { return _isDecreasing; }
@@ -57,10 +57,10 @@ protected:
 public:
 
   friend class FieldReader;
-  // The class FileReader is a Field that can read() another Field
+  // The class FieldReader is a Field that can read() another Field
   // (the source Field) without effecting the reading by the methods,
   // read(void), and rewind(void) of the source Field object that it
-  // is reading with.  The FileReader makes it so that you can have
+  // is reading with.  The FieldReader makes it so that you can have
   // more than one object read the data in a Field.  This saves having
   // to have more than one copy of the data in memory.  An example
   // when this is needed is when your wish to read two fields which

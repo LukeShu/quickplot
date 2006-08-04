@@ -53,13 +53,13 @@ App::App(int *argc, char ***argv):
     return; // failure
 
   createMainWindow();
- 
+
   if(parseArgs2(*argc, *argv))
     return; // failure
   
   if(opShowGraphConfig)
     currentMainWindow->showGraphConfig();
- 
+
   isInvalid = false;
 }
 

@@ -1,11 +1,12 @@
 #!/bin/bash
 
-# This script makes a Gentoo ebuild for this package.
+# This script makes and installs a Gentoo ebuild for this package.
 
-# Make a tar ball, `make dist', before running this.  You may need to
-# run this as root.
+# Make a tar ball, `make dist', before running this.  You need to run
+# this as root.
 
-#run%  ACCEPT_KEYWORDS="~x86" emerge quickplot
+# Then you can run:  emerge quickplot
+
 
 ########################################################################
 # This block was taken from Daniel Elstner's autogen.sh.
@@ -21,16 +22,34 @@ fi
 # end taken from Daniel Elstner
 ########################################################################
 
-if [ ! -x quickplot ]
+if [ `id -u` != "0" ]
 then
-  echo "Build quickplot first."
+  echo "you must run $0 as user root"
   exit 1
 fi
 
-VERSION="`./quickplot --version`"
+if [ ! -x configure ]
+then
+  echo "run \`./bootstrap', \`./configure' and \`make dist' first."
+  exit 1
+fi
+
+if [ ! -e VERSION ]
+then
+  echo "run \`./configure' and \`make dist' first."
+  exit 1
+fi
+
+VERSION="`cat VERSION`"
 TARNAME=quickplot
 PORTAGE_DIR=/usr/portage
-EBUILD_DIR=${PORTAGE_DIR}/media-gfx/quickplot
+EBUILD_DIR=${PORTAGE_DIR}/sci-visualization/quickplot
+
+if [ ! -f ${TARNAME}-${VERSION}.tar.bz2 ]
+then
+  echo "run \`make dist' first."
+  exit 1
+fi
 
 script="$0"
 error=0
@@ -57,26 +76,11 @@ run()
 }
 
 
-if [ -e ${EBUILD_DIR} ]
-then
-    echo "directory ${EBUILD_DIR} exists"
-    echo -n "Do you wish to clobber it (Y/N) [N]? "
-    read a
-    case $a in
-        Y* | y*)
-            echo "okay clobbering"
-            ;;
-        *)
-            echo "$script exiting with no changes."
-            exit 1
-            ;;
-    esac
-fi
-
-
 run mkdir -p ${EBUILD_DIR}
-run rm -f ${EBUILD_DIR}/files/* ${EBUILD_DIR}/MANIFEST
+run rm -f ${EBUILD_DIR}/files/digest-quickplot-${VERSION}\
+ ${EBUILD_DIR}/MANIFEST ${EBUILD_DIR}/ChangeLog ${EBUILD_DIR}/${TARNAME}-${VERSION}.ebuild
 run cp ${TARNAME}.ebuild ${EBUILD_DIR}/${TARNAME}-${VERSION}.ebuild
+run cp ChangeLog ${EBUILD_DIR}/ChangeLog
 run cp ${TARNAME}-${VERSION}.tar.bz2 ${PORTAGE_DIR}/distfiles/
 run cd ${EBUILD_DIR}
 run ebuild ${TARNAME}-${VERSION}.ebuild digest
@@ -90,7 +94,7 @@ else
    echo "$script did not run successfully"
 fi
 
-echo "You can now run: ACCEPT_KEYWORDS=\"~x86\" emerge quickplot"
+echo "You can now run: emerge quickplot"
 
 exit $error
 

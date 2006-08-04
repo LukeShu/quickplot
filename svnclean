@@ -5,7 +5,7 @@
 
 
 # This script is used to remove files that are auto-generated and
-# therefore don't need to be checked into CVS or other repository.
+# therefore don't need to be checked into SVN or other repository.
 
 
 if [ -e Makefile ]
@@ -16,15 +16,13 @@ fi
 rm -f \
  aclocal.m4 config.cache config.h install-sh config.log\
  Makefile Makefile.in missing mkinstalldirs ltmain.sh\
- config.sub config.guess configure\
+ config.sub config.guess configure VERSION\
  configure.scan autoscan-*x.log INSTALL\
  libtool config.status autoscan.log depcomp config.h* stamp-h*
 
 rm -rf autom4te.cache/
 
-
 rm -f File_readSndInt.cpp File_readSndFloat.cpp File_readSndDouble.cpp mingw_config.h
 rm -f *_html.cpp *.html
 rm -f *~ *.o
 rm -f *.xpm
-
