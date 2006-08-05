@@ -506,20 +506,24 @@ bool Graph::on_expose_event(GdkEventExpose *expose)
       win = get_window();
       gc = Gdk::GC::create(win);
       inverted_gc = Gdk::GC::create(win);
-      //inverted_gc->set_function(Gdk::INVERT);
       inverted_gc->set_function(Gdk::XOR);
-      
+
       Glib::RefPtr<Gdk::Colormap> colormap = get_default_colormap();
       
       colormap->alloc_color(backgroundColor);
       win->set_background(backgroundColor);
-      
       colormap->alloc_color(gridColor);
-      
-      Gdk::Color black;
-      black.set_rgb(0,0,0);
-      colormap->alloc_color(black);
-      inverted_gc->set_foreground(gridColor);
+
+      Gdk::Color gray;
+      // By doing an XOR with 1 in the most significant bit we always
+      // flip the most significant bit and draw pretty good
+      // contrasting line.  Flipping all bits will not work all the
+      // time, because some numbers are close to being equal to their
+      // one's-complement.  Like 0111 ~= 1000, but 0111 !~= 1111 (~=
+      // meaning approximately equal to).
+      gray.set_rgb(0x8000,0x8000,0x8000);
+      colormap->alloc_color(gray);
+      inverted_gc->set_foreground(gray);
     }
   else
     {

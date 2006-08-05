@@ -3,14 +3,11 @@ Short term developer notes:
 
 See if it is easy to add GNOME sounds to the widget actions.
 
-put ebuild in gentoo
-
 release rpm dist
 
 add quick start html doc.
 
 add GNU Free Documentation License for docs
-
 
 add more (?) to status bar.
 
@@ -128,7 +125,6 @@ add a popup menu to the tab for   remove, move, rename
 
 
 add command line option to startup with Graph Config widget.
-
 
 
 add some kind of filters for fields.  Example takes log10() of data to

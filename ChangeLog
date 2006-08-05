@@ -1,3 +1,8 @@
+Sat Aug  5 11:34:22 EDT 2006  Lance Arsenault <lanceman_at_users.sourceforge.net>
+	* === released version 0.8.9 ===
+	* Fixed the zoom box and other over-lay lines color so that they
+	are alway well seen.
+
 Thu Aug  3 20:05:09 EDT 2006  Lance Arsenault <lanceman_at_users.sourceforge.net>
 	* === released version 0.8.8 ===
 	* Stopped using CVS and started using Sourceforge Subversion
@@ -61,10 +66,10 @@ Thu Aug  5 21:06:09 EDT 2004  Lance Arsenault <lanceman_at_users.sourceforge.net
 	* minor edits
 
 Sun Jul 11 21:50:48 EDT 2004   Lance Arsenault <lanceman_at_users.sourceforge.net>
-	*=== released version 0.7.6 ===
-	*removed released files for version 0.7.5 because of bug
-	*fixed a nasty bug in the GraphConfig widget which caused
-	 segfault
+	* === released version 0.7.6 ===
+	* removed released files for version 0.7.5 because of bug
+	* fixed a nasty bug in the GraphConfig widget which caused
+	segfault
 
 Sun Jul 11 00:03:22 EDT 2004  Lance Arsenault <lanceman_at_users.sourceforge.net>
 	*=== released version 0.7.5 ===
