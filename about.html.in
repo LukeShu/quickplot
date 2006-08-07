@@ -152,10 +152,6 @@ in 2004 it was changed to a <a href="http://www.gtk.org/">GTK+</a> GUI
 program using the <a href="http://www.gtkmm.org/">gtkmm</a> C++
 wrapper to GTK+.</p>
 
-<p> In the far future Quickplot will support plotting when data is
-still being acquired and in with difference data interfaces, like an
-oscilloscope.</p>
-
 </blockquote>
 
 
