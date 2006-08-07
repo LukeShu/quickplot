@@ -11,14 +11,14 @@ AC_PREREQ(2.58)
 ############ Configure a release here ####################
 ##########################################################
 
-# AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME)
+# AC_INIT( PACKAGE, VERSION, PACKAGE_BUGREPORT, TARNAME )
 
 AC_INIT([Quickplot],
- 0.8.9,
+ 0.8.10,
  [lanceman@users.sourceforge.net],
  quickplot)
 
-RELEASE_DATE="Sat Aug  5 11:34:22 EDT 2006"
+RELEASE_DATE="Aug 2006, from repository source"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 
