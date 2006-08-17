@@ -1,3 +1,10 @@
+Thu Aug 17 12:10:36 EDT 2006  Lance Arsenault <lanceman_at_users.sourceforge.net>
+	* === released version 0.8.10 ===
+	* fixed filenames of xpm image files to be compatable
+	with lastest ImageMagick (just for development).
+	* made install_portage use Portage overlay for gentoo systems
+	* This should make any diff if you're not developing quickplot
+
 Sat Aug  5 11:34:22 EDT 2006  Lance Arsenault <lanceman_at_users.sourceforge.net>
 	* === released version 0.8.9 ===
 	* Fixed the zoom box and other over-lay lines color so that they

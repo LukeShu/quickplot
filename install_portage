@@ -40,9 +40,19 @@ then
   exit 1
 fi
 
+. /etc/make.conf || exit 1
+
 VERSION="`cat VERSION`"
 TARNAME=quickplot
-PORTAGE_DIR=/usr/portage
+DISTDIR=/usr/portage/distfiles
+
+if [ "${PORTDIR_OVERLAY}" != "" ]
+then
+  PORTAGE_DIR=/usr/local/portage
+else
+  PORTAGE_DIR="${PORTDIR_OVERLAY}"
+fi
+
 EBUILD_DIR=${PORTAGE_DIR}/sci-visualization/quickplot
 
 if [ ! -f ${TARNAME}-${VERSION}.tar.bz2 ]
@@ -81,9 +91,8 @@ run rm -f ${EBUILD_DIR}/files/digest-quickplot-${VERSION}\
  ${EBUILD_DIR}/MANIFEST ${EBUILD_DIR}/ChangeLog ${EBUILD_DIR}/${TARNAME}-${VERSION}.ebuild
 run cp ${TARNAME}.ebuild ${EBUILD_DIR}/${TARNAME}-${VERSION}.ebuild
 run cp ChangeLog ${EBUILD_DIR}/ChangeLog
-run cp ${TARNAME}-${VERSION}.tar.bz2 ${PORTAGE_DIR}/distfiles/
-run cd ${EBUILD_DIR}
-run ebuild ${TARNAME}-${VERSION}.ebuild digest
+run cp ${TARNAME}-${VERSION}.tar.bz2 ${DISTDIR}/
+run ebuild ${EBUILD_DIR}/${TARNAME}-${VERSION}.ebuild manifest
 
 
 # final spew

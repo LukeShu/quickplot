@@ -81,11 +81,11 @@ EXTRA_DIST =\
  about.html.in\
  index.html.in\
  quickplot_icon.xpm\
- about_browser.xpm\
- newFrame.xpm\
- closeFrame.xpm\
- copyFrame.xpm\
- saveImage.xpm\
+ imgAbout_browser.xpm\
+ imgNewFrame.xpm\
+ imgCloseFrame.xpm\
+ imgCopyFrame.xpm\
+ imgSaveImage.xpm\
  imgAbout_browser.png\
  imgNewFrame.png\
  imgCloseFrame.png\
