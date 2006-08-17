@@ -37,11 +37,11 @@ using namespace Gtk;
 #include "Source.h"
 #include "FileList.h"
 #include "File.h"
-#include "about_browser16x16.xpm"
-#include "newFrame16x16.xpm"
-#include "closeFrame16x16.xpm"
-#include "copyFrame16x16.xpm"
-#include "saveImage16x16.xpm"
+#include "imgAbout_browser.xpm"
+#include "imgNewFrame.xpm"
+#include "imgCloseFrame.xpm"
+#include "imgCopyFrame.xpm"
+#include "imgSaveImage.xpm"
 
 // accel_key 	GDK keyval of the accelerator. are found in gdk/gdkkeysyms.h
 
@@ -86,7 +86,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
 
 
     Glib::RefPtr<Gdk::Pixbuf> pix =
-      Gdk::Pixbuf::create_from_xpm_data(newFrame16x16);
+      Gdk::Pixbuf::create_from_xpm_data(imgNewFrame);
     newFrameImage.set(pix);
 
     menuList.
@@ -98,7 +98,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     addAccelKey(&(menuList.back()), GDK_f);
 
     
-    pix = Gdk::Pixbuf::create_from_xpm_data(copyFrame16x16);
+    pix = Gdk::Pixbuf::create_from_xpm_data(imgCopyFrame);
     copyFrameImage.set(pix);
 
     menuList.
@@ -110,7 +110,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     addAccelKey(&(menuList.back()), GDK_c);
 
     
-    pix = Gdk::Pixbuf::create_from_xpm_data(closeFrame16x16);
+    pix = Gdk::Pixbuf::create_from_xpm_data(imgCloseFrame);
     closeImage.set(pix);
   
     menuList.push_back(deleteFrameMenuItem);
@@ -125,7 +125,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     addAccelKey(&(menuList.back()), GDK_Escape);
 
 
-    pix = Gdk::Pixbuf::create_from_xpm_data(saveImage16x16);
+    pix = Gdk::Pixbuf::create_from_xpm_data(imgSaveImage);
     saveImage.set(pix);
 
     menuList.
@@ -230,7 +230,7 @@ MainMenuBar::MainMenuBar(MainWindow *mainWindow_in) :
     Menu::MenuList &menuList = helpMenu.items();
 
     Glib::RefPtr<Gdk::Pixbuf> pix =
-      Gdk::Pixbuf::create_from_xpm_data(about_browser16x16);
+      Gdk::Pixbuf::create_from_xpm_data(imgAbout_browser);
     aboutImage.set(pix);
 
     

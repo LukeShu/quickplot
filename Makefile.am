@@ -1,11 +1,11 @@
 
 homepagefiles =\
- about_browser16x16.png\
- closeFrame16x16.png\
- copyFrame16x16.png\
- newFrame16x16.png\
+ about_browser.png\
+ closeFrame.png\
+ copyFrame.png\
+ newFrame.png\
  quickplot_icon.png\
- saveImage16x16.png\
+ saveImage.png\
  screenshot1.png\
  screenshot1_small.png\
  screenshot2.png\
@@ -42,11 +42,11 @@ quickplot_SOURCES =\
 
 BUILT_SOURCES =\
  quickplot_icon.xpm\
- about_browser16x16.xpm\
- newFrame16x16.xpm\
- closeFrame16x16.xpm\
- copyFrame16x16.xpm\
- saveImage16x16.xpm\
+ about_browser.xpm\
+ newFrame.xpm\
+ closeFrame.xpm\
+ copyFrame.xpm\
+ saveImage.xpm\
  File_readSndInt.cpp\
  File_readSndFloat.cpp\
  File_readSndDouble.cpp\
@@ -86,16 +86,16 @@ EXTRA_DIST =\
  about.html.in\
  index.html.in\
  quickplot_icon.xpm\
- about_browser16x16.xpm\
- newFrame16x16.xpm\
- closeFrame16x16.xpm\
- copyFrame16x16.xpm\
- saveImage16x16.xpm\
- about_browser16x16.png\
- newFrame16x16.png\
- closeFrame16x16.png\
- copyFrame16x16.png\
- saveImage16x16.png\
+ about_browser.xpm\
+ newFrame.xpm\
+ closeFrame.xpm\
+ copyFrame.xpm\
+ saveImage.xpm\
+ about_browser.png\
+ newFrame.png\
+ closeFrame.png\
+ copyFrame.png\
+ saveImage.png\
  quickplot.dev\
  mingw.mak\
  mingw_config.h\
