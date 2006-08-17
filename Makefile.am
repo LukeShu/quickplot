@@ -1,11 +1,6 @@
 
 homepagefiles =\
- about_browser.png\
- closeFrame.png\
- copyFrame.png\
- newFrame.png\
  quickplot_icon.png\
- saveImage.png\
  screenshot1.png\
  screenshot1_small.png\
  screenshot2.png\
@@ -42,11 +37,11 @@ quickplot_SOURCES =\
 
 BUILT_SOURCES =\
  quickplot_icon.xpm\
- about_browser.xpm\
- newFrame.xpm\
- closeFrame.xpm\
- copyFrame.xpm\
- saveImage.xpm\
+ imgAbout_browser.xpm\
+ imgNewFrame.xpm\
+ imgCloseFrame.xpm\
+ imgCopyFrame.xpm\
+ imgSaveImage.xpm\
  File_readSndInt.cpp\
  File_readSndFloat.cpp\
  File_readSndDouble.cpp\
@@ -91,11 +86,11 @@ EXTRA_DIST =\
  closeFrame.xpm\
  copyFrame.xpm\
  saveImage.xpm\
- about_browser.png\
- newFrame.png\
- closeFrame.png\
- copyFrame.png\
- saveImage.png\
+ imgAbout_browser.png\
+ imgNewFrame.png\
+ imgCloseFrame.png\
+ imgCopyFrame.png\
+ imgSaveImage.png\
  quickplot.dev\
  mingw.mak\
  mingw_config.h\
