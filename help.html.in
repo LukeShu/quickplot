@@ -91,16 +91,26 @@ positions that are closest to mouse pointer X position.</li>
 text) files.&nbsp; The number of fields (numbers) on each line must be
 the same.&nbsp; Any number of non-number characters other than a new
 line character may used to separate numbers on a given line.&nbsp; The
-characters in numbers can only be the following 15 characters
-".+-eE0123456789".&nbsp;
+characters in numbers can only be the following 16 characters
+",.+-eE0123456789".&nbsp;
 
 Example:
 <blockquote>
 <pre>
--1   -1.3    -1
-0    1.1e-2   0
-2    1.2E-2   1
-30   1.3e+2   3
+-1   -1.3     -1
+ 0    1.1e-2   0
+ 2    1.2E-2   1
+ 30   1.3e+2   3
+</pre>
+</blockquote>
+
+In Austria it may look like:
+<blockquote>
+<pre>
+-1   -1,3     -1
+ 0    1,1e-2   0
+ 2    1,2E-2   1
+ 30   1,3e+2   3
 </pre>
 </blockquote>
 

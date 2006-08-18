@@ -43,16 +43,9 @@ using namespace Gtk;
 #include "errorStr.h"
 #include "FileReader.h"
 
-char get_decimal_point(void)
-{
-  //printf("STRINGTOVALUE(\"2,8\", 0)="FORMAT"\n", STRINGTOVALUE("2,8", 0));
-  if( STRINGTOVALUE("2,8", 0) > ((value_t) 2) ) return ',';
-  return '.';
-}
 
-const char decimal_point = get_decimal_point();
-
-#define IS_SEPARATOR_CHAR(x)  (!(((x)>='0'&&(x)<='9')||(x)=='\n'||(x)== decimal_point|| \
+#define IS_SEPARATOR_CHAR(x)  (!(((x)>='0'&&(x)<='9')||(x)=='\n'||(x)== '.'|| \
+                            (x)==','|| \
                             (x)=='-'||(x)=='+'||(x)=='e'||(x)=='E'||(x)<01))
 
 // The maximum number of chars that can be in a number when it is read

@@ -1,5 +1,5 @@
-Thu Aug 17 23:00:57 EDT 2006  Lance Arsenault <lanceman_at_users.sourceforge.net>
-	* === released version 0.8.11 ===
+Thu Aug 17 23:48:45 EDT 2006  Lance Arsenault <lanceman_at_users.sourceforge.net>
+	* === released version 0.8.13 ===
 	* fix for read file bug when decimal point character is a ','
 	like in Austria
 
