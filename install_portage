@@ -99,11 +99,11 @@ run ebuild ${EBUILD_DIR}/${TARNAME}-${VERSION}.ebuild manifest
 if [ $error = 0 ]
 then
    echo "$script ran successfully"
+   echo
+   echo "You can now run: emerge quickplot"
 else
    echo "$script did not run successfully"
 fi
-
-echo "You can now run: emerge quickplot"
 
 exit $error
 
