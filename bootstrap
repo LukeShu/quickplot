@@ -85,9 +85,9 @@ run()
 # the executables are installed as wrappers that parse the
 # WANT_"PACKAGE_NAME" environment variable.
 
-export WANT_AUTOCONF=2.58
-export WANT_AUTOMAKE=1.7
-export WANT_LIBTOOL=1.4.3
+#export WANT_AUTOCONF=2.58
+#export WANT_AUTOMAKE=1.7
+#export WANT_LIBTOOL=1.4.3
 
 
 run aclocal
