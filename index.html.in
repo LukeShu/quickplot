@@ -89,7 +89,7 @@
   <tr>
   <td colspan=2>
     To check-out the current source from the SourceForge Subversion repository run:
-   <pre style="background: #D2D9EA;">svn co https://svn.sourceforge.net/svnroot/quickplot/trunk quickplot</pre>
+   <pre style="background: #D2D9EA;">svn co https://quickplot.svn.sourceforge.net/svnroot/quickplot/trunk quickplot</pre>
    This will create a directory named quickplot in the current diectory.
   </td>
   </tr>

@@ -74,7 +74,7 @@ For developing Quickplot for the source repository:
 
 
    Check-out the current source from the SourceForge Subversion (SVN) repository run:
-     svn co https://svn.sourceforge.net/svnroot/quickplot/trunk quickplot
+     svn co https://quickplot.svn.sourceforge.net/svnroot/quickplot/trunk quickplot
 
 
    to build and install from the source repository:

@@ -92,7 +92,8 @@ popular GUI library <a href="http://www.gtk.org/">GTK+</a>.
 
 <ul>
 <li>Quickplot version 0.7.8 (and below) works with gtkmm-2.2.* and will not work with gtkmm-2.4.*.</li>
-<li>Quickplot version 0.8.0 (and above) works with gtkmm-2.4.* and will not work with gtkmm-2.2.*.</li>
+<li>Quickplot version 0.8.0 (and above) works with gtkmm-2.4.* and 
+    will not work with gtkmm-2.2.*.</li>
 </ul>
 
 <li><b><a href="http://www.mega-nerd.com/libsndfile/">libsndfile</a>
