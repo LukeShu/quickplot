@@ -1,3 +1,6 @@
+Mon Sep 3 22:47 EDT 2007  Lance Arsenault <lanceman_at_users.sourceforge.net>
+	* fixed svn URL in docs
+
 Thu Aug 17 23:48:45 EDT 2006  Lance Arsenault <lanceman_at_users.sourceforge.net>
 	* === released version 0.8.13 ===
 	* fix for read file bug when decimal point character is a ','
