@@ -2,6 +2,8 @@
  */
 #include "config.h"
 
+#include <cstring>
+
 #ifdef QP_ARCH_DARWIN
 # include <limits.h>
 # include <float.h>

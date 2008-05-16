@@ -130,7 +130,7 @@ void File::init(const FileList *fileList)
     m_signal_addedSource.emit(this);
     // Add a File->"Close fileName" to the MainMenu.  Base class
     // Source::~Source() will remove it automatically.
-    addCloseMenus(fileName);
+    addCloseMenus();
   }
 }
 

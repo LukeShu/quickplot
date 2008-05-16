@@ -4,6 +4,7 @@
 
 #include <stdio.h>
 #include <iostream>
+#include <cstring>
 
 #ifdef QP_ARCH_DARWIN
 # include <limits.h>

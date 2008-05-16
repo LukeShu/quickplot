@@ -64,7 +64,7 @@ Source::Source(void):
   sources.push_back(this);
 };
 
-void Source::addCloseMenus(const char *label)
+void Source::addCloseMenus(void)
 {
   std::list<MainWindow *>::const_iterator win = app->begin();
   for(;win != app->end(); win++)

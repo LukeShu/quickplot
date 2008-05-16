@@ -33,8 +33,7 @@ using namespace Gtk;
 #define SMALL_INT  INT_MIN
 
 
-PlotSelector::PlotSelector(Window *graphConfig,
-                           MainWindow *mainWindow_in) :
+PlotSelector::PlotSelector(MainWindow *mainWindow_in) :
   topLabel("Select Fields to Plot or Unplot"),
   xLabel("      X Field      "),
   blankLabel("   "),

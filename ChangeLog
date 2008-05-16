@@ -1,3 +1,7 @@
+Thu May 15 19:57:37 EDT 2008  Lance Arsenault <lanceman_at_users.sourceforge.net>
+	* Added changes like the gentoo patch quickplot-0.8.13-gcc43.patch
+	* Minor edits to remove more compiler warnings
+
 Mon Sep 3 22:47 EDT 2007  Lance Arsenault <lanceman_at_users.sourceforge.net>
 	* fixed svn URL in docs
 

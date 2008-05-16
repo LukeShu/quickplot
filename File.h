@@ -24,22 +24,18 @@ private:
   void init(const FileList *fileList);
   
 #ifdef USE_LIBSNDFILE
-  
+
   // This will not work with stdin.
   bool readSndFile(const FileList *fileList, int fd=-1);
 
   void readSndShort  (::SNDFILE *sf, int samplerate,
-                      count_t numberOfValues, int channels,
-                      const FileList *fileList);
+                      count_t numberOfValues, int channels);
   void readSndInt    (::SNDFILE *sf, int samplerate,
-                      count_t numberOfValues, int channels,
-                      const FileList *fileList);
+                      count_t numberOfValues, int channels);
   void readSndFloat  (::SNDFILE *sf, int samplerate,
-                      count_t numberOfValues, int channels,
-                      const FileList *fileList);
+                      count_t numberOfValues, int channels);
   void readSndDouble (::SNDFILE *sf, int samplerate,
-                      count_t numberOfValues, int channels,
-                      const FileList *fileList);
+                      count_t numberOfValues, int channels);
 
 #endif // #ifdef USE_LIBSNDFILE
 

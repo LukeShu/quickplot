@@ -70,8 +70,8 @@ extern "C"
 class PlotSelector : public VBox
 {
 public:
-  
-  PlotSelector(Window *graphConfig, MainWindow *mainWindow_in);
+
+  PlotSelector(MainWindow *mainWindow_in);
   virtual ~PlotSelector(void);
   
   std::list<FieldButton *> xFieldButtons;

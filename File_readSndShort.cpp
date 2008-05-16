@@ -88,8 +88,7 @@ using namespace Gtk;
 
 void File::
 readSndTYPE(::SNDFILE *sndfile, int samplerate,
-            count_t numberOfValues, int channels,
-            const FileList *fileList)
+            count_t numberOfValues, int channels)
 {
   ArrayField<TYPE> **field =
     static_cast<ArrayField<TYPE> **>

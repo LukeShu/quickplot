@@ -3,6 +3,7 @@
 #include "config.h"
 
 #include <list>
+#include <cstring>
 
 #ifdef QP_ARCH_DARWIN
 # include <limits.h>

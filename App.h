@@ -41,7 +41,7 @@ public:
   
  public:
 
-  App(int *argv, char ***argv);
+  App(int *argc, char ***argv);
   virtual ~App(void);
 
 

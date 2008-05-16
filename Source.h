@@ -66,7 +66,7 @@ protected:
 
   inline void setType(enum TYPE t) { type = t; }
   char *fileName, *baseFileName;
-  void addCloseMenus(const char *label);
+  void addCloseMenus(void);
 
 private:
 

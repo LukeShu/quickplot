@@ -57,7 +57,7 @@ GraphConfig::GraphConfig(MainWindow *mainWindow_in):
   gridFontSizeVS(8, 40, 40, "Grid Font Size"),
   gridXLineSpaceVS(2, MAX_GRIDXLINESPACE, "Grid X Line Space"),
   gridYLineSpaceVS(2, MAX_GRIDYLINESPACE, "Grid Y Line Space"),
-  plotSelector(this, mainWindow)
+  plotSelector(mainWindow)
 {
   set_position(WIN_POS_MOUSE);
 

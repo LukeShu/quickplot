@@ -98,7 +98,7 @@ bool File::readSndFile(const FileList *fileList, int fd)
     case SF_FORMAT_DWVW_16:
       readSndShort(sndfile, info.samplerate,
                    static_cast<count_t>(info.frames),
-                   info.channels, fileList);
+                   info.channels);
       break;
     
     case SF_FORMAT_PCM_24:
@@ -116,19 +116,19 @@ bool File::readSndFile(const FileList *fileList, int fd)
     case SF_FORMAT_DWVW_N:
       readSndInt(sndfile, info.samplerate,
                  static_cast<count_t>(info.frames),
-                 info.channels, fileList);
+                 info.channels);
       break;
 
     case SF_FORMAT_FLOAT:
       readSndFloat(sndfile, info.samplerate,
                    static_cast<count_t>(info.frames),
-                   info.channels, fileList);
+                   info.channels);
       break;
 
     case SF_FORMAT_DOUBLE:
       readSndDouble(sndfile, info.samplerate,
                    static_cast<count_t>(info.frames),
-                   info.channels, fileList);
+                   info.channels);
       break;
   }
      
