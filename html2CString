@@ -17,7 +17,8 @@ while read a
 do
   echo -n "\"" >> $1
   echo -n $a | sed -e 's/"/\\\"/g' >> $1
-  echo -n "\012" >> $1
+  echo -n "\\" >> $1
+  echo -n "n" >> $1
   echo "\"" >> $1
 done
 
