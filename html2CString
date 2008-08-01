@@ -15,9 +15,10 @@ echo "const char *${1%.cpp} = " >> $1
 
 while read a
 do
-  echo -ne "\134" >> $1
+  echo -n "\"" >> $1
   echo -n $a | sed -e 's/"/\\\"/g' >> $1
-  echo -e "\134\156\042" >> $1
+  echo -n "\012" >> $1
+  echo "\"" >> $1
 done
 
 echo ";" >> $1
