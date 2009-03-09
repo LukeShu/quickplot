@@ -63,12 +63,6 @@
   </b>
   </ul>
 
-  <b>Note:</b>
-  <ul>
-  <li>Quickplot version 0.7.8 (and lower) builds with gtkmm-2.2.*</li>
-  <li>Quickplot version 0.8.0 (and higher) builds with gtkmm-2.4.*</li>
-  </ul>
-
   </td>
   <td>
 
