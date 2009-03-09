@@ -13,6 +13,8 @@
 # include <values.h>
 #endif
 
+#include <cstring>
+
 #include <stdlib.h>
 
 #include <gtkmm.h>
@@ -761,7 +763,7 @@ void GraphsNotebook::copy(GraphsNotebook *graphsNotebook)
   gtk_idle_add(copyGraphNotebooks, d);
 }
 
-SigC::Signal1<void, Graph *> GraphsNotebook::signal_tabLabelChanged(void)
+sigc::signal1<void, Graph *> GraphsNotebook::signal_tabLabelChanged(void)
 {
   return m_signal_tabLabelChanged;
 }

@@ -34,6 +34,7 @@ bin_PROGRAMS = quickplot
 quickplot_SOURCES =\
  App.cpp App_parseArgs.cpp ButtonBar.cpp ColorGen.cpp Field.cpp FieldReader.cpp File.cpp FileList.cpp FileReader.cpp File_readASCIIFile.cpp File_readSndDouble.cpp File_readSndFile.cpp File_readSndFloat.cpp File_readSndInt.cpp File_readSndShort.cpp Globel.cpp Graph.cpp GraphConfig.cpp Graph_drawAutoGrid.cpp LinearField.cpp MainMenuBar.cpp MainWindow.cpp Plot.cpp PlotConfig.cpp PlotList.cpp PlotLister.cpp PlotSelector.cpp Plot_cullDrawLine.cpp Source.cpp StatusBar.cpp ValueSlider.cpp about_html.cpp errorStr.cpp getOpt.cpp help_html.cpp launchBrowser.cpp main.cpp parseGeometry.cpp usage.cpp App.h ArrayField.h ButtonBar.h ColorGen.h Field.h FieldReader.h File.h FileList.h FileReader.h Globel.h Graph.h GraphConfig.h LinearField.h ListField.h LogField.h MainMenuBar.h MainWindow.h Plot.h PlotConfig.h PlotList.h PlotLister.h PlotSelector.h Source.h StatusBar.h ValueSlider.h errorStr.h mingw_config.h value_t.h config.h
 
+quickplot_SHORTNAME = q
 
 BUILT_SOURCES =\
  quickplot_icon.xpm\
@@ -101,8 +102,13 @@ EXTRA_DIST =\
 
 SUFFIXES = .png .xpm .html .html.in _html.cpp 
 
+
 .png.xpm:
 	convert $< $@
+	mv $@ $@.in
+	sed -e 's/static.*\schar/static const char/g' $@.in > $@
+	rm $@.in
+
 
 .html_html.cpp:
 	cat $< | ./html2CString $@

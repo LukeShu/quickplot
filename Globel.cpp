@@ -26,6 +26,7 @@ std::ostream &opSpew = std::cout;
 
 // tipical values are mouse button 1, 2, or 3.
 guint opPickButton = 1;
+guint opMidButton = 2;
 guint opZoomButton = 3;
 
 

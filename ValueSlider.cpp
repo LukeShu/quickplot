@@ -175,7 +175,7 @@ bool ValueSlider::setEntryToScale(void)
   }
 }
 
-SigC::Signal0<void> ValueSlider::signal_valueChanged()
+sigc::signal0<void> ValueSlider::signal_valueChanged()
 {
   return m_signal_valueChanged;
 }
@@ -329,7 +329,7 @@ bool DoubleValueSlider::setEntryToScale(void)
   }
 }
 
-SigC::Signal0<void> DoubleValueSlider::signal_valueChanged()
+sigc::signal0<void> DoubleValueSlider::signal_valueChanged()
 {
   return m_signal_valueChanged;
 }
@@ -479,7 +479,7 @@ int LogValueSlider::getValue(void)
   return (int) pow(10.0, value);
 }
 
-SigC::Signal0<void> LogValueSlider::signal_valueChanged()
+sigc::signal0<void> LogValueSlider::signal_valueChanged()
 {
   return m_signal_valueChanged;
 }

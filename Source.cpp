@@ -207,18 +207,18 @@ void CloseSourceMenuItem::deleteSourceLater(void)
 }
 
 
-SigC::Signal1<void, Source *> Source::signal_addedSource()
+sigc::signal1<void, Source *> Source::signal_addedSource()
 {
   return m_signal_addedSource;
 }
 
-SigC::Signal1<void, Source *> Source::m_signal_addedSource;
+sigc::signal1<void, Source *> Source::m_signal_addedSource;
 
 
-SigC::Signal1<void, Source *> Source::signal_removedSource()
+sigc::signal1<void, Source *> Source::signal_removedSource()
 {
   return m_signal_removedSource;
 }
 
-SigC::Signal1<void, Source *> Source::m_signal_removedSource;
+sigc::signal1<void, Source *> Source::m_signal_removedSource;
 

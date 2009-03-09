@@ -75,7 +75,7 @@ int sLaunchBrowser(const char *doc, const char *fileName_in="")
 #define TMP_FORMAT  "%s/Quickplot_%s_XXXXXXXX"
 
 
-char *browsers[] =
+const char *browsers[] =
 {
   "firefox",
   "galeon",
@@ -108,7 +108,7 @@ int launchBrowser(const char *url)
 
   // First see if the user has set a prefered broswer in the BROWSER
   // environment variable.
-  char *browser = getenv("BROWSER");
+  const char *browser = getenv("BROWSER");
 
   if(browser)
     execlp(browser, browser, url, NULL);

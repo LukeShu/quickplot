@@ -52,7 +52,7 @@ private:
   ValueSlider pointSizeVS;
   // RadioButton style1, style2 etc ...
 
-  SigC::Connection plotChanged_connection;
+  sigc::connection plotChanged_connection;
 
   void setValues(void);
   

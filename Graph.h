@@ -68,10 +68,10 @@ class Graph : public DrawingArea, public std::list<Plot *>
   inline bool isShowingGrid() { return (showAutoGrid && isSameScale); }
   /************************************************************/
 
-  static SigC::Signal1<void, Graph *> signal_changedSameScale(void);
-  static SigC::Signal1<void, Graph *> signal_addedPlot(void);
-  static SigC::Signal2<void, Graph *, Plot *> signal_removedPlot(void);
-  SigC::Signal0<void> signal_backgroundColorChanged(void);
+  static sigc::signal1<void, Graph *> signal_changedSameScale(void);
+  static sigc::signal1<void, Graph *> signal_addedPlot(void);
+  static sigc::signal2<void, Graph *, Plot *> signal_removedPlot(void);
+  sigc::signal0<void> signal_backgroundColorChanged(void);
 
   
   Gdk::Color gridColor, backgroundColor;
@@ -105,12 +105,12 @@ private:
 
   void setStatusXYValues(gdouble x, gdouble y);
   
-  static SigC::Signal1<void, Graph *> m_signal_changedSameScale;
+  static sigc::signal1<void, Graph *> m_signal_changedSameScale;
   
-  static SigC::Signal1<void, Graph *> m_signal_addedPlot;
-  static SigC::Signal2<void, Graph *, Plot *> m_signal_removedPlot;
+  static sigc::signal1<void, Graph *> m_signal_addedPlot;
+  static sigc::signal2<void, Graph *, Plot *> m_signal_removedPlot;
 
-  SigC::Signal0<void> m_signal_backgroundColorChanged;
+  sigc::signal0<void> m_signal_backgroundColorChanged;
 
   
   // used by createPlot(Field *x, Field *y) 

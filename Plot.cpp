@@ -54,7 +54,7 @@ void Plot::init(void)
   
   // Set the default label.
   {
-    char *format = "%s (%s) VS %s (%s)";
+    const char *format = "%s (%s) VS %s (%s)";
     size_t len = strlen(format);
     len += strlen(_y->getLabel()) + 1;
     len += strlen(_y->getName()) + 1;
@@ -505,7 +505,7 @@ void Plot::setPointColor(const Gdk::Color &color)
 
 // Emitted when the lineColor, pointColor, lineWidth or pointSize
 // changes.
-SigC::Signal0<void> Plot::signal_changed(void)
+sigc::signal0<void> Plot::signal_changed(void)
 {
   return m_signal_changed;
 }
@@ -665,7 +665,7 @@ void Plot::emitDisplayValues(int X, int Y)
   m_signal_valueDisplay.emit(xpick, ypick);           
 }
 
-SigC::Signal2<void, value_t, value_t> Plot::signal_valueDisplay(void)
+sigc::signal2<void, value_t, value_t> Plot::signal_valueDisplay(void)
 {
   return m_signal_valueDisplay;
 }

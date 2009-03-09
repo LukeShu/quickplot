@@ -24,7 +24,7 @@ private:
   Glib::RefPtr<Gdk::Window> win;
   Glib::RefPtr<Gdk::GC> gc;
 
-  SigC::Connection plotChangeConnection, bgConnection;
+  sigc::connection plotChangeConnection, bgConnection;
 };
 
 
@@ -52,14 +52,14 @@ private:
   Table *table;
   MainWindow *mainWindow;
   Plot *plot;
-  SigC::Connection valueDisplay_connection, makePlotConfig_connection;
+  sigc::connection valueDisplay_connection, makePlotConfig_connection;
   
   void add(Widget &w, int col);
   void makePlotConfig(void);
   //void setLabelSize(Entry &l);
   //void afterRealize(void);
 
-  //SigC::Connection afterRealizeConnection;
+  //sigc::Connection afterRealizeConnection;
 };
 
 

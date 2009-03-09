@@ -19,8 +19,8 @@ public:
   // method???  It's not listed.
   void set_show_tabs(bool show_tabs = true);
 
-  SigC::Signal1<void, Graph *> signal_tabLabelChanged(void);
-  SigC::Signal1<void, Graph *> m_signal_tabLabelChanged;
+  sigc::signal1<void, Graph *> signal_tabLabelChanged(void);
+  sigc::signal1<void, Graph *> m_signal_tabLabelChanged;
   
 private:
   MainWindow *mainWindow;

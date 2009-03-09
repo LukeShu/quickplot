@@ -18,7 +18,7 @@ AC_INIT([Quickplot],
  [lanceman@users.sourceforge.net],
  quickplot)
 
-RELEASE_DATE="Thu May 15 19:57:37 EDT 2008"
+RELEASE_DATE="Sun Mar  8 16:19:23 EDT 2009"
 HOMEPAGE="http://quickplot.sourceforge.net/"
 
 

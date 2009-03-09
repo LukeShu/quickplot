@@ -4,6 +4,7 @@
 class ZoomLevel;
 class Graph;
 
+#include <sigc++/sigc++.h>
 
 class Plot
 {
@@ -101,14 +102,14 @@ class Plot
 
   // Emitted when the lineColor, pointColor, lineWidth, pointSize,
   // showLines and showPoints.
-  SigC::Signal0<void> signal_changed(void);
+  sigc::signal0<void> signal_changed(void);
 
   
   int emitDisplayValues(int X);
   void emitInterpolatedDisplayValues(int X);
   void emitDisplayValues(int X, int Y);
 
-  SigC::Signal2<void, value_t, value_t> signal_valueDisplay(void);
+  sigc::signal2<void, value_t, value_t> signal_valueDisplay(void);
   
   value_t xpick, ypick;
 
@@ -118,9 +119,9 @@ private:
 
   bool showPoints, showLines;
   
-  SigC::Signal0<void> m_signal_changed;
+  sigc::signal0<void> m_signal_changed;
 
-  SigC::Signal2<void, value_t, value_t> m_signal_valueDisplay;
+  sigc::signal2<void, value_t, value_t> m_signal_valueDisplay;
 
   Gdk::Color lineColor, pointColor;
 

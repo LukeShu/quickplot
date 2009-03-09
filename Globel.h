@@ -31,6 +31,7 @@ extern std::ostream &opSpew;
 
 extern guint opPickButton;
 extern guint opZoomButton;
+extern guint opMidButton;
 
 
 

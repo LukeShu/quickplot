@@ -48,6 +48,8 @@ using namespace Gtk;
                             (x)==','|| \
                             (x)=='-'||(x)=='+'||(x)=='e'||(x)=='E'||(x)<01))
 
+#define IS_COMMENT_CHAR(x)  (x=='#')
+
 // The maximum number of chars that can be in a number when it is read
 // in in a ASCII file.
 #define NUM_STR_SIZE   ((size_t) 128)
@@ -70,6 +72,16 @@ static count_t numberOfLines=0;
 int File::getValue(FileReader *file, value_t *val)
 {
   int i= file->readChar();
+
+  while( IS_COMMENT_CHAR((char) i) )
+  {
+      while( ((char) i) != LINE_END && i!=EOF ) {
+	i = file->readChar();
+      }
+      if( i!=EOF )
+	  i = file->readChar();
+  }
+
   if(!lastNum)
     while((IS_SEPARATOR_CHAR((char) i) || ((char) i) == LINE_END) && i!=EOF)
       {
@@ -356,7 +368,7 @@ bool File::readASCIIFile(FILE *file_in, const FileList *fileList)
                 opSpew << "quickplot ERROR: reading file '" << fileName
                        << "': near line number " << numberOfLines+1
                        << std::endl;
-              error = 1;
+              //error = 1;
               setType(ASCII_FILE);
               return true;
 	    }

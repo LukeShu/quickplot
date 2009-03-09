@@ -50,8 +50,8 @@ public:
   inline const enum  TYPE getType(void){ return type; }
   inline const char *getTypeString(void){ return TYPE_STRING[type]; }
 
-  static SigC::Signal1<void, Source *> signal_addedSource();
-  static SigC::Signal1<void, Source *> signal_removedSource();
+  static sigc::signal1<void, Source *> signal_addedSource();
+  static sigc::signal1<void, Source *> signal_removedSource();
 
   // Delete this object later.
   void deleteLater(void);
@@ -61,8 +61,8 @@ public:
   
 protected:
   
-  static SigC::Signal1<void, Source *> m_signal_addedSource;
-  static SigC::Signal1<void, Source *> m_signal_removedSource;
+  static sigc::signal1<void, Source *> m_signal_addedSource;
+  static sigc::signal1<void, Source *> m_signal_removedSource;
 
   inline void setType(enum TYPE t) { type = t; }
   char *fileName, *baseFileName;

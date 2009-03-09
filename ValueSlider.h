@@ -20,10 +20,10 @@ private:
   double maxmax;
 
 public:
-  SigC::Signal0<void> signal_valueChanged();
+  sigc::signal0<void> signal_valueChanged();
 
 private:
-  SigC::Signal0<void> m_signal_valueChanged;
+  sigc::signal0<void> m_signal_valueChanged;
 
   bool setScaleToEntry(void);
 
@@ -53,10 +53,10 @@ private:
   double value, maxmax;
 
 public:
-  SigC::Signal0<void> signal_valueChanged();
+  sigc::signal0<void> signal_valueChanged();
 
 private:
-  SigC::Signal0<void> m_signal_valueChanged;
+  sigc::signal0<void> m_signal_valueChanged;
 
   bool setScaleToEntry(void);
 
@@ -88,10 +88,10 @@ private:
   double value;
 
 public:
-  SigC::Signal0<void> signal_valueChanged();
+  sigc::signal0<void> signal_valueChanged();
 
 private:
-  SigC::Signal0<void> m_signal_valueChanged;
+  sigc::signal0<void> m_signal_valueChanged;
 
   bool setScaleToEntry(void);
 

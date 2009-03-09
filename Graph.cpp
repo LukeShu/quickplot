@@ -17,6 +17,7 @@
 #  include <sndfile.h>
 #endif
 
+#include <cstring>
 
 using namespace Gtk;
 #include "value_t.h"
@@ -720,6 +721,13 @@ bool Graph::on_button_press_event(GdkEventButton *event)
     buttonPressed = opZoomButton;
     xmouse = SMALL_INT;
   }
+  else if(event->button == opMidButton)
+  {
+    xPress = (int) event->x;
+    yPress = (int) event->y;
+    buttonPressed = opMidButton;
+    xmouse = SMALL_INT;
+  }
   
   return true;
 }
@@ -948,6 +956,12 @@ bool Graph::on_button_release_event(GdkEventButton *event)
       }
       lastPickerType = NONE;
     }
+  }
+  else if(buttonPressed == opMidButton)
+  {
+      int x = (xPress - (int) event->x);
+      int y = (yPress - (int) event->y);
+      zoomIn( x,y,get_width(), get_height() );
   }
   
   if(size() > 0 && isSameScale && currentMainWindow->statusBar.is_visible())
@@ -1181,31 +1195,31 @@ void GraphTab::on_close(void)
 
 
 
-SigC::Signal1<void, Graph *> Graph::signal_addedPlot(void)
+sigc::signal1<void, Graph *> Graph::signal_addedPlot(void)
 {
   return m_signal_addedPlot;
 }
 
-SigC::Signal2<void, Graph *, Plot *> Graph::signal_removedPlot(void)
+sigc::signal2<void, Graph *, Plot *> Graph::signal_removedPlot(void)
 {
   return m_signal_removedPlot;
 }
 
-SigC::Signal1<void, Graph *> Graph::m_signal_addedPlot;
+sigc::signal1<void, Graph *> Graph::m_signal_addedPlot;
 
-SigC::Signal2<void, Graph *, Plot *> Graph::m_signal_removedPlot;
+sigc::signal2<void, Graph *, Plot *> Graph::m_signal_removedPlot;
 
 
 
-SigC::Signal1<void, Graph *> Graph::signal_changedSameScale(void)
+sigc::signal1<void, Graph *> Graph::signal_changedSameScale(void)
 {
   return m_signal_changedSameScale;
 }
 
-SigC::Signal1<void, Graph *> Graph::m_signal_changedSameScale;
+sigc::signal1<void, Graph *> Graph::m_signal_changedSameScale;
 
 
-SigC::Signal0<void> Graph::signal_backgroundColorChanged(void)
+sigc::signal0<void> Graph::signal_backgroundColorChanged(void)
 {
   return m_signal_backgroundColorChanged;
 }
