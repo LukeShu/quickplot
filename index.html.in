@@ -1,0 +1,143 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!--
+
+  Quickplot - an interactive 2D plotter
+
+  Copyright (C) 1998-2011  Lance Arsenault
+
+
+  This file is part of Quickplot.
+
+  Quickplot is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published
+  by the Free Software Foundation, either version 3 of the License,
+  or (at your option) any later version.
+
+  Quickplot is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Quickplot.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+<html>
+<head>
+<title>Quickplot</title>
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+<style type='text/css'><!--
+/* inline the style sheet so it does not get lost */
+@STYLE_CSS@
+--></style>
+</head>
+
+<body>
+
+<center>
+<table summary="quickplot page header layout">
+<tr>
+<td style="text-align:center;font-size:xx-large;font-weight:bold;">
+  <img alt="quickplot icon" src="quickplot_icon.png">
+  &nbsp; Quickplot &nbsp;
+  <img alt="quickplot icon" src="quickplot_icon.png">
+</td>
+</tr>
+</table>
+</center>
+
+
+<table  summary="page layout" cellpadding="16">
+  <tr>
+  <td>
+
+  <font size=+1><b>Quickplot</b></font> is a fast interactive 2D
+  plotter with infinite zooming, value picking, pipe input, and almost
+  unlimited plots displayed.&nbsp; Quickplot is meant for looking at
+  your data quickly and of secondary importance is making static
+  pictures of your data.&nbsp; It's a data viewer, not a plot
+  editor.&nbsp; It reads ASCII text and sound files.&nbsp; It has lots
+  of command line options, making it very shell script friendly.&nbsp;
+  It currently runs on GNU/Linux systems and I hear it works on Mac OS
+  X Darwin.&nbsp;
+
+  <p>
+  <font size=+1><b>Quickplot</b></font> is <a
+  href="http://www.gnu.org/copyleft/gpl.html">GNU GPL free
+  software</a>.
+  </p>
+
+  </td>
+  <td>
+
+  <img alt="small screen shot" src="screenshot1_small.png">
+
+  </td>
+  </tr>
+  <tr>
+  <td>
+
+
+  <ul style="font-weight:bold;">
+    <li>Screen shots <a href="screenshot1.png">1</a> <a
+     href="screenshot2.png">2</a>
+       <a href="screenshot3.png">3</a></li>
+    <li><a
+     href="about.html">About</a></li>
+    <li><a
+     href="help.html">Help</a></li>
+    <li><a
+href="https://sourceforge.net/project/showfiles.php?group_id=82651"
+     >Downloads page</a></li>
+    <li><a
+href="https://sourceforge.net/projects/quickplot/">Sourceforge
+        Project Summary</a></li>
+  </ul>
+
+  </td>
+  <td>
+
+  <p style="padding-top:20px;padding-bottom:4px;">
+  <span style="font-size:large;font-weight:bold;">Quickplot is hosted by</span>
+  </p>
+
+  <p>
+    <a href="http://sourceforge.net/projects/quickplot"><img
+    style="padding-left:8px;padding-right:8px;padding-top:4px;padding-bottom:4px;"
+    src="http://sourceforge.net/sflogo.php?group_id=82651&amp;type=7"
+    width="210" height="62" border="0"
+    alt="SourceForge.net Logo" /></a>
+  </p>
+
+  </td>
+  </tr>
+</table>  
+
+
+
+<p>
+To check-out the current source from the SourceForge Subversion
+repository run:
+</p>
+
+<pre>
+svn co https://quickplot.svn.sf.net/svnroot/quickplot/trunk quickplot
+</pre>
+
+<p>
+This will create a directory named quickplot in the current directory.
+</p>
+
+
+
+
+<div style="margin-bottom:34px;">
+</div>
+
+
+@FOOTER_HTM@
+
+</body>
+</html>
+

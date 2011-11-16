@@ -1,0 +1,119 @@
+Developer notes
+
+
+New Features (compared to version 0.8.*)
+
+
+- No more using GTKmm.  Just GTK+.  Just written in C and
+not in C++ any more.
+
+   Gains:
+     * supports blank ascii values with NAN
+        -NAN is read as NAN because -NAN is used to
+        mark the ends of a channel of data
+     * supports inf infinity and over flow numbers
+     * reads under flow numbers as zero
+
+   Gains from not using C++:
+     * compiles faster saving development time
+     * easier to make API with other language bindings
+     * maybe it will runs faster
+     * easier to port to Windows, Mac, and other OSes
+     * simpler code, assuming I'm getting smarter
+     
+     The biggest gain may be the ease of making other language
+     bindings for the quickplot API.
+
+
+- Add a memory of state of the program for a given file and in
+general.  Like vim and other good programs do.
+
+
+- Grab and move the whole graph with left pointer.
+
+- Image save with transparent background.
+    do by making background transparent in GUI.
+
+- Added the -shape +shape command line option.  Like xeyes.
+
+- Tests show it plots faster than the old C++ version of
+  Quickplot.
+
+
+
+
+-------------------- Quickplot terms ---------------------
+
+
+app
+
+  is a singleton that holds general state for a running
+  quickplot process.  app keeps a list of qp (window)
+  objects.  app keeps a list of all sources.
+
+
+qp
+
+  is the object that holds all quickplot state of a quickplot
+  drawing window.  You can have as many qps as you like.
+
+
+source
+
+  a source holds all the data loaded in a list of channels.
+  sources are created from files of plotting data.
+
+
+channel
+
+  holds all the data of one plot variable.  Like for
+  example it can be a series of time values that is part of a
+  source that has two channels: time and positions.  A channel
+  may be a continous function like sine (channel_func), or a
+  finite list of values (channel_list).
+
+
+plot
+
+  holds one x channel and one y channel and other plot properies
+  like line width, point size, colors and so on
+
+
+graph
+
+  holds a list of plots that are displayed together, along
+  with whatever properies that are needed.  A graph make have
+  one plot or more plots that are all drawn on the same graph.
+  The plots on a graph may be plotted in the same scale or 
+  different scales.
+
+
+qp_*
+
+  We make the public Quickplot interfaces start with qp_.
+  It's a name space for the Quickplot C/C++ API.
+
+
+
+
+------------------------ Copyright --------------------------
+
+ Quickplot - an interactive 2D plotter
+
+ Copyright (C) 1998-2011  Lance Arsenault
+
+ This file is part of Quickplot.
+
+ Quickplot is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published
+ by the Free Software Foundation, either version 3 of the License,
+ or (at your option) any later version.
+
+ Quickplot is distributed in the hope that it will be useful, but
+ WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public License
+ along with Quickplot.  If not, see <http://www.gnu.org/licenses/>.
+

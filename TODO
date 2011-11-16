@@ -1,0 +1,125 @@
+Left off at
+
+  alternate the colors of row in the key binding list in help
+
+  find/check all the GTK+ argument options
+
+  check the status x y print format when there is no grid
+
+  submit Cairo line drawing bug 
+
+  Make man page.
+
+
+  Make the configure widget
+  Make the plots list widget
+  Make the color change widgets
+
+  Add CAIRO X11 macro #ifdef to code to
+  remove X11 specific code on none X11 platforms
+
+
+  add all --no-bla-bla and --bla-bla options that
+  make things consistent
+
+  change all the window titles to the graph names just
+  before we call gtk_main().
+
+  Test the startup of large data sets plotting more than
+  one graph tab and more than one window.
+
+
+
+  Pretty up the common html footer:
+    
+    * include a plot image that has
+      a transparent background and grid
+    
+    * an index to all the html files.
+
+
+  Try setting the status text on long redraws to say "drawing"
+
+
+
+  New tab callback  generates default plots if app->op_make_default_graph is set
+  or pops up the graph config plot selector if not.
+
+
+  Add widget that shows and edits all app options.
+
+
+  Add focus grab when waiting for the draw ...
+  or just throw away all events except quit or escape and equivalent.
+
+
+  Add quick culling to the case when values are always decreasing.
+
+
+  Test having a channel in a source with all bad data.
+
+
+  Add extern C to port API to C++.
+
+
+Document the changes of reading ASCII files
+  comment lines can start with:
+     zero or more white space
+     '!'-')' '/' '<'-'@' 'C' 'c'
+
+     any non-decimal character sequence can be a separator.
+     So -inf +99999 nan inf and decimal point before or after
+     an digit cannot be a separator.  A separator any be any
+     number of chars. Any combination of Space tab , (if it is
+     not a decimal point) * H can be a separator.  You can make
+     some pretty messy data files like
+
+        I love this
+        yyy0ginanoyt
+        ww1vb10yy
+        qq2wrtz
+        pp3ttinfxz
+        4 66.0
+        This is a comment
+        #So is this 353232
+
+     Is read the same as:
+
+     0 nan
+     1 10
+     2 nan
+     3 inf
+     4 66.0
+
+     ... assuming you did not tell quickplot to read labels
+     for any of that.
+     
+     nan or NAN is a number that is-not-a-number.
+     It can be thought of as 0/0.
+     In order to make the channels (columns) that a read in
+     all consistent a nan is inserted in place of the blank
+     next to the 2 in the second channel.  This keeps the
+     values aligned.
+     In calculus it is a very popular number, or more
+     presciently indeterminate form.
+     It's used by quickplot to represent a absent (or missing)
+     value in a data channel or field if you will.
+     -NAN or -nan is read as nan in quickplot because -nan
+     is used in quickplot to mark ends of data.
+    
+     The above example if we plot the second column VS the first
+     column the first point (0,nan) will be skipped in the plot.
+     INF or inf stay for a value too large to be read like
+     infinity or 1x10^(1000000000000000000000000000000).
+     Quickplot with just make a not that there is a large value
+     when plotting.  -INF or -inf can be used in a similar
+     fashion for large negative numbers.
+
+     Quickplot can parse any plan text file without error.
+     But remember garbage in gives garbage out.
+
+
+
+Add option to strip nan and/or inf from channels.
+
+

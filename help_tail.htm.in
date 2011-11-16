@@ -1,0 +1,127 @@
+<!--
+
+  Quickplot - an interactive 2D plotter
+
+  Copyright (C) 1998-2011  Lance Arsenault
+
+
+  This file is part of Quickplot.
+
+  Quickplot is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published
+  by the Free Software Foundation, either version 3 of the License,
+  or (at your option) any later version.
+
+  Quickplot is distributed in the hope that it will be useful, but
+  WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+  General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Quickplot.  If not, see <http://www.gnu.org/licenses/>.
+
+-->
+
+
+<!-- This file is appended to help.html after the options table.
+     The options table is auto-generated using the code the also
+     generates the options parsing code in Quickplot.  That keeps
+     the docs consistant with the code and vis versa.  This is
+     not like Doxygen or GTK-doc.
+ -->
+
+<p>For example the command
+
+<pre>quickplot load1.txt --no-lines load2.txt --lines --line-width=9</pre>
+
+<p>
+will make a graph from data in file load1.txt with no connecting lines
+and no grid.&nbsp; It will make a graph from the data in load2.txt
+with lines with width 9 pixels.
+</p>
+
+
+
+
+
+<h3>GTK+ OPTIONS</h3>
+
+
+<p>
+The following GTK+ options are parsed by
+the <a href="http://www.gtk.org/">GTK+</a> APIs (application
+programming interfaces), which Quickplot uses.
+</p>
+
+
+
+
+  <table
+summary="list of Quickplot gtk+ options. We got this list from running
+`galeon --help'. Where does GTK+ keep this info?">
+
+  <tr><td><span class=op>--class=CLASS</span></td>       <td> Program class as used by the window manager</td></tr>
+  <tr><td><span class=op>--display=DISPLAY</span></td>   <td> X display to use</td></tr>
+  <tr><td><span class=op>--g-fatal-warnings</span></td>  <td> Make all warnings fatal</td></tr>
+  <tr><td><span class=op>--gdk-debug=FLAGS</span></td>   <td> Gdk debugging flags to set</td></tr>
+  <tr><td><span class=op>--gdk-no-debug=FLAGS</span></td><td> Gdk debugging flags to unset</td></tr>
+  <tr><td><span class=op>--gtk-debug=FLAGS</span></td>   <td> Gtk+ debugging flags to set</td></tr>
+  <tr><td><span class=op>--gtk-module=MODULE</span></td> <td> Load an additional Gtk module</td></tr>
+  <tr><td><span class=op>--gtk-no-debug=FLAGS</span></td><td> Gtk+ debugging flags to unset</td></tr>
+  <tr><td><span class=op>--gxid-host=HOST</span></td>    <td>   </td></tr>
+  <tr><td><span class=op>--gxid-port=PORT</span></td>    <td>   </td></tr>
+  <tr><td><span class=op>--name=NAME</span></td>         <td> Program name as used by the window manager</td></tr>
+  <tr><td><span class=op>--screen=SCREEN</span></td>     <td> X screen to use</td></tr>
+  <tr><td><span class=op>--sync</span></td>              <td> Make X calls synchronous</td></tr>
+
+  </table>
+
+
+
+
+
+
+
+<h2>Keyboard Short-cuts</h2>
+
+
+<p>
+Quickplot has GUIs for all of the following immutable keyboard short-cuts:
+</p>
+
+<table summary="list of Quickplot key short-cuts">
+
+<tr><td><b>a</b></td> <td>show information <b><u>a</u></b>bout Quickplot using a web browser</td</tr>
+<tr><td><b>b</b></td> <td>toggles the visibility of the <b><u>b</u></b>utton bar</td</tr>
+<tr><td><b>c</b></td> <td><b><u>c</u></b>opies the current focused main window</td</tr>
+<tr><td><b>d</b></td> <td><b><u>d</u></b>elete the main window. This will not close the last main window.</td</tr>
+<tr><td><b>f</b></td> <td>toggles the visibility of the main border (<b><u>f</u></b>rame)</td</tr>
+<tr><td><b>g</b></td> <td>show/hide the <b><u>g</u></b>raph configuration widget</td</tr>
+<tr><td><b>h</b></td> <td>show <b><u>h</u></b>elp using a web browser</td</tr>
+<tr><td><b>i</b></td> <td>save a PNG <b><u>i</u></b>mage of the graph</td</tr>
+<tr><td><b>m</b></td> <td>show/hide the <b><u>m</u></b>enu bar</td</tr>
+<tr><td><b>n</b></td> <td>make a <b><u>n</u></b>ew graph</td</tr>
+<tr><td><b>o</b></td> <td><b><u>o</u></b>pen a data file</td</tr>
+<tr><td><b>p</b></td> <td>show/hide the <b><u>p</u></b>lot lister widget</td</tr>
+<tr><td><b>q</b></td> <td><b><u>q</u></b>uit</td</tr>
+<tr><td><b>r</b></td> <td>toggles the between d<b><u>r</u></b>awing with Cairo and X11</td</tr>
+<tr><td><b>s</b></td> <td>toggles the visibility of the <b><u>s</u></b>tatus bar</td</tr>
+<tr><td><b>t</b></td> <td>toggles the visibility of the graph <b><u>t</u></b>abs</td</tr>
+<tr><td><b>u</b></td> <td>toggles f<b><u>u</u></b>ll screen viewing</td</tr>
+<tr><td><b>w</b></td> <td>makes a new main <b><u>w</u></b>indow</td</tr>
+<tr><td><b>x</b></td><td>toggles the X11 shape e<b><u>x</u></b>tension on and off</td</tr>
+<tr><td><b>z</b></td> <td><b><u>z</u></b>oom out one level</td</tr>
+<tr><td><b>Z</b></td> <td><b><u>Z</u></b>oom out all the way</td</tr>
+<tr><td><b>esc</b></td> <td>close the current focused window. This will not close the last main window.</td</tr>
+<tr><td><b>r/l arrow</b></td>
+  <td>the right and left arrow keys cycle though graph tabs when the buttons and tabs are not showing</td</tr>
+
+</table>
+
+
+
+@FOOTER_HTM@
+
+</body>
+</html>
+
