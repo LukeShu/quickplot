@@ -74,7 +74,7 @@ DEFAULT_GRID_FONT="Sans 10"
 
 
 #AM_INIT_AUTOMAKE(option1 option2 ...)
-AM_INIT_AUTOMAKE(dist-bzip2 no-dist-gzip)
+AM_INIT_AUTOMAKE(dist-bzip2 dist-xz)
 AC_CONFIG_MACRO_DIR([m4])
 
 AM_CONFIG_HEADER(config.h)
@@ -93,6 +93,15 @@ LIB_VERSION="${LIB_CURRENT}:${LIB_REVISION}:${LIB_AGE}"
 
 # initialize the error flag
 error=no
+
+
+AC_CHECK_PROG(HAVE_LYNX, lynx, [yes], [no])
+AM_CONDITIONAL([HAVE_LYNX],
+               [test x$HAVE_LYNX = xyes])
+
+AC_CHECK_PROG(HAVE_CONVERT, convert, [yes], [no])
+AM_CONDITIONAL([HAVE_CONVERT],
+               [test x$HAVE_CONVERT = xyes])
 
 
 AC_CHECK_HEADERS(math.h)
