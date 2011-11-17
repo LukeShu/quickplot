@@ -1,6 +1,7 @@
 Quickplot Home-page: http://quickplot.sourceforge.net/
 
 
+
 What is Quickplot?
 
 Quickplot is an interactive 2D plotter.  You can very
@@ -8,8 +9,9 @@ quickly swim through data with Quickplot.
 
 
 
-The installed html files document Quickplot better than this file,
-but if they are not built and installed yet here's some pointers.
+Quickplot installs HTML (and man pages and etc) files that
+document Quickplot better than this file, but if they are
+not built and installed yet here's some pointers.
 
 
 
@@ -57,21 +59,35 @@ To build and develop Quickplot from the SVN source the following
 packages, in addition to the above packages, are required to be
 installed:
 
-    * The GNU Autotools   Autoconf, Automake, and Libtool are used
-                          to build the Quickplot source.
-                          http://www.gnu.org/software/autoconf/
-                          http://www.gnu.org/software/automake/
-                          http://www.gnu.org/software/libtool/
+    * GNU Autotools   Autoconf, Automake, and Libtool are used
+                      to build the Quickplot source.
+                      http://www.gnu.org/software/autoconf/
+                      http://www.gnu.org/software/automake/
+                      http://www.gnu.org/software/libtool/
 
-    * ImageMagick         The convert program, from ImageMagick, is
-                          used to make xpm images from PNG images in
-                          the Quickplot source.
-                          http://www.imagemagick.org/
+    * ImageMagick     The convert program, from ImageMagick, is
+                      used to make xpm images from PNG images in
+                      the Quickplot source.
+                      http://www.imagemagick.org/
 
-    * Lynx                Lynx is a fully-featured World Wide Web
-                          (WWW) client, or web browser, that can
-                          display inside of a tty terminal.  We use
-                          Lynx to generate ASCII text files from our
-                          html files.
-                          http://lynx.isc.org/
+    * Lynx            Lynx is a fully-featured World Wide Web
+                      (WWW) client, or web browser, that can
+                      display inside of a tty terminal.  We use
+                      Lynx to generate ASCII text files from our
+                      html files.
+                      http://lynx.isc.org/
+
+
+
+There is another optional Quickplot package for development and testing
+the Quickplot source code.  Test programs in this package do things
+like: display the default Quickplot point and line colors in one window,
+or stupid things like read and print "NAN" as a double; just so developers
+know.  You can get this "quickplot_tests" package by:
+
+
+   svn co https://quickplot.svn.sf.net/svnroot/quickplot/quickplot_tests quickplot_tests
+
+
+This will make the directory quickplot_tests in the current directory.
 
