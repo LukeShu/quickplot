@@ -274,11 +274,12 @@ sed -e "s!//localhost$$dir!//$(htmldir)!g" >> $@
 endif
 
 
-
-
-# If we remake the dist we must remove the out-of-date hash files.
+# Add the repository revision number to the dist.
+# Remove generated files that auto-tools is stupid about.
+# Remove the out-of-date hash files.
 dist-hook:
 	./repo_version.sh > $(distdir)/REPO_VERSION
+	cd $(distdir) && rm -f $(DISTCLEANFILES) config.h
 	rm -f $(gzfile).md5 $(gzfile).sha* $(bz2file).md5 $(bz2file).sha* $(xzfile).md5 $(xzfile).sha*
 
 
