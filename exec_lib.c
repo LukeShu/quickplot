@@ -61,7 +61,6 @@ void qp_exec_lib(void)
          "    " PACKAGE_NAME "  version: " VERSION     "\n"
          " =============================================\n"
          "\n"
-	 "  Repo Version : " REPO_VERSION            "\n"
          "  Compiled ("__FILE__") on date: "__DATE__ "\n"
          "                             at: "__TIME__ "\n"
 	 "\n"

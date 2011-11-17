@@ -54,8 +54,6 @@ LIB_AGE=0
 # get compiled in.
 
 
-REPO_VERSION="`./repo_version.sh`"
-
 NUMBER_OF_PLOTS="12" # default number of plots at startup
 
 
@@ -224,8 +222,6 @@ AC_DEFINE_UNQUOTED(DEFAULT_GRID_FONT, "$DEFAULT_GRID_FONT",
         [The default font used when drawing the numbers on the grid])
 
 
-AC_SUBST(REPO_VERSION)
-AC_DEFINE_UNQUOTED(REPO_VERSION, "$REPO_VERSION", [repository version])
 
 AC_DEFINE_UNQUOTED(LIB_VERSION, "$LIB_VERSION",
   [Quickplot Library version number])
@@ -277,7 +273,7 @@ AC_CONFIG_FILES([
 Makefile
 quickplot.pc
 footer.htm
-about.html
+about.htm
 help_head.htm
 help_tail.htm
 index.html

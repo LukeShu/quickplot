@@ -500,7 +500,7 @@ void cb_about(GtkWidget *w, gpointer data)
 
   if(data)
   {
-    printf("Quickplot version " VERSION " :  repo version " REPO_VERSION "\n"
+    printf("Quickplot version " VERSION "\n"
       "The Quickplot home-page is at " PACKAGE_URL "\n"
       "This was compiled on: " __DATE__ " at the time: " __TIME__ "\n"
       "Quickplot is free software, distributed under the terms of the\n"

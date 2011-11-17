@@ -43,7 +43,7 @@ EXTRA_DIST =\
  favicon.ico\
  style.css\
  footer.htm.in\
- about.html.in\
+ about.htm.in\
  help_head.htm.in\
  help_tail.htm.in\
  index.html.in\
@@ -89,6 +89,7 @@ html_DATA =\
 
 
 DISTCLEANFILES =\
+ about.html\
  app_op_declare.h\
  app_op_init.h\
  help.html\
@@ -245,8 +246,16 @@ help.html: help_head.htm mk_options help_tail.htm
 help_head.htm: style.css
 help_tail.htm: footer.htm
 index.html: style.css  footer.htm
-about.html: style.css footer.htm
+about.htm: style.css footer.htm
 
+
+# This is just so we have at least one installed file,
+# about.html, that will tell us what the package source
+# is.  This cannot be done in configure because we
+# want to be able to change repo_version (by checking
+# in file and stuff) without having to re-run configure.
+about.html: about.htm
+	reves="`./repo_version.sh`" ; sed -e "s/@REPO_VERSION@/$$reves/" $< > $@
 
 if HAVE_CONVERT
 .png.xpm:
