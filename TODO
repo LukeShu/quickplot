@@ -41,8 +41,6 @@ Left off at
   Test the startup of large data sets plotting more than
   one graph tab and more than one window.
 
-
-
   Pretty up the common html footer:
     
     * include a plot image that has

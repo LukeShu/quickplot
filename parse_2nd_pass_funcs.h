@@ -36,6 +36,8 @@ static inline
 void parse_2nd_cairo_draw(void)
 {
   app->op_x11_draw = 0;
+  if(default_qp)
+    default_qp->x11_draw = 0;
 }
 
 static inline
@@ -267,6 +269,8 @@ static inline
 void parse_2nd_x11_draw(void)
 {
   app->op_x11_draw = 1;
+  if(default_qp)
+    default_qp->x11_draw = 1;
 }
 
 

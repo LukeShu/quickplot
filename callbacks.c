@@ -396,10 +396,18 @@ void cb_view_fullscreen(GtkWidget *w, gpointer data)
   gdk_window_set_cursor(gtk_widget_get_window(qp->window), app->waitCursor);
 }
 
+static __thread int cairo_draw_ignore_event = 0;
+
 void cb_view_cairo_draw(GtkWidget *w, gpointer data)
 {
   struct qp_qp *qp;
-  struct qp_graph *gr;
+
+  if(cairo_draw_ignore_event)
+  {
+    //DEBUG("ignoring\n");
+    return;
+  }
+
   ASSERT(data);
   qp = data;
 
@@ -409,11 +417,8 @@ void cb_view_cairo_draw(GtkWidget *w, gpointer data)
   else
     qp->x11_draw = 1;
 
-  for(gr = qp_sllist_begin(qp->graphs); gr; gr = qp_sllist_next(qp->graphs))
-  {
-    qp_graph_switch_draw_mode(gr);
-    ecb_graph_configure(NULL, NULL, gr);
-  }
+  qp_graph_switch_draw_mode(qp->current_graph);
+  ecb_graph_configure(NULL, NULL, qp->current_graph);
 
   gtk_widget_queue_draw(qp->current_graph->drawing_area);
   gdk_window_set_cursor(gtk_widget_get_window(qp->window), app->waitCursor);
@@ -707,8 +712,24 @@ gboolean cb_switch_page(GtkNotebook *notebook, GtkWidget *page,
  
   qp_qp_set_status(gr->qp);
 
+  if((gtk_check_menu_item_get_active(
+          GTK_CHECK_MENU_ITEM(gr->qp->view_cairo_draw)) &&
+      gr->x11) ||
+    (!gtk_check_menu_item_get_active(
+          GTK_CHECK_MENU_ITEM(gr->qp->view_cairo_draw)) &&
+      !gr->x11) )
+  {
+    cairo_draw_ignore_event = 1;
+    gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(gr->qp->view_cairo_draw),
+        (gr->x11)?FALSE:TRUE);
+    cairo_draw_ignore_event = 0;
+  }
+
   // redraw queuing is not needed
   //gtk_widget_queue_draw(gr->drawing_area);
+
+  /* a new graph will use the draw mode of this graph */
+  gr->qp->x11_draw = (gr->x11)?1:0;
 
   if(gr->qp->shape)
     gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window),app->waitCursor);
