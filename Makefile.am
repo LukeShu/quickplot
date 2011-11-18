@@ -143,7 +143,6 @@ libquickplot_la_SOURCES =\
  qp.h\
  quickplot.h\
  quickplot_icon.xpm\
- shell.c\
  source.c\
  source_double.c\
  spew.c\

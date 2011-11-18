@@ -25,9 +25,14 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <fcntl.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <dlfcn.h>
 
+#include <sndfile.h>
 #include <gtk/gtk.h>
 
 #include "quickplot.h"
@@ -42,8 +47,207 @@
 #include "channel_double.h"
 
 
+
+#define BUF_LEN  (64)
+
+static __thread ssize_t (*sys_read)(int fd,
+      void *buf, size_t count) = NULL;
+
+static __thread struct qp_reader *qp_rd = NULL;
+
+struct qp_reader
+{
+  int fd;
+  FILE *file;
+  /* We use this buffer to virtualize read()
+   * We think that libsndfile will know that
+   * the file good by reading just RD_LEN. */
+  uint8_t buf[BUF_LEN];
+  size_t len, /* bytes read from system read() */
+         rd;  /* bytes read by reader */
+  int past; /* read past the buffer */
+  char *filename;
+};
+
+
+/* Wrapping the system read() just so we can read
+ * a pipe with the libsndfile API and if the
+ * pipe was not sound data then we can read
+ * what was in the front of the pipe from 
+ * the qp_rd buffer.  It turns out that stdio
+ * streams do not use the read() function symbol
+ * but instead find a lower level sys call thingy.
+ * So we use our own Getline() that starts by
+ * copying from the qp_rd buffer and than switches
+ * to calling getline() after the buffer is all
+ * copied.  This function does more than we
+ * need, because we wrongly though that getline would
+ * call it.  We are lucky that libsndfile does not
+ * use stdio streams to read. */
+ssize_t read(int fd, void *buf, size_t count)
+{
+  if(!sys_read)
+  {
+    char *error;
+    dlerror();
+    sys_read = dlsym(RTLD_NEXT, "read");
+    if((error = dlerror()) != NULL)
+    {
+      EERROR("dlsym(RTLD_NEXT, \"read\") failed: %s\n", error);
+      QP_EERROR("Failed to virtualize read(): %s\n", error);
+      exit(1);
+    }
+  }
+
+
+  if(qp_rd && qp_rd->fd == fd && !qp_rd->past)
+  {
+    ssize_t n;
+    size_t rcount;
+
+    DEBUG("count=%zu  rd=%zu len=%zu\n", count, qp_rd->rd, qp_rd->len);
+
+    if(BUF_LEN == qp_rd->rd)
+    {
+      /* The read before this one was the last
+       * read that was buffered.  Now it is reading
+       * past the buffer and we are no longer
+       * buffering the read.  We are screwed if
+       * we need more buffering. */
+      qp_rd->past = 1;
+      DEBUG("Finished virtualizing read()\n");
+      return sys_read(fd, buf, count);
+    }
+
+    if(qp_rd->len >= qp_rd->rd + count)
+    {
+      /* pure virtual read */
+      memcpy(buf, &qp_rd->buf[qp_rd->rd], count);
+      qp_rd->rd += count;
+      return (ssize_t) count;
+    }
+
+    if(BUF_LEN == qp_rd->len)
+    {
+      /* We cannot read any more and
+       * we still have unread buffer data.
+       * pure virtual read with less than
+       * requested returned */
+      /* count is greater than what is buffered */
+      n = BUF_LEN - qp_rd->rd;
+      memcpy(buf, &qp_rd->buf[qp_rd->rd], n);
+      qp_rd->rd = BUF_LEN;
+      return n;
+    }
+
+    /* At this point we will read more into
+     * the buffer */
+
+    if(count > BUF_LEN - qp_rd->rd)
+      /* Giving less than asked for.
+       * We may fill the buffer full. */
+      rcount = BUF_LEN - qp_rd->len;
+    else
+      /* Try to give what was asked for. */
+      rcount = count + qp_rd->rd - qp_rd->len;
+
+    errno = 0;
+    n = sys_read(fd, &qp_rd->buf[qp_rd->rd], rcount);
+
+    if(n < 0)
+    {
+      EWARN("read(fd=%d, buf=%p, count=%zu) failed\n",
+          fd, &qp_rd->buf[qp_rd->rd], rcount);
+      QP_EWARN("reading file \"%s\" failed", qp_rd->filename);
+      qp_rd->past = 1;
+      return n;
+    }
+    if(n == 0 && qp_rd->rd == qp_rd->len)
+    {
+      /* virtual and real end of file */
+      DEBUG("read(fd=%d, buf=%p, count=%zu)=0 end of file\n",
+          fd, &qp_rd->buf[qp_rd->rd], rcount);
+      return n;
+    }
+   
+    /* assuming that the OS is not a piece of shit */
+    ASSERT(n <= rcount);
+
+    qp_rd->len += n;
+    n = qp_rd->len - qp_rd->rd;
+    memcpy(buf, &qp_rd->buf[qp_rd->rd], n);
+    qp_rd->rd += n;
+    return n;
+  }
+  else
+    return sys_read(fd, buf, count);
+}
+
+/* This starts by copying data from the qp_rd
+ * read() buffer and then when that is empty it
+ * finishes reading the file to complete a line,
+ * and after that it just calls getline() */
+static inline
+ssize_t Getline(char **lineptr, size_t *n, FILE *file)
+{
+  ssize_t i;
+  int c;
+
+  if(qp_rd->rd == qp_rd->len)
+    return getline(lineptr, n, file);
+  
+  i = qp_rd->rd;
+
+
+  while(i < qp_rd->len && qp_rd->buf[i] != '\n')
+    ++i;
+
+  if(qp_rd->buf[i] == '\n')
+  {
+    i -= qp_rd->rd;
+    ++i; /* copy the '\n' too */
+    if(*n < i + 1)
+      *lineptr = qp_realloc(*lineptr, i + 1);
+    memcpy(*lineptr, &qp_rd->buf[qp_rd->rd], i);
+    qp_rd->rd += i;
+    (*lineptr)[i] = '\0';
+    *n = i + 1;
+    return i;
+  }
+  
+  /* i == qp_rd->len  && qp_rd->buf[i] != '\n' */
+
+  i -= qp_rd->rd; /* copy i bytes from the qp_rd buffer */
+
+  if(*n < i + 1)
+  {
+    *n = i + 1 + 128;
+    *lineptr = qp_realloc(*lineptr, *n);
+  }
+  memcpy(*lineptr, &qp_rd->buf[qp_rd->rd], i);
+  qp_rd->rd = qp_rd->len;
+  
+  /* Now we need to read the file until '\n' or EOF */
+
+  c = getc(file);
+  while(c != EOF)
+  {
+    (*lineptr)[i++] = c;
+    /* we now have i chars in *lineptr */
+    if(*n == i + 1)
+      *lineptr = qp_realloc(*lineptr , (*n += 128));
+    if(c == '\n')
+      break;
+    c = getc(file);
+  }
+  (*lineptr)[i] = '\0';
+
+  return i;
+}
+
+
 static
-int read_ascii(qp_source_t source, FILE *file)
+int read_ascii(qp_source_t source, struct qp_reader *rd)
 {
   char *line = NULL;
   size_t line_buf_len = 0;
@@ -78,7 +282,7 @@ int read_ascii(qp_source_t source, FILE *file)
     /* we seperate the first read because it shows
      * the error case when the file has no data at all. */
     errno = 0;
-    n = getline(&line, &line_buf_len, file);
+    n = Getline(&line, &line_buf_len, rd->file);
 
     ++line_count;
     if(n == -1 || errno)
@@ -110,7 +314,7 @@ int read_ascii(qp_source_t source, FILE *file)
    * We would have returned if we did not. */
 
   errno = 0;
-  while((n = getline(&line, &line_buf_len, file)) > 0)
+  while((n = Getline(&line, &line_buf_len, rd->file)) > 0)
   {
     ++line_count;
     parse_line(source, line);
@@ -207,45 +411,165 @@ make_source(const char *filename, int value_type)
   source->value_type = (value_type)?value_type:QP_TYPE_DOUBLE;
   source->num_channels = 0;
   /* NULL terminated array on channels */
-  source->channels = (struct qp_channel **)qp_malloc(
-      sizeof(struct qp_channel *));
+  source->channels = qp_malloc(sizeof(struct qp_channel *));
   *(source->channels) = NULL;
   qp_sllist_append(app->sources, source);
 
   return source;
 }
 
+/* Returns 0 if the file is read as a libsndfile
+ * Returns 1 is not.
+ * Returns -1 and spews if we have a system read error */
+static
+int read_sndfile(struct qp_source *source, struct qp_reader *rd)
+{
+  double *x, rate;
+  size_t count;
+  SNDFILE *file;
+  SF_INFO info;
+
+
+  file = sf_open_fd(rd->fd, SFM_READ, &info, 0);
+  if(!file)
+  {
+    QP_INFO("file \"%s\" is not readable by libsndfile\n",
+        rd->filename);
+    return 1; /* not a libsndfile */
+  }
+
+  rate = info.samplerate;
+  x = qp_malloc(sizeof(double)*(info.channels+1));
+
+  source->num_channels = info.channels+1;
+  source->channels = qp_realloc(source->channels,
+        sizeof(struct qp_channel *)*(info.channels+2));
+  source->channels[source->num_channels] = NULL;
+  source->value_type = QP_TYPE_DOUBLE;
+
+  /* use count as dummy index for now */
+  for(count=0; count<source->num_channels; ++count)
+    source->channels[count] =
+      qp_channel_create(QP_CHANNEL_FORM_SERIES, QP_TYPE_DOUBLE);
+
+  count = 0;
+
+  while(1)
+  {
+    int i;
+
+    if(sf_readf_double(file, x, 1) < 1)
+      break;
+
+    /* TODO: use other channel types like load as shorts or ints */
+
+    qp_channel_series_double_append(source->channels[0], count/rate);
+    for(i=0;i<info.channels;++i)
+       qp_channel_series_double_append(source->channels[i+1], x[i]);
+
+    ++count;
+  }
+
+  source->num_values = count;
+  free(x);
+  sf_close(file);
+
+  if(count)
+  {
+    DEBUG("read\nlibsndfile \"%s\" with %d sound channel(s), "
+        "at rate %d Hz with %zu values, %g seconds of sound\n",
+        rd->filename,
+        info.channels, info.samplerate,
+        count, count/rate);
+    return 0; /* success */
+  }
+
+  QP_WARN("No sound data found in file \"%s\"\n", rd->filename);
+  return -1; /* fail no data in file, caller cleans up */
+}
+
+
 qp_source_t qp_source_create(const char *filename, int value_type)
 {
   struct qp_source *source;
-  FILE *file = NULL;
+  struct qp_reader rd; /* use stack memory  :) */
+  int r;
 
   source = make_source(filename, value_type);
 
-  if(strcmp(filename,"-") == 0)
-    file = stdin;
+  rd.fd = -1;
+  rd.rd = 0;
+  rd.len = 0;
+  rd.past = 0;
+  rd.file = NULL;
+  rd.filename = (char *) filename;
+  qp_rd = &rd;
 
-  if(!file)
+  if(strcmp(filename,"-") == 0)
   {
-    errno = 0;
-    file = fopen(filename, "r");
+    rd.file = stdin;
+    rd.fd = STDIN_FILENO;
   }
-  if(!file)
+
+  if(rd.fd == -1)
+    rd.fd = open(filename, O_RDONLY);
+
+  if(rd.fd == -1)
   {
-    EWARN("fopen(\"%s\",\"r\") failed\n", filename);
+    EWARN("open(\"%s\",O_RDONLY) failed\n", filename);
     QP_EWARN("%sFailed to open file%s %s%s%s\n",
         bred, trm, btur, filename, trm);
     goto fail;
   }
 
+  if((r = read_sndfile(source, &rd)))
+  {
+    if(r == -1)
+      goto fail;
 
-  /* TODO: determine file type. Assume ASCII text for now. */
 
-  
+    if(rd.past)
+    {
+      VASSERT(0, "libsndfile read to much data "
+          "to see that the file was not a sndfile\n");
+      QP_WARN("%sFailed to read file%s %s%s%s:"
+          " read wrapper failed\n",
+          bred, trm, btur, filename, trm);
+      goto fail;
+    }
 
 
-  if(read_ascii(source, file))
-    goto fail;
+    // ASSERT(rd.len > 0);
+
+
+    if(!rd.file)
+    {
+      errno = 0;
+      rd.file = fdopen(rd.fd, "r");
+      ASSERT(fileno(rd.file) == rd.fd);
+    }
+    if(!rd.file)
+    {
+      EWARN("fopen(\"%s\",\"r\") failed\n", filename);
+      QP_EWARN("%sFailed to open file%s %s%s%s\n",
+          bred, trm, btur, filename, trm);
+      goto fail;
+    }
+
+    /* Start reading the data from the qp_rd read() buffer */
+    rd.rd = 0;
+    /* no need to add more to the qp_rd read() buffer */
+    rd.fd = -1;
+
+    if(read_ascii(source, &rd))
+      goto fail;
+  }
+  else
+  {
+    /* it is a sndfile file */
+
+  }
+
 
 
   {
@@ -299,19 +623,37 @@ qp_source_t qp_source_create(const char *filename, int value_type)
       filename);
 
   QP_NOTICE("created source with %zu sets of "
-      "values in %zu channels from file %s\n",
+      "values in %zu channels from file \"%s\"\n",
       source->num_values, source->num_channels,
       filename);
+
+  qp_rd = NULL;
+
+  if(strcmp(filename,"-") == 0)
+    /* We do not close stdin */
+    return source;
+
+  if(rd.file)
+    fclose(rd.file);
+  else if(rd.fd != -1)
+    close(rd.fd);
 
   return source;
 
 fail:
 
-  if(file)
-    fclose(file);
+  if(strcmp(filename,"-") != 0)
+  {
+    if(rd.file)
+      fclose(rd.file);
+    else if(rd.fd != -1)
+      close(rd.fd);
+  }
 
   if(source)
     qp_source_destroy(source);
+
+  qp_rd = NULL;
 
   return NULL;
 }

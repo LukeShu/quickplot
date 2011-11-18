@@ -1,5 +1,7 @@
 Left off at
 
+  remake homepage
+
   fix top of help.html
 
   add sub-grid
@@ -16,6 +18,11 @@ Left off at
 
   Make man page.
 
+
+  Add Channel functions.
+
+  Add other channel data types other than double, like short and int
+  for loading sound files with a smaller buffer.
 
   Make the configure widget
   Make the plots list widget

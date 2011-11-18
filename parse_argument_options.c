@@ -93,8 +93,15 @@ void qp_getargs_1st_pass(int argc, char **argv)
   /* make sure that app exists */
   qp_app_check();
 
+
+#ifdef QP_DEBUG
+  /* default spew   INFO 1 */
+  qp_spew_init(1);
+#else
   /* default spew   WARN 3 */
   qp_spew_init(3);
+#endif
+
 
   /* This is the an auto-generated function */
   parse_args_1st_pass(argc, argv);

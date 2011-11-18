@@ -125,16 +125,30 @@ that one can make pretty pictures with.</p>
 
 
 <ul>
-  <li>the mouse grab and slide with left mouse button is very intuitive
+  <li>draws much faster then version 0.8.*
+  <li>has many more command line options
+  <li>the new mouse grab and slide with left mouse button is very intuitive
   <li>more robust text data file reading
-  <li>translucent and transparent colors using RGBA
+    <ul>
+      <li>better locale support
+      <li>reads rows with missing number entries
+      <li>more row comment formats
+      <li>reads infinity and nan
+      <li>will read any text file and pick out the numbers
+    </ul>
+  <li>Cairo drawing that provides translucent and transparent colors using RGBA
   <li>makes graphs with the X11 shape extension that float plots
   on your screen letting you see though them to your other windows
   below
+  <li>you can toggle fullscreen draw mode for presentations
   <li>reads more sound file formats with newer libsndfile
+  <li>reads sound files from standard input (pipe input) with newer libsndfile
   <li>displays large files much faster than the previous Quickplot version
   <li>better double buffer drawing with super quick re expose redraws,
-      fixes previous versions slow re expose redraws
+    fixes previous versions slow re-expose redraws
+  <li>still automatically determines the input file formats
+  <li>Quickplot is no longer written in C++ so it installs faster with
+    less prerequisites
 </ul>
 
 

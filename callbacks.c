@@ -893,7 +893,7 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event,
       {
         /* we just shrink the plots a little */
         /* We make a zoom level that zooms out */
-        qp_zoom_push(&(gr->z), 0.84, 0.08, 0.84, 0.08); 
+        qp_zoom_push(&(gr->z), 0.8, 0.1, 0.8, 0.1); 
         ++gr->zoom_level;
       }
       else if(start_x >= 0 && save_x < width &&

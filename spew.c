@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <stdlib.h>
 
+#include "config.h"
 #include "spew.h"
 #include "term_color.h"
 
@@ -54,7 +55,11 @@ void qp_spew_init(int level)
 
 
   spew_file = stdout; /* default value */
-  spew_level = 0; /* default value */
+#ifdef QP_DEBUG
+  spew_level = 0; /* DEBUG default value */
+#else
+  spew_level = 2; /* non-DEBUG default value */
+#endif
 
   env = getenv("QUICKPLOT_SPEW_FILE");
 
@@ -113,7 +118,7 @@ void qp_spew_init(int level)
         env[0] == '3')
       spew_level = 3; /* WARN */
   }
-  else
+  else if(level >= 0)
     spew_level = level;
 }
 
