@@ -84,13 +84,16 @@ struct qp_option options[] =
 {
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,1}, "",                    0,           "FILE",      "read data from file FILE.  If FILE is - (dash) then "
-                                                          "standard input will be read.",                               0,       0          },
+                                                          "standard input will be read.  See also ::--file@@ and "
+                                                          "::--pipe@@.",                                                0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {2,0}, "--about",             "-a",        0,           "display introductory information about Quickplot in a "
                                                           "browser and exit",                                           0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--auto-scale",        "-A",        0,           "automatically select if multi-plot graphs are on the "
-                                                          "same x an y scales",                                         0,       0          },
+                                                          "same x an y scales.  This is the default.  See also "
+                                                          "::--same-x-scale@@, ::--same-y-scale@@, ::--same-scale@@ "
+                                                          "::--different-scale@@.",                                     0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,1}, "--background-color",  "-c",        "RGBA",      "set the color of the graph background.  RGBA may be any "
                                                           "string that GTK+ can parse into a RGB or RGBA color.  For "
@@ -99,9 +102,11 @@ struct qp_option options[] =
                                                                                                                                  "qp_color"
                                                                                                                                  "a"        },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--border",            0,           0,           "add a border to main window",                                "TRUE",  "gboolean" },
+{ {0,1}, "--border",            0,           0,           "add a border to main window.  This is the default.  "
+                                                          "See also ::--no-border@@.",                                  "TRUE",  "gboolean" },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--buttons",           "-u",        0,           "show the button bar in the main window",                     "1",     "int"      },
+{ {0,1}, "--buttons",           "-u",        0,           "show the button bar in the main window.  This is the "
+                                                          "default.  See also ::--no-buttons@@.",                       "1",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--cairo-draw",        "-w",        0,           "draw graphs using the Cairo API.  Cairo drawing may be "
                                                           "slower, but you get translucent colors and anti-aliasing "
@@ -116,18 +121,20 @@ struct qp_option options[] =
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--different-scales ", "-d",        0,           "graphs with more than one plot will have different "
                                                           "scales if the extreme values in each plot are not all "
-                                                          "the same",                                                   0,       0          },
+                                                          "the same.  See also ::--same-scale@@.",                      0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--file",              "-f",        "FILE",      "read data from file FILE.  If FILE is - (dash) then "
-                                                          "standard input will be read.",                               0,       0          },
+                                                          "standard input will be read.  See also ::--pipe@@.",         0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--fullscreen",        0,           0,           "make the main window fullscreen.",                           0,       0          },
+{ {0,1}, "--fullscreen",        0,           0,           "make the main window fullscreen.  See also "
+                                                          "::--maximize@@.",                                            0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--geometry",          0,           "GEO",       "specify the position and size of the main window.  To "
                                                           "set the geometry back to the default just set GEO "
                                                           "to NONE.  Example ::--geometry=1000x300-0+30@@",             "NULL",  "char *"   },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--grid",              0,           0,           "draw a grid with the graph.  This is the default.",          "1",     "int"      },
+{ {0,1}, "--grid",              0,           0,           "draw a grid with the graph.  This is the default.  "
+                                                          "See also ::--no-grid@@.",                                    "1",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--grid-font",         0,           "FONT",      "set the font used to in the grid label numbers.  "
                                                           "Example: ::--grid-font='Sans Bold 12'@@.  The default "
@@ -160,16 +167,16 @@ struct qp_option options[] =
                                                           "varies as the scale changes due to zooming.  This "
                                                           "distance cannot be fixed due to the way Quickplot "
                                                           "scales your graphs and always picks reasonable grid "
-                                                          "line spacing.",                                              "220",   "int"      },
+                                                          "line spacing.  See also ::--grid-x-space@@.",                "220",   "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--grid-y-space",        0,        "PIXELS",     "set the maximum y space between horizontal grid lines.  "
-                                                          "See option ::--grid-x-space@@ above.",                       "190",   "int"      },
+                                                          "See also ::--grid-x-space@@ above.",                         "190",   "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {2,0}, "--gtk-version",       0,           0,           "print the version of GTK+ that Quickplot was built with "
                                                           "and then exit",                                              0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--gui",               0,           0,           "show the menu bar, button bar, tabs bar, and the status "
-                                                          "bar",                                                        0,       0          },
+                                                          "bar.  This is the default.  See also ::--no-gui@@.",         0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {2,0}, "--help",              "-h",        0,           "display help in a browser and exit",                         0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
@@ -196,62 +203,77 @@ struct qp_option options[] =
                                                           "** ## ::--start VAL@@ or ::-r VAL@@  set the first "
                                                           "value in the sequence to VAL.  The default first value "
                                                           "is ::0@@. ## ::--step SIZE@@ or ::-t SIZE@@  set the "
-                                                          "sequence step size to ::SIZE@@.  The default is 1. &&",      "NULL",  "struct "
+                                                          "sequence step size to ::SIZE@@.  The default is 1. && "
+                                                          "Sound files will always have a linear channel that "
+                                                          "contains the time prepended.  "
+                                                          "See also ::--no-linear-channel@@.",                          "NULL",  "struct "
                                                                                                                                  "qp_chann"
                                                                                                                                  "el *"     },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--lines",             "-H",        "[Y|N|A]",   " ** ## Y  yes show lines ## ::N@@  no don't show lines. "
-                                                          "Same as ::--no-lines@@. ## ::A@@  auto, be smart about it.  "
-                                                          "This is the default. && If the ::Y@@, ::N@@, or "
+                                                          "Same as ::--no-lines@@. ## ::A@@  auto, be smart about "
+                                                          "it.  This is the default. && If the ::Y@@, ::N@@, or "
                                                           "::A@@ is not given ::Y@@ is implied.",                       "-1",    "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--maximize",          0,           0,           "maximize the main window.",                                  "0",     "int"
+{ {0,1}, "--maximize",          0,           0,           "maximize the main window.  See also ::--no-maximize@@.",     "0",     "int"
                                                                         /* app->op_maximize = 0 off     1 on    2 fullscreen */             },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--menubar",           0,           0,           "show the menu bar.  This is the default.",                   "1",     "int"      },
+{ {0,1}, "--menubar",           0,           0,           "show the menu bar.  This is the default.  See also "
+                                                          "::--menubar@@.",                                             "1",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--new-window",         0,           0,          "make a new main window for each graph",                      "0",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-border",         0,           0,           "display graphs main windows with no borders",                0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-buttons",        "-B",        0,           "hide the button bar in the main window",                     0,       0          },
+{ {0,1}, "--no-buttons",        "-B",        0,           "hide the button bar in the main window.  See also "
+                                                          "::--buttons@@.",                                             0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-fullscreen",     0,           0,           "don't make the main window fullscreen",                      0,       0          },
+{ {0,1}, "--no-fullscreen",     0,           0,           "don't make the main window fullscreen.  This is the "
+                                                          "default.  See also ::--fullscreen@@.",                       0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-default-graph",  "-U",        0,           "don't make the default graph for each file loaded",          0,       0          },
+{ {0,1}, "--no-default-graph",  "-U",        0,           "don't make the default graph for each file loaded.  "
+                                                          "See also ::--default-graph@@.",                              0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-grid",           "-G",        0,           "don't draw graph grid lines in the graph",                   0,       0          },
+{ {0,1}, "--no-grid",           "-G",        0,           "don't draw graph grid lines in the graph.  See "
+                                                          "also ::--grid@@.",                                           0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-grid-numbers",   0,           0,           "don't show grid numbers.  See also ::--grid-numbers@@.",     0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-gui",            0,           0,           "don't show the menu bar, button bar, tabs bar, and "
-                                                          "status bar",                                                 0,       0          },
+                                                          "status bar.  See also ::--gui@@.",                           0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-labels",         0,           0,           "don't read plot channel labels from the file",               0,       0          },
+{ {0,1}, "--no-labels",         0,           0,           "don't read plot channel labels from the file.  This is "
+                                                          "the deafult.  See also ::--labels@@.",                       0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-linear-channel", 0,           0,           "turn off adding a linear channel for up coming files",       0,       0          },
+{ {0,1}, "--no-linear-channel", 0,           0,           "turn off adding a linear channel for up coming files.  "
+                                                          "See also ::--linear-channel@@.",                             0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-lines",          "-i",        0,           "plot without drawing lines in the graph.  See option "
+{ {0,1}, "--no-lines",          "-i",        0,           "plot without drawing lines in the graph.  See also "
                                                           "--show-lines.",                                              0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-maximize",       0,           0,           "don't maximize the main window",                             0,       0          },
+{ {0,1}, "--no-maximize",       0,           0,           "don't maximize the main window.  This is the default.  "
+                                                          "See also ::--fullscreen@@.",                                 0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-menubar",        "-M",        0,           "don't display the menu bar in the main window",              0,       0          },
+{ {0,1}, "--no-menubar",        "-M",        0,           "don't display the menu bar in the main window.  See "
+                                                          "also ::--menubar@@.",                                        0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-new-window",      0,           0,          "don't make a new main window for the graph",                 0,       0          },
+{ {0,1}, "--no-new-window",      0,           0,          "don't make a new main window for the graph.  This is "
+                                                          "the default.  See also ::--new-window@@.",                   0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,0}, "--no-pipe",           "-N",        0,           "don't read data in from standard input even if there is "
-                                                          "input to read",                                              0,       0          },
+                                                          "input to read.  See also ::--pipe@@.",                       0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-points",         "-o",        0,           "plot without drawing points in the graph.  See option "
+{ {0,1}, "--no-points",         "-o",        0,           "plot without drawing points in the graph.  See also "
                                                           "--points.",                                                  0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-shape",          0,           0,           "turn off the use of the X11 shape extension.  See "
-                                                          "option ::--shape@@.",                                        0,       0          },
+                                                          "also ::--shape@@.",                                          0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-statusbar",      0,           0,           "hide the status bar in the main window",                     0,       0          },
+{ {0,1}, "--no-statusbar",      0,           0,           "hide the status bar in the main window.  See "
+                                                          "also ::--statusbar@@.",                                      0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-tabs",           0,           0,           "don't show the graph tabs in the main window",               0,       0          },
+{ {0,1}, "--no-tabs",           0,           0,           "don't show the graph tabs in the main window.  "
+                                                          "See also ::--tabs@@.",                                       0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--number-of-plots",   "-n",        "NUM",       "set the default maximum number of plots for each graph "
                                                           "to NUM",                                                     0,       "int"      },
@@ -272,7 +294,8 @@ struct qp_option options[] =
                                                           "case of option ::--linear-channel@@.  A separate graph "
                                                           "tab will be created for each ::--plot@@ option given.  "
                                                           "This ::--plot@@ option must be after the file loading "
-                                                          "options that load the channels that it lists to plot.",      0,       0          },
+                                                          "options that load the channels that it lists to plot.  "
+                                                          "See also ::--plot-file@@.",                                  0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--plot-file",         "-F",        "LIST",      "plot the following list of channels, ::LIST@@.  "
                                                           "Example: ::--plot-file \"0 1 3 4\"@@ will plot channel 1 "
@@ -309,7 +332,9 @@ struct qp_option options[] =
                                                           "read standard input or not.  See options ::--file@@, "
                                                           "::--pipe@@ and ::--no-pipe@@.",                              "0",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--same-scale",        "-s",        0,           "plot all in a graph plots on the same scale",                0,       0          },
+{ {0,1}, "--same-scale",        "-s",        0,           "plot all in a graph plots on the same scale.  See also "
+                                                          "::--different-scale@@, ::--same-x-scale@@ and "
+                                                          "::--same-y-scale@@.",                                        0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--same-x-scale",      "-x",        "[Y|N|A]",   "use in place of ::--same-scale@@ or ::--auto-scale@@ for "
                                                           "finer "
@@ -349,11 +374,12 @@ struct qp_option options[] =
                                                           "just applies when reading text files.",                      "0",     "size_t"   },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--statusbar",         0,           0,           "show the status bar below the graph.  This is the "
-                                                          "default.",                                                   "1",     "int"      },
+                                                          "default.  See also ::--no-statusbar@@",                      "1",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--tabs",              0,           0,           "show the graph tabs.  This is the default.",                 "1",     "int"      },
+{ {0,1}, "--tabs",              0,           0,           "show the graph tabs.  This is the default.  See also "
+                                                          "::--no-tabs@@.",                                             "1",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {1,0}, "--verbose",           "-v",        0,           "spew more to standard output",                               0,       0          },
+{ {1,0}, "--verbose",           "-v",        0,           "spew more to standard output.  See also ::--silent@@.",      0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {2,0}, "--version",           "-V",        0,           "print the Quickplot version number and then exit "
                                                           "returning 0 exit status",                                    0,       0          },
@@ -1202,8 +1228,8 @@ void print_html_options_table(void)
 
     printf(
     "    <td class=opt style=\"white-space:nowarp;\">\n"
-    "      <a name=\"%s\">%s</a>\n"
-    "    </td>\n",
+    "      <a name=\"%s%s\">%s</a>\n"
+    "    </td>\n", i?"":"FILE",
     get_func("op_", opt[i]->long_op), opt[i]->long_op);
 
     printf(

@@ -130,6 +130,13 @@ pulling the zoom box to "shift" and "resize about the center"
 respectively.
 </p>
 
+<p>
+You can zoom to a view of smaller plots by just pressing and
+releasing the right mouse button, without moving the pointer.&nbsp;
+Do it again and the plots get even smaller.&nbsp;
+You can do this any number of times.
+</p>
+
 </li>
 
 
@@ -140,9 +147,7 @@ respectively.
 window.&nbsp; Press the right mouse button and hold and drag the zoom
 box.&nbsp; Release the right mouse button then it (the zoom box) is
 past one edge of the plot window.&nbsp; Now Quickplot will zoom out to
-the previous zoom level.&nbsp; Note: Only the last Grab Zoom in
-successive Grab Zooms is saved in the zoom history, so that's what you
-see as you Zoom Out.&nbsp; Pressing the z key will do the same thing.
+the previous zoom level.&nbsp; Pressing the z key will do the same thing.
 </p>
 
 <p> Or to zoom out to a full view (top zoom level) of the plot: Put
