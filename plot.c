@@ -118,7 +118,8 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   qp_color_gen_next(gr->color_gen, &p->p.c.r, &p->p.c.g, &p->p.c.b, -1);
   qp_color_gen_next(gr->color_gen, &p->l.c.r, &p->l.c.g, &p->l.c.b, -1);
   p->p.c.a = 0.95;
-  p->l.c.a = 0.9;
+  p->l.c.a = 0.85;
+
 
   if(gr->x11)
     make_x11_colors(p, gr);

@@ -35,12 +35,14 @@ EXTRA_DIST =\
  imgSaveImage.xpm\
  quickplot_icon.png\
  quickplot_icon.xpm\
- screenshot1.png\
+ screenshot1.jpg\
  screenshot1_small.png\
  screenshot2.png\
  screenshot3.png\
- background.png\
  favicon.ico\
+ background_ft.png\
+ background_h1.png\
+ background_h2.png\
  style.css\
  footer.htm.in\
  about.htm.in\
@@ -78,11 +80,13 @@ html_DATA =\
  help.html\
  index.html\
  quickplot_icon.png\
- screenshot1.png\
+ screenshot1.jpg\
  screenshot1_small.png\
  screenshot2.png\
  screenshot3.png\
- background.png\
+ background_ft.png\
+ background_h1.png\
+ background_h2.png\
  favicon.ico\
  about.txt\
  help.txt
@@ -241,10 +245,9 @@ help.html: help_head.htm mk_options help_tail.htm
 	./mk_options -t >> $@
 	cat help_tail.htm >> $@
 
-
 help_head.htm: style.css
 help_tail.htm: footer.htm
-index.html: style.css  footer.htm
+index.html: style.css footer.htm
 about.htm: style.css footer.htm
 
 

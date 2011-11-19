@@ -403,11 +403,11 @@ gboolean idle_callback(gpointer data)
 static inline
 int get_yes_no_auto_int(const char *arg, char **argv, int *i)
 {
-  if(!strcasecmp(arg, "no"))
+  if(!strncasecmp(arg, "no", 1))
     return 0;
-  if(!strcasecmp(arg, "yes"))
+  if(!strncasecmp(arg, "yes", 1))
     return 1;
-  if(!strcasecmp(arg, "auto"))
+  if(!strncasecmp(arg, "auto", 1))
     return -1;
 
   ASSERT(*i > 2);

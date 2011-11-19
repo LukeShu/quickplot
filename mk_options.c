@@ -121,13 +121,10 @@ struct qp_option options[] =
 { {0,1}, "--file",              "-f",        "FILE",      "read data from file FILE.  If FILE is - (dash) then "
                                                           "standard input will be read.",                               0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--fullscreen",        0,           0,           "make the main window fullscreen.  This option effects "
-                                                          "the window that will be opened next so you need to give "
-                                                          "this option before any options that will generate a graph "
-                                                          "in that window.",                                            0,       0          },
+{ {0,1}, "--fullscreen",        0,           0,           "make the main window fullscreen.",                           0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--geometry",          0,           "GEOMETRY",  "specify the position and size of the main window.  To "
-                                                          "set the geometry back to the default just set GEOMETRY "
+{ {0,1}, "--geometry",          0,           "GEO",       "specify the position and size of the main window.  To "
+                                                          "set the geometry back to the default just set GEO "
                                                           "to NONE.  Example ::--geometry=1000x300-0+30@@",             "NULL",  "char *"   },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--grid",              0,           0,           "draw a grid with the graph.  This is the default.",          "1",     "int"      },
@@ -163,13 +160,13 @@ struct qp_option options[] =
                                                           "varies as the scale changes due to zooming.  This "
                                                           "distance cannot be fixed due to the way Quickplot "
                                                           "scales your graphs and always picks reasonable grid "
-                                                          "line spacing.",                                              "220",   "int"      }, 
+                                                          "line spacing.",                                              "220",   "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--grid-y-space",        0,        "PIXELS",     "set the maximum y space between horizontal grid lines.  "
                                                           "See option ::--grid-x-space@@ above.",                       "190",   "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {2,0}, "--gtk-version",       0,           0,            "print the version of GTK+ that Quickplot was built with "
-                                                           "and then exit",                                             0,       0          },
+{ {2,0}, "--gtk-version",       0,           0,           "print the version of GTK+ that Quickplot was built with "
+                                                          "and then exit",                                              0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--gui",               0,           0,           "show the menu bar, button bar, tabs bar, and the status "
                                                           "bar",                                                        0,       0          },
@@ -192,28 +189,24 @@ struct qp_option options[] =
                                                           "AUTO to let Quickplot select the line with based on the "
                                                           "plot point density.  AUTO is the default.",                  "-1",    "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {1,1}, "--linear-channel",    "-l",        "[--start|-"
-                                             "r VALUE] "
-                                             "[--step|-t"
-                                             " VALUE]",   "prepend a linear series channel to the file being read "
-                                                          "** ## ::--start VALUE@@ or ::-r VALUE@@  set the first "
-                                                          "value in the sequence to VALUE.  The default first value "
-                                                          "will be zero. ## ::--step SIZE@@ or ::-t SIZE@@  set the "
+{ {1,1}, "--linear-channel",    "-l",        "[OPTS]",    "::OPTS@@ are ::[--start|-r VAL]@@ "
+                                                          "::[--step|-t SIZE]@@.  "
+                                                          "This option prepends a linear series channel to the file "
+                                                          "being read "
+                                                          "** ## ::--start VAL@@ or ::-r VAL@@  set the first "
+                                                          "value in the sequence to VAL.  The default first value "
+                                                          "is ::0@@. ## ::--step SIZE@@ or ::-t SIZE@@  set the "
                                                           "sequence step size to ::SIZE@@.  The default is 1. &&",      "NULL",  "struct "
                                                                                                                                  "qp_chann"
                                                                                                                                  "el *"     },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--lines",             "-H",        "[YES|NO|AU"
-                                             "TO]",       " ** ## YES  show lines always ## ::NO@@  don't show lines. "
-                                                          "Same as ::--no-lines@@. ## ::AUTO@@  be smart about it.  "
-                                                          "This is the default. && If the ::YES@@, ::NO@@, or "
-                                                          "::AUTO@@ is not given ::YES@@ is implied.",                  "-1",    "int"      },
+{ {0,1}, "--lines",             "-H",        "[Y|N|A]",   " ** ## Y  yes show lines ## ::N@@  no don't show lines. "
+                                                          "Same as ::--no-lines@@. ## ::A@@  auto, be smart about it.  "
+                                                          "This is the default. && If the ::Y@@, ::N@@, or "
+                                                          "::A@@ is not given ::Y@@ is implied.",                       "-1",    "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--maximize",          0,           0,           "maximize the main window.  This option effects the window "
-                                                          "that will be opened next so you need to give this option "
-                                                          "before any options that will generate a graph in that "
-                                                          "window.",                                                    "0",     "int"
-                                                                                 /* op_maximize = 0 off     1 on    2 fullscreen */         }, 
+{ {0,1}, "--maximize",          0,           0,           "maximize the main window.",                                  "0",     "int"
+                                                                        /* app->op_maximize = 0 off     1 on    2 fullscreen */             },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--menubar",           0,           0,           "show the menu bar.  This is the default.",                   "1",     "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
@@ -223,13 +216,13 @@ struct qp_option options[] =
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-buttons",        "-B",        0,           "hide the button bar in the main window",                     0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-fullscreen",     0,           0,           "don't make the main window fullscreen",                      0,       0          }, 
+{ {0,1}, "--no-fullscreen",     0,           0,           "don't make the main window fullscreen",                      0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-default-graph",  "-U",        0,           "don't make the default graph for each file loaded",          0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-grid",           "-G",        0,           "don't draw graph grid lines in the graph",                   0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-grid-numbers",   0,           0,           "don't show grid numbers.  See also ::--grid-numbers@@.",     0,       0          }, 
+{ {0,1}, "--no-grid-numbers",   0,           0,           "don't show grid numbers.  See also ::--grid-numbers@@.",     0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-gui",            0,           0,           "don't show the menu bar, button bar, tabs bar, and "
                                                           "status bar",                                                 0,       0          },
@@ -241,7 +234,7 @@ struct qp_option options[] =
 { {0,1}, "--no-lines",          "-i",        0,           "plot without drawing lines in the graph.  See option "
                                                           "--show-lines.",                                              0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-maximize",       0,           0,           "don't maximize the main window",                             0,       0          }, 
+{ {0,1}, "--no-maximize",       0,           0,           "don't maximize the main window",                             0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-menubar",        "-M",        0,           "don't display the menu bar in the main window",              0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
@@ -253,7 +246,7 @@ struct qp_option options[] =
 { {0,1}, "--no-points",         "-o",        0,           "plot without drawing points in the graph.  See option "
                                                           "--points.",                                                  0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-shape",          0,           0,           "Turn off the use of the X11 shape extension.  See "
+{ {0,1}, "--no-shape",          0,           0,           "turn off the use of the X11 shape extension.  See "
                                                           "option ::--shape@@.",                                        0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-statusbar",      0,           0,           "hide the status bar in the main window",                     0,       0          },
@@ -276,23 +269,24 @@ struct qp_option options[] =
                                                           "and channel 4 VS channel 3 in the same graph.  Data "
                                                           "channels are numbered, starting at 0, in the order that "
                                                           "they are read in from all files or created, as in the "
-                                                          "case of option ::--linear-channel@@.  A separate Graph "
-                                                          "Tab will be created for each ::--plot@@ option given.  "
+                                                          "case of option ::--linear-channel@@.  A separate graph "
+                                                          "tab will be created for each ::--plot@@ option given.  "
                                                           "This ::--plot@@ option must be after the file loading "
                                                           "options that load the channels that it lists to plot.",      0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--plot-file",         "-F",        "LIST",      "plot the following list of channels, ::LIST@@.  "
-                                                          "Example: ::--plot \"0 1 3 4\"@@ will plot channel 1 VS "
+                                                          "Example: ::--plot-file \"0 1 3 4\"@@ will plot channel 1 "
+                                                          "VS "
                                                           "channel 0 and channel 4 VS channel 3 in the same graph.  "
                                                           "This is like the ::--plot@@ option except that this will "
                                                           "only make a graph for the last file preceding this "
                                                           "option and the channel numbers are for the channels just "
-                                                          "from that last file.  They are relative channel numbers. "
-                                                          " This is handy if you load a lots of files and lose "
+                                                          "from that last file.  They are relative channel numbers.  "
+                                                          "This is handy if you load a lots of files and lose "
                                                           "count of the number of channels loaded in each file.",       0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--point-size",        "-O",        "PIXELS",    "start Quickplot using plot point size ::PIXELS@@ in "
-                                                          "pixels.  "
+{ {0,1}, "--point-size",        "-O",        "PIXELS",    "start Quickplot using plot point size ::PIXELS@@ "
+                                                          "wide in pixels.  "
                                                           "This may be set to ::AUTO@@ to have quickplot "
                                                           "automatically set the point size depending on the point "
                                                           "density that is in graph.  ::AUTO@@ is the default.",       "-1",     "int"      },
@@ -317,33 +311,31 @@ struct qp_option options[] =
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--same-scale",        "-s",        0,           "plot all in a graph plots on the same scale",                0,       0          },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--same-x-scale",      "-x",        "[YES|NO|AU"
-                                             "TO]",       "use in place of ::--same-scale@@ or ::--auto-scale@@ for "
+{ {0,1}, "--same-x-scale",      "-x",        "[Y|N|A]",   "use in place of ::--same-scale@@ or ::--auto-scale@@ for "
                                                           "finer "
                                                           "control over how the x values of the plots are scaled "
                                                           "when you have more than one plot on a graph ** ## "
-                                                          "::YES@@  same x scale always ## ::NO@@  different x "
-                                                          "scales ## ::AUTO@@  "
-                                                          "be smart about it && If the ::YES@@, ::NO@@, or ::AUTO@@ "
-                                                          "is not given ::YES@@ is implied.",                           "-1",    "int"      },
+                                                          "::Y@@  yes same x scale ## ::N@@  no different x "
+                                                          "scales ## ::A@@  auto, "
+                                                          "be smart about it && If the ::Y@@, ::N@@, or ::A@@ "
+                                                          "is not given ::Y@@ is implied.",                           "-1",    "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--same-y-scale",      "-y",        "[YES|NO|AU"
-                                             "TO]",       "use in place of ::--same-scale@@ or ::--auto-scale@@ for "
+{ {0,1}, "--same-y-scale",      "-y",        "[Y|N|A]",   "use in place of ::--same-scale@@ or ::--auto-scale@@ for "
                                                           "finer control over how the x values of the plots are "
                                                           "scaled when you have more than one plot on a graph ** "
-                                                          "## ::YES@@  "
-                                                          "same y scale always ## ::NO@@  different y scales ## "
-                                                          "::AUTO@@  be smart about it.  This is the default. && If "
-                                                          "the ::YES@@, "
-                                                          "::NO@@, or ::AUTO@@ is not given YES is implied.",           "-1",    "int"      },
+                                                          "## ::Y@@  yes "
+                                                          "same y scale ## ::N@@  no different y scales ## "
+                                                          "::A@@  auto, be smart about it.  This is the default. && If "
+                                                          "the ::Y@@, "
+                                                          "::N@@, or ::A@@ is not given Y is implied.",           "-1",    "int"      },
 /*-----------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--shape",             0,           0,           "make graphs see through.  This is insanely cool.  It "
                                                           "uses the X11 shape extension which was made famous by "
-                                                          "xeyes.  The X11 shape extension may be a little buggy on "
-                                                          "some systems.  Try this with the following command: "
-                                                          "::quickplot FILE --shape --no-gui --no-border@@.  This "
-                                                          "will make your graph look like it's just floating out "
-                                                          "there, like xeyes do.  The use of the X11 shape extension "
+                                                          "xeyes.  The X11 shape extension may be a little flashy "
+                                                          "on some systems.  Try using "
+                                                          "::--shape@@ with the ::--no-gui@@, ::--no-grid@@, and "
+                                                          "::--no-border@@ options to make a floating plot line "
+                                                          "on your display.  The use of the X11 shape extension "
                                                           "is a property of the main window, not each graph tab.  "
                                                           "This option may not work well with fullscreen view.  "
                                                           "This is will slow down graph drawing considerably.  "
@@ -1042,8 +1034,34 @@ void print_html_options_list(void)
 
 }
 
+/* returns length printed
+ * adds <a href=#LONG_OPT_NAME> 
+ * if the str have a --long-opt in it.
+ * Or returns 0 is none is found. */
+int check_print_long_option_link(const char *str, size_t skip_i)
+{
+  size_t i;
+  for(i=1;i<len;++i)
+  {
+    size_t len_opt, len_str;
+    if(i == skip_i)
+      continue;
+
+    len_str = strlen(str);
+    len_opt = strlen(opt[i]->long_op);
+    if(!strncmp(opt[i]->long_op, str, len_opt) && len_str >= len_opt + 2 &&
+        (
+         (str[len_opt] == '@' && str[len_opt+1] == '@') ||
+          str[len_opt] == ' ' || str[len_opt] == '='
+        )
+      )
+      return printf("<a class=opt href=\"#%s\">", get_func("op_", opt[i]->long_op));
+  }
+  return 0;
+}
+
 static
-void print_text2html(const char *str)
+void print_text2html(const char *str, size_t opt_i)
 {
   char *s, *t;
   int w_count = 0;
@@ -1084,31 +1102,35 @@ void print_text2html(const char *str)
     }
     if(*s == ' ' && *t == ' ')
     {
-      printf("&nbsp; ");
+      w_count += printf("&nbsp; ");
       s += 2;
       t += 2;
-      w_count += 7;
       continue;
     }
     if(*s == ':' && *t == ':')
     {
+      int do_ancher;
+
       if(w_count)
       {
         putchar('\n');
         w_count = 0;
       }
-      printf("      <span class=code>");
+      w_count += printf("      <span class=code>");
       s += 2;
       t += 2;
-      w_count = 20;
+
+      w_count += (do_ancher = check_print_long_option_link(s, opt_i));
+
       while(*s && !(*s == '@' && *t == '@'))
       {
         putchar(*(s++));
         t = s + 1;
         ++w_count;
       }
-      printf("</span>");
-      w_count += 7;
+      if(do_ancher)
+        w_count += printf("</a>");
+      w_count += printf("</span>");
       s += 2;
       if(*s == ' ' && *(s+1) != ' ')
       {
@@ -1164,12 +1186,12 @@ void print_html_options_table(void)
 
   printf(
     "  <tr>\n"
-    "    <th>long option</th>\n"
-    "    <th>short</th>\n"
-    "    <th>argument</th>\n"
-    "    <th>description</th>\n"
+    "    <th class=opt>long options</th>\n"
+    "    <th class=opt title=\"short options\" style=\"%s\">short</th>\n"
+    "    <th class=opt title=\"option arguments\">arg</th>\n"
+    "    <th class=opt>description</th>\n"
     "  </tr>\n"
-    "\n"
+    "\n", "font-size:50%;"
     );
 
   for(i=0;i<len;++i)
@@ -1179,26 +1201,26 @@ void print_html_options_table(void)
     class[i%2]);
 
     printf(
-    "    <td style=\"white-space:nowarp;\">\n"
-    "      %s\n"
+    "    <td class=opt style=\"white-space:nowarp;\">\n"
+    "      <a name=\"%s\">%s</a>\n"
     "    </td>\n",
-    opt[i]->long_op);
+    get_func("op_", opt[i]->long_op), opt[i]->long_op);
 
     printf(
-    "    <td style=\"white-space:nowarp;\">\n"
+    "    <td class=opt style=\"white-space:nowarp;\">\n"
     "      %s\n"
     "    </td>\n",
     opt[i]->short_op?opt[i]->short_op:"");
 
     printf(
-    "    <td>\n"
+    "    <td class=opt>\n"
     "      %s\n"
     "    </td>\n",
     opt[i]->arg?opt[i]->arg:"");
     
     printf(
-    "    <td>\n");
-    print_text2html(opt[i]->description);
+    "    <td class=opt>\n");
+    print_text2html(opt[i]->description, i);
     printf(
     "    </td>\n");
 

@@ -35,9 +35,9 @@
 <body>
 
 
-
-<h1>Quickplot</h1>
-
+<center>
+<h1>About Quickplot</h1>
+</center>
 
 <p style="text-align:center;font-size:x-large;">
 a fast interactive 2D plotter
@@ -170,7 +170,8 @@ installed:
 
 <li><b><a href="http://www.gtk.org/">GTK+</a></b>&nbsp;&nbsp;
    has many prerequisites, but it all comes with most GNU/Linux
-   distributions.
+   distributions.&nbsp; GTK+ version 3 is required for Quickplot
+   version @VERSION@.
 </li>
 
 <li><b><a href="http://www.mega-nerd.com/libsndfile/">libsndfile</a></b>
