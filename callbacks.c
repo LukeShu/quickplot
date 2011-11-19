@@ -440,11 +440,12 @@ void cb_view_shape(GtkWidget *w, gpointer data)
     /* turn on shape */
 
     for(gr=qp_sllist_begin(qp->graphs);gr;gr=qp_sllist_next(qp->graphs))
+    {
+      /* Full redraw needed to unset anti-aliasing */
+      gr->pixbuf_needs_draw = 1;
       if(gr->background_color.a >= 0.5)
-      {
         gr->background_color.a = 0.4;
-        gr->pixbuf_needs_draw = 1;
-      }
+    }
 
     qp->shape = 1;
     gdk_window_set_cursor(gtk_widget_get_window(qp->window),app->waitCursor);
@@ -455,11 +456,12 @@ void cb_view_shape(GtkWidget *w, gpointer data)
     /* turn off shape */
 
     for(gr=qp_sllist_begin(qp->graphs);gr;gr=qp_sllist_next(qp->graphs))
+    {
+      /* Full redraw needed to set anti-aliasing */
+      gr->pixbuf_needs_draw = 1;
       if(gr->background_color.a != gr->bg_alpha_preshape)
-      {
         gr->background_color.a  = gr->bg_alpha_preshape;
-        gr->pixbuf_needs_draw = 1;
-      }
+    }
 
     qp->shape = 0;
 
@@ -478,7 +480,7 @@ void cb_view_shape(GtkWidget *w, gpointer data)
       gdk_window_set_cursor(gtk_widget_get_window(qp->window),app->waitCursor);
    }
 
-
+  
   gtk_widget_queue_draw(qp->current_graph->drawing_area);
 }
 

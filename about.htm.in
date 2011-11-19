@@ -144,7 +144,7 @@ that one can make pretty pictures with.</p>
   <li>reads more sound file formats with newer libsndfile
   <li>reads sound files from standard input (pipe input) with newer libsndfile
   <li>displays large files much faster than the previous Quickplot version
-  <li>better double buffer drawing with super quick re expose redraws,
+  <li>better double buffer drawing with super quick re-expose redraws,
     fixes previous versions slow re-expose redraws
   <li>still automatically determines the input file formats
   <li>Quickplot is no longer written in C++ so it installs faster with
