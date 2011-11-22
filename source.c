@@ -385,7 +385,7 @@ static char *unique_name(const char *name)
       ++num;
       if(buf == name)
         buf = (char*) qp_malloc(len= strlen(buf)+16);
-      snprintf(buf, len, "%s (%zu)", name, num);
+      snprintf(buf, len, "%s(%zu)", name, num);
     }
     else
     {
@@ -564,11 +564,6 @@ qp_source_t qp_source_create(const char *filename, int value_type)
     if(read_ascii(source, &rd))
       goto fail;
   }
-  else
-  {
-    /* it is a sndfile file */
-
-  }
 
 
 
@@ -614,6 +609,51 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   if(source->num_channels == 0)
     goto fail;
 
+
+  if(app->op_linear_channel || source->num_channels == 1)
+  {
+    /* Prepend a linear channel */
+
+    /* TODO: Make this use less memory */
+    
+    struct qp_channel *c, **new_channels;
+    double start = 0, step = 1;
+    size_t len, i;
+
+    if(app->op_linear_channel)
+    {
+      c = app->op_linear_channel;
+      ASSERT(c->data);
+      start = ((double*)c->data)[0];
+      step = ((double*)c->data)[1];
+    }
+    else
+    {
+      c = qp_channel_linear_create(start, step);
+    }
+
+    
+    len = source->num_values;
+    for(i=0;i<len;++i)
+      qp_channel_series_double_append(c, start + i*step);
+   
+    /* Prepend the channel to source->channels */
+    /* reuse dummy len */
+    len = source->num_channels + 1;
+    new_channels = qp_malloc(sizeof(c)*len+1);
+    new_channels[0] = c;
+    for(i=1;i<len;++i)
+      new_channels[i] = source->channels[i-1];
+    new_channels[i] = NULL;
+    free(source->channels);
+    source->channels = new_channels;
+    ++(source->num_channels);
+
+    /* Another source may have more values so
+     * we must make a new one in case it is used again. */
+    if(app->op_linear_channel)
+      app->op_linear_channel = qp_channel_linear_create(start, step);
+  }
   
   add_source_buffer_remove_menus(source);
 

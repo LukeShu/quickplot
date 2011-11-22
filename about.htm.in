@@ -69,17 +69,19 @@ You can very quickly swim through data with Quickplot.&nbsp;
 
 
 <p>
-The difference between this 2D plotter and most 2D plotters is that
+The difference between Quickplot and most 2D plotters is that
 the primary purpose of Quickplot is to help you quickly interact with
 your data.&nbsp; Of secondary importance is to make a pretty static
 picture of your data.&nbsp; Features that distinguish Quickplot
-include: unlimited one click zooming, mouse grab and slide
+include: unlimited mouse press (pointer move) and
+release zooming, mouse grab and slide
 (new in version 0.9.0), any number of plots with different scales
-displayed at one time, value picking for any number of plots with
-different scales displayed at one time, and reading data from standard
-input.&nbsp; These features become indispensable when you're looking
+displayed at one time, value picking for any number of plots
+displayed at one time, and reading data from standard
+input (a pipe).&nbsp;
+These features become indispensable when you're looking
 at data sets with 10,000 to 10,000,000 and more data points.&nbsp; You
-can't look at a 2D plot with 1,000,000 points unless you can quickly
+can't look at a 2D plot with a million points unless you can quickly
 zoom.&nbsp; If you need to look at hundreds of files each with 100,000
 or more points Quickplot may save your sanity.
 </p>
@@ -90,7 +92,7 @@ customize your graphs in one line command.&nbsp;
 With the Quickplot graphical user interface
 (GUI) you can read files and remove buffers,
 add and remove plots in graphs, add and remove graphs,
-add and remove main windows with have any number of graphs,
+add and remove main windows with any number of graphs,
 change individual plot line and point widths,
 change colors of lines, points, background and grid,
 change graph grid line spacings and line width,
@@ -114,10 +116,10 @@ interactive picture <b>editor</b>.
 </p>
 
 <p> All future versions of Quickplot will keep the <em>show me the
-data quickly</em> theme.&nbsp; So all future additions to this program
-will preserve this quick and lean theme.&nbsp; This does not rule out
-the additions that make this program a more full-featured 2D plotter
-that one can make pretty pictures with.</p>
+data quickly</em> theme.&nbsp; This does not rule out
+additions that make Quickplot a more full-featured 2D plotter
+that one can make pretty pictures with.
+</p>
 
 
 
@@ -169,7 +171,7 @@ installed:
 <ul>
 
 <li><b><a href="http://www.gtk.org/">GTK+</a></b>&nbsp;&nbsp;
-   has many prerequisites, but it all comes with most GNU/Linux
+   has many prerequisites, but it all come with most GNU/Linux
    distributions.&nbsp; GTK+ version 3 is required for Quickplot
    version @VERSION@.
 </li>
@@ -226,12 +228,14 @@ version of this file you are reading now.
 <p>We call it <em>Lanceman's Quickplot</em> in order to distinguish it
 from another program called Quickplot which predates this
 program.&nbsp; It used to be on NeXT computers.&nbsp; It may have died
-with NeXT.</p>
+with NeXT.
+</p>
 
-<p>This is a complete rewrite, by the original author, of the
+<p>This is a complete rewrite, by the original author of the
 Lanceman's Quickplot which first appeared in 1998, and managed to find
 its way into the <a href="http://www.debian.org/">Debian GNU/Linux</a>
-distribution soon after.</p>
+distribution soon after.
+</p>
 
 <p> Quickplot started out in 1998 as an Athena Widgets X11 GUI
 (graphical user interface) program.&nbsp; In 2003 it was rewritten as
@@ -240,7 +244,8 @@ program.&nbsp; In 2004 it was changed to
 a <a href="http://www.gtk.org/">GTK+</a> GUI program using
 the <a href="http://www.gtkmm.org/">gtkmm</a> C++ wrapper to
 GTK+.&nbsp; In 2011 it was rewritten again with C using GTK+, without
-GTKmm.</p>
+GTKmm.
+</p>
 
 
 

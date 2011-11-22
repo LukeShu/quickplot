@@ -388,6 +388,8 @@ int qp_find_doc_file(const char *fileName, char **fullpath_ret);
 extern
 int qp_launch_browser(const char *fileName);
 
+extern
+void qp_get_root_window_size(void);
 
 extern
 void qp_qp_set_status(struct qp_qp *qp);

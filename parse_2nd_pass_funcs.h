@@ -54,7 +54,7 @@ void parse_2nd_default_graph(void)
 }
 
 static inline
-void parse_2nd_different_scales(void)
+void parse_2nd_different_scale(void)
 {
   app->op_same_x_scale = 0;
   app->op_same_y_scale = 0;
@@ -287,16 +287,181 @@ void parse_2nd_file(char *arg, int argc, char **argv, int *i)
 }
 
 static inline
-void parse_2nd_geometry(char *arg, int argc, char **argv, int *i)
+void parse_2nd_geometry(char *arg, int argc, char **argv, int *j)
 {
   /* We use this for the next new main window. */
-  long l;
-  l = get_long(arg, - INT_MAX + 10, INT_MAX - 10, INT_MAX);
+  int n[4], count = 0, x_count = -1;
+  int w, h;
+  char *endptr, *s;
+  endptr = s = arg;
 
-  if(l == INT_MAX)
-    app->op_geometry = NULL;
+  while(1)
+  {
+    long val;
+
+    val = strtol(s, &endptr, 10);
+    if(s == endptr || !endptr ||
+      val == LONG_MAX || val == LONG_MIN)
+    {
+      DEBUG("bad option: %s='%s'\n", "--geometry", arg);
+      QP_ERROR("option has bad integer number: %s='%s'\n",
+          "--geometry", arg);
+      exit(1);
+    }
+    if(*s == '-' || *s == '0')
+      /* mark a "-0" position as in --geometry=600x700-0+0 */
+      n[count++] = INT_MIN;
+    else
+      n[count++] = val;
+
+    if(!(*endptr))
+      break;
+
+    s = endptr;
+    while(*s && (*s < '0' || *s > '9') && *s != '-' && *s != '+')
+    {
+      if(*s == 'x' || *s == 'X')
+        /* this is where the 'x' is */
+        x_count = count;
+      ++s;
+    }
+    if(!(*s))
+      break;
+  }
+  
+  if(
+      !(count == 2 && (x_count == 1 || x_count == -1))
+       &&
+      !(count == 4 && (x_count == 1 || x_count == 3))
+    )
+  {
+    DEBUG("bad option: %s='%s' count=%d x_count=%d\n",
+        "--geometry", arg, count, x_count);
+    QP_ERROR("bad option: %s='%s'\n", "--geometry", arg);
+    exit(1);
+  }
+
+  if(x_count == 1)
+    {
+      w = n[0];
+      h = n[1];
+    }
+  else if(x_count == 3)
+    {
+      w = n[2];
+      h = n[3];
+    }
+
+  if(x_count == -1 || x_count == 3)
+    {
+      app->op_geometry.x = n[0];
+      app->op_geometry.y = n[1];
+    }
+  else if(count == 4)
+    {
+      app->op_geometry.x = n[2];
+      app->op_geometry.y = n[3];
+    }
+
+  if(w < 1 || h < 1)
+  {
+    QP_ERROR("bad option: %s='%s'\n", "--geometry", arg);
+    exit(1);
+  }
+
+  if(app->root_window_width < 1)
+    qp_get_root_window_size();
+
+  if(w > app->root_window_width)
+    w = app->root_window_width;
+  if(h > app->root_window_height)
+    h = app->root_window_height;
+
+  if(w == app->root_window_width && h == app->root_window_height)
+    /* We do not want to set app->op_geometry if it is
+     * full screen so that they can still toggle out of
+     * full screen if they choose to. */
+    app->op_maximize = 2; /* Fullscreen */
   else
-    app->op_geometry = qp_strdup(arg); 
+  {
+    app->op_geometry.width = w;
+    app->op_geometry.height = h;
+    app->op_maximize = 0;
+  }
+
+  DEBUG("got --geometry=%dx%d%+d%+d app->op_maximize=%d\n", 
+        w, h,
+        app->op_geometry.x, app->op_geometry.y,
+        app->op_maximize);
+}
+
+static inline
+void graph_plots(ssize_t *x, ssize_t *y, size_t len)
+{
+  ASSERT(len);
+  if(qp_qp_graph(NULL, x, y, len, NULL))
+    exit(1);
+
+  free(x);
+  free(y);
+  parser->p2.needs_graph = 0;
+}
+
+static inline
+void parse_2nd_graph(char *arg, int argc, char **argv, int *i)
+{
+  ssize_t  *x = NULL, *y = NULL, max_channel_num = -1;
+  size_t len = 0;
+  struct qp_source *s;
+
+  if(!qp_sllist_last(app->sources))
+  {
+    ERROR("\n");
+    QP_ERROR("got option --graph='%s' but have no files read yet\n", arg);
+    exit(1);
+  }
+
+  for(s=qp_sllist_begin(app->sources);s; s=qp_sllist_next(app->sources))
+    max_channel_num += s->num_channels;
+
+  get_plot_option(arg, &x, &y, &len, "--graph", 0, max_channel_num);
+  graph_plots(x, y, len);
+}
+
+static inline
+void parse_2nd_graph_file(char *arg, int argc, char **argv, int *i)
+{
+  ssize_t  *x = NULL, *y = NULL, offset = 0, j;
+  size_t len = 0;
+  struct qp_source *s, *last_s;
+
+  last_s = qp_sllist_last(app->sources);
+  if(!last_s)
+  {
+    ERROR("\n");
+    QP_ERROR("got option --graph-file='%s' but have no files read yet\n", arg);
+    exit(1);
+  }
+
+  for(s=qp_sllist_begin(app->sources);s != last_s; s=qp_sllist_next(app->sources))
+    offset += s->num_channels;
+
+  get_plot_option(arg, &x, &y, &len, "--graph-file",
+      -offset, last_s->num_channels - 1);
+
+  if(!len)
+  {
+    QP_ERROR("bad option --graph-file=\"%s\"\n", arg);
+    exit(1);
+  }
+
+  for(j=0;j<len;++j)
+  {
+    x[j] += offset;
+    y[j] += offset;
+  }
+  
+  graph_plots(x, y, len);
 }
 
 static inline
@@ -311,7 +476,7 @@ void parse_2nd_grid_font(char *arg, int argc, char **argv, int *i)
 static inline
 void parse_2nd_grid_line_width(char *arg, int argc, char **argv, int *i)
 {
-  app->op_grid_line_width = get_long(arg, 1, 101, 3);
+  app->op_grid_line_width = get_long(arg, 1, 101, "--grid-line-width");
 }
 
 static inline
@@ -329,121 +494,56 @@ void parse_2nd_grid_text_color(char *arg, int argc, char **argv, int *i)
 static inline
 void parse_2nd_grid_x_space(char *arg, int argc, char **argv, int *i)
 {
-  app->op_grid_x_space = get_long(arg, 10, 10000000, 220);
+  app->op_grid_x_space = get_long(arg, 10, 10000000, "--grid-x-space");
 }
 
 static inline
 void parse_2nd_grid_y_space(char *arg, int argc, char **argv, int *i)
 {
-  app->op_grid_y_space = get_long(arg, 10, 10000000, 190);
+  app->op_grid_y_space = get_long(arg, 10, 10000000, "--grid-y-space");
 }
 
 static inline
 void parse_2nd_label_separator(char *arg, int argc, char **argv, int *i)
 {
-  app->op_label_separator = arg;
+  ASSERT(app->op_label_separator);
+  free(app->op_label_separator);
+  app->op_label_separator = qp_strdup(arg);
 }
 
 static inline
 void parse_2nd_line_width(char *arg, int argc, char **argv, int *i)
 {
-  app->op_line_width = get_long(arg, 1, 101, 3);
+  app->op_line_width = get_long(arg, 1, 101, "--line-width");
 }
 
 static inline
 void parse_2nd_linear_channel(char *arg, int argc, char **argv, int *i)
 {
+  double start, step;
+
   if(app->op_linear_channel)
   {
     qp_channel_destroy(app->op_linear_channel);
     app->op_linear_channel = NULL;
   }
 
-  ERROR("Need to add linear channel code here");
+  parse_linear_channel(1, arg, argc, argv, i, &start, &step);
+
+  app->op_linear_channel = qp_channel_linear_create(start, step);
 }
 
 static inline
 void parse_2nd_lines(char *arg, int argc, char **argv, int *i)
 {
-  if(arg)
-    app->op_lines = get_yes_no_auto_int(arg, argv, i);
-  else
-    app->op_lines = 1;
+  app->op_lines = get_yes_no_auto_int(arg, "--lines");
 }
 
 static inline
 void parse_2nd_number_of_plots(char *arg, int argc, char **argv, int *i)
 {
-  app->op_number_of_plots = get_long(arg, 1, INT_MAX - 10, NUMBER_OF_PLOTS);
-}
-
-static inline
-void parse_2nd_plot(char *arg, int argc, char **argv, int *i)
-{
-  size_t  *x = NULL, *y = NULL, len = 0;
-
-  if(!qp_sllist_last(app->sources))
-  {
-     ERROR("No files loaded, bad option --plot-file='%s'\n",
-         arg);
-    exit(1);
-  }
-
-  get_plot_option(arg, &x, &y, &len, "--plot", 1);
-  ASSERT(len);
-  if(qp_qp_graph(NULL, x, y, len, NULL))
-    exit(1);
-
-  parser->p2.needs_graph = 0;
-}
-
-static inline
-void parse_2nd_plot_file(char *arg, int argc, char **argv, int *i)
-{
-  size_t  *x = NULL, *y = NULL, len = 0, offset = 0, j;
-  struct qp_source *s, *last_s;
-
-
-  if(!qp_sllist_last(app->sources))
-  {
-     ERROR("No files loaded, bad option --plot-file='%s'\n",
-         arg);
-    exit(1);
-  }
-
-  get_plot_option(arg, &x, &y, &len, "--plot", 1);
-
-  if(!len)
-  {
-    QP_ERROR("bad option --plot-file=\"%s\"\n", arg);
-    exit(1);
-  }
-
-  last_s = qp_sllist_last(app->sources);
-  VASSERT(last_s, "got option --plot-file but have no files read yet\n");
-
-  for(s=qp_sllist_begin(app->sources);s != last_s; s=qp_sllist_next(app->sources))
-    offset += s->num_channels;
-
-  for(j=0;j<len;++j)
-  {
-    x[j] += offset;
-    y[j] += offset;
-
-    if(x[j] >= s->num_channels || y[j] >= s->num_channels)
-    {
-      ERROR("can't plot channel %zu for --plot-file=\"%s\" option\n"
-          "only %zu channels from file \"%s\"\n"
-         "channel numbers start at 0\n",
-         (x[j]>y[j])?x[j]:y[j], arg, s->num_channels, s->name);
-      exit(1);
-    }
-  }
-
-  if(qp_qp_graph(NULL, x, y, len, NULL))
-    exit(1);
-  
-  parser->p2.needs_graph = 0;
+  app->op_number_of_plots = get_long(arg, 1, INT_MAX - 10,
+      "--number-of-plots");
 }
 
 static inline
@@ -452,30 +552,24 @@ void parse_2nd_point_size(char *arg, int argc, char **argv, int *i)
   if(!strncasecmp(arg, "AUTO", 4))
     app->op_point_size = -1;
   else
-    app->op_point_size = get_long(arg, 1, 101, 3);
+    app->op_point_size = get_long(arg, 1, 101, "--point-size");
 }
 
 static inline
 void parse_2nd_same_x_scale(char *arg, int argc, char **argv, int *i)
 {
-  if(arg)
-    app->op_same_x_scale = get_yes_no_auto_int(arg, argv, i);
-  else
-    app->op_same_x_scale = 1;
+  app->op_same_x_scale = get_yes_no_auto_int(arg, "--same-x-scale");
 }
 
 static inline
 void parse_2nd_same_y_scale(char *arg, int argc, char **argv, int *i)
 {
-  if(arg)
-    app->op_same_y_scale = get_yes_no_auto_int(arg, argv,  i);
-  else
-    app->op_same_y_scale = 1;
+  app->op_same_y_scale = get_yes_no_auto_int(arg, "--same-y-scale");
 }
 
 static inline
 void parse_2nd_skip_lines(char *arg, int argc, char **argv, int *i)
 {
-  app->op_point_size = get_long(arg, 0, INT_MAX - 10, 0);
+  app->op_point_size = get_long(arg, 0, INT_MAX - 10, "--skip-lines");
 }
 

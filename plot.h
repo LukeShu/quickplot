@@ -84,9 +84,9 @@ void qp_plot_scale(struct qp_plot *p,
       double xscale, double xshift, double yscale, double yshift)
 {
   p->xscale = xscale*p->xscale0;
-  p->xshift = xscale*p->xshift0 + xshift;
+  p->xshift = INT(xscale*p->xshift0 + xshift);
   p->yscale = yscale*p->yscale0;
-  p->yshift = yscale*p->yshift0 + yshift;
+  p->yshift = INT(yscale*p->yshift0 + yshift);
 }
 
 

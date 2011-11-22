@@ -195,6 +195,17 @@ void create_button(GtkWidget *hbox, GtkAccelGroup *accelGroup,
 }
 
 
+void qp_get_root_window_size(void)
+{
+  GdkWindow *root;
+  root = gdk_get_default_root_window();
+  ASSERT(root);
+  app->root_window_width = gdk_window_get_width(root);
+  app->root_window_height = gdk_window_get_height(root);
+  ASSERT(app->root_window_width > 0);
+  ASSERT(app->root_window_height > 0);
+}
+
 qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
 {
   GtkWidget *vbox;
@@ -276,8 +287,44 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
 
   gtk_widget_set_events(qp->window, gtk_widget_get_events(qp->window));
 
+  if(app->root_window_width < 1)
+    qp_get_root_window_size();
 
-  gtk_window_set_default_size(GTK_WINDOW(qp->window), 800, 700);
+  gtk_window_set_default_size(GTK_WINDOW(qp->window),
+      app->op_geometry.width, app->op_geometry.height);
+
+  if(app->op_geometry.x != INT_MAX && app->op_geometry.y != INT_MAX)
+  {
+    int x, y;
+    x = app->op_geometry.x;
+    y = app->op_geometry.y;
+
+    if(x >= app->root_window_width)
+      x = app->root_window_width - 1;
+    else if(x <= -app->root_window_width && x != INT_MIN)
+      x = -app->root_window_width - 1;
+
+    if(y >= app->root_window_height)
+      y = app->root_window_height - 1;
+    else if(y <= -app->root_window_height && y != INT_MIN)
+      y = -app->root_window_height - 1;
+
+
+    if(x == INT_MIN) /* like example: --geometry=600x600-0+0 */
+      x = app->root_window_width - app->op_geometry.width;
+    else if(x < 0)
+      x = app->root_window_width - app->op_geometry.width + x;
+  
+    if(y == INT_MIN) /* like example: --geometry=600x600+0-0 */
+      y = app->root_window_height - app->op_geometry.height;
+    else if(y < 0)
+      y = app->root_window_height - app->op_geometry.height + y;
+
+    DEBUG("move WINDOW to (%d,%d)\n", x, y);
+
+    gtk_window_move(GTK_WINDOW(qp->window), x, y);
+  }
+
   gtk_window_set_icon(GTK_WINDOW(qp->window),
 		      gdk_pixbuf_new_from_xpm_data(quickplot_icon));
   
@@ -369,12 +416,12 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
         create_check_menu_item(menu, "D_raw with Cairo", GDK_KEY_R,
           !qp->x11_draw, cb_view_cairo_draw, qp);
       qp->view_border =
-        create_check_menu_item(menu, "Window Border (_Frame)", GDK_KEY_F,
+        create_check_menu_item(menu, "Window Bord_er", GDK_KEY_E,
           qp->border, cb_view_border, qp);
       gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(qp->view_border),
           gtk_window_get_decorated(GTK_WINDOW(qp->window)));
       qp->view_fullscreen =
-      create_check_menu_item(menu, "F_ull Screen", GDK_KEY_U,
+      create_check_menu_item(menu, "_Full Screen", GDK_KEY_F,
           (app->op_maximize == 2), cb_view_fullscreen, qp);
       qp->view_shape =
       create_check_menu_item(menu, "Shape _X11 Extension", GDK_KEY_X,

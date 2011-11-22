@@ -156,6 +156,10 @@ struct qp_app *qp_app_create(void)
   /* Generated code */
 # include "app_op_init.h"
 
+  app->op_geometry.x = INT_MAX;
+  app->op_geometry.y = INT_MAX;
+  app->op_geometry.width = 800;
+  app->op_geometry.height = 700;
 
   app->op_plot_line_width = 3;
   app->op_plot_point_width = 5;
@@ -349,13 +353,13 @@ struct qp_source *get_source_channel_num(
 }
 
 static inline
-void qp_append_channel_list(const char *xy, const size_t *a, size_t num)
+void qp_append_channel_list(const char *xy, const ssize_t *a, size_t num)
 {
   size_t i;
   QP_APPEND(" %s channels={", xy);
   for(i=0; i<num-1; ++i)
-    QP_APPEND("%zu,", a[i]);
-  QP_APPEND("%zu}\n", a[i]);
+    QP_APPEND("%zd,", a[i]);
+  QP_APPEND("%zd}\n", a[i]);
 }
 
 void qp_qp_graph_default(qp_qp_t qp)
@@ -373,7 +377,7 @@ void qp_qp_graph_default(qp_qp_t qp)
 int qp_qp_graph_default_source(qp_qp_t qp,
     qp_source_t s, const char *name)
 {
-  size_t *x,*y, i, i_offset = 0;
+  ssize_t *x,*y, i, i_offset = 0;
   size_t num_plots;
   struct qp_source *ss;
   int ret;
@@ -387,7 +391,6 @@ int qp_qp_graph_default_source(qp_qp_t qp,
   if(num_plots > s->num_channels - 1)
     num_plots = s->num_channels - 1;
 
-  qp = qp_qp_check(qp);
   qp_app_check();
 
   ss = qp_sllist_begin(app->sources);
@@ -402,8 +405,8 @@ int qp_qp_graph_default_source(qp_qp_t qp,
   VASSERT(ss, "Source not found in list");
   if(!ss) return 1; /* source not found */
 
-  x = qp_malloc(sizeof(size_t)*num_plots);
-  y = qp_malloc(sizeof(size_t)*num_plots);
+  x = qp_malloc(sizeof(ssize_t)*num_plots);
+  y = qp_malloc(sizeof(ssize_t)*num_plots);
 
   for(i=0; i<num_plots; ++i)
     y[i] = (x[i] = i_offset) + i + 1;
@@ -425,11 +428,13 @@ int qp_qp_graph_default_source(qp_qp_t qp,
  * channels numbers start at zero in the first channel in
  * the first source and from there number all channels in
  * all sources. */
-int qp_qp_graph(qp_qp_t qp, const size_t *x, const size_t *y, size_t num,
+int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
     const char *name)
 {
   size_t num_chan = 0, i;
   int op_new_window;
+  int same_extremes = 1;
+  struct qp_channel *chan_0;
   struct qp_graph *g, *last_graph;
   double dx_min = INFINITY, dy_min = INFINITY,
          xmin = INFINITY, xmax = -INFINITY,
@@ -494,6 +499,8 @@ int qp_qp_graph(qp_qp_t qp, const size_t *x, const size_t *y, size_t num,
 
   g = qp_graph_create(qp, name);
 
+  get_source_channel_num(app->sources, x[0], &chan_0, NULL);
+  same_extremes = 1;
 
   for(i=0; i<num; ++i)
   {
@@ -509,9 +516,19 @@ int qp_qp_graph(qp_qp_t qp, const size_t *x, const size_t *y, size_t num,
         xmax = chan->series.max;
       if(dx > SMALL_DOUBLE && dx_min > dx)
         dx_min = dx;
+      if(chan_0->series.max != chan->series.max ||
+          chan_0->series.min != chan->series.min)
+        same_extremes = 0;
     }
     else
       VASSERT(0, "More code needed here");
+  }
+
+
+  if(same_extremes)
+  {
+    /* same_extremes means they should be same scales */
+    app->op_same_x_scale = 1;
   }
 
   if(app->op_same_x_scale == -1)
@@ -576,6 +593,10 @@ int qp_qp_graph(qp_qp_t qp, const size_t *x, const size_t *y, size_t num,
   }
 
 
+
+  get_source_channel_num(app->sources, y[0], &chan_0, NULL);
+  same_extremes = 1;
+
   for(i=0; i<num; ++i)
   {
     struct qp_channel *chan;
@@ -589,11 +610,21 @@ int qp_qp_graph(qp_qp_t qp, const size_t *x, const size_t *y, size_t num,
         ymax = chan->series.max;
       if(dy > SMALL_DOUBLE && dy_min > dy)
         dy_min = dy;
+      if(chan_0->series.max != chan->series.max ||
+          chan_0->series.min != chan->series.min)
+        same_extremes = 0;
     }
     else
       VASSERT(0, "More code needed here");
   }
- 
+
+
+  if(same_extremes)
+  {
+    /* same_extremes means they should be same scales */
+    app->op_same_y_scale = 1;
+  }
+
   if(app->op_same_y_scale == -1)
   {
     if(dy_min == INFINITY)
@@ -659,6 +690,8 @@ int qp_qp_graph(qp_qp_t qp, const size_t *x, const size_t *y, size_t num,
   /* Okay here is what the scaling really is */
   g->same_xscale = (xmax > xmin)?1:0;
   g->same_yscale = (ymax > ymin)?1:0;
+
+  DEBUG("xmax=%.30g xmin=%.30g\n", xmax, xmin);
 
 
   //DEBUG("x=[%g,%g] y=[%g,%g] dx_min=%g dy_min=%g\n",
@@ -765,7 +798,7 @@ void qp_qp_set_status(struct qp_qp *qp)
       snprintf(x_s, IMIN(NUM_LEN, 8),
           "                                           ");
 
-    if(gr->same_xscale && gr->qp->pointer_y >= 0)
+    if(gr->same_yscale && gr->qp->pointer_y >= 0)
       snprintf(y_s, IMIN(NUM_LEN, gr->sig_fig_y + 8),
           "%+.*g                                  ",
           gr->sig_fig_y,
@@ -774,7 +807,7 @@ void qp_qp_set_status(struct qp_qp *qp)
       snprintf(y_s, IMIN(NUM_LEN, 8),
           "                                           ");
 
-    snprintf(status, STR_LEN, "%s  %s  [%s] %s %zu plots,"
+    snprintf(status, STR_LEN, "%s  %s  {%s} %s %zu plots,"
         " Zoom Level %d %s", x_s, y_s, gr->name,
         (gr->x11)?"(x11 draw)":"(cairo draw)",
         qp_sllist_length(gr->plots), gr->zoom_level, shift);

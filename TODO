@@ -1,12 +1,15 @@
 Left off at
 
-  remake homepage
-
-  fix top of help.html
-
   add sub-grid
 
-  add quickplot_test to repo
+  fix plots with a single point
+
+  initialize app->op_geometry
+
+  fix the status sig figs to be less.  It changes in
+  digits that do not seem significant.
+
+  remake homepage
 
   alternate the colors of row in the key binding list in help
 
@@ -17,6 +20,11 @@ Left off at
   submit Cairo line drawing bug 
 
   Make man page.
+
+
+  Make function channels that use less memory
+     - linear channel
+     - sine functions and etc
 
 
   Add Channel functions.

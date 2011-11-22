@@ -64,14 +64,26 @@ ul {
 
   <span style="font-weight:bold; font-size:110%;">Quickplot</span>
   is a fast interactive 2D
-  plotter with infinite zooming, value picking, pipe input, and almost
-  unlimited plots displayed.&nbsp; Quickplot is meant for looking at
+  plotter with infinite zooming, value picking, pipe and regular file
+  input, and unlimited simultaneous plots displayed per graph.&nbsp;
+  Quickplot is meant for looking at
   your data quickly and of secondary importance is making static
   pictures of your data.&nbsp; It's a data viewer, not a plot
   editor.&nbsp; It reads ASCII text and sound files.&nbsp; It has lots
   of command line options, making it very shell script friendly.&nbsp;
-  It currently runs on GNU/Linux systems and I hear it works on Mac OS
+  It currently runs on GNU/Linux systems and we hear it works on Mac OS
   X Darwin.&nbsp;
+
+  
+  </td>
+  <td>
+
+  <img alt="small screen shot" src="screenshot_small.png">
+
+  </td>
+</tr>
+  <tr>
+    <td style="padding-right:20px;">
 
   <p>
   <span style="font-weight:bold; font-size:110%;">Quickplot</span> is <a
@@ -79,25 +91,11 @@ ul {
   software</a>.
   </p>
 
-  </td>
-  <td>
-
-  <img alt="small screen shot" src="screenshot1_small.png">
-
-  </td>
-  </tr>
-  <tr>
-  <td style="padding-right:20px;">
-
 
   <ul style="font-weight:bold;">
     <li>Screen shots <a href="screenshot1.jpg">1</a> <a
      href="screenshot2.png">2</a>
        <a href="screenshot3.png">3</a></li>
-    <li><a
-     href="about.html">About</a></li>
-    <li><a
-     href="help.html">Help</a></li>
     <li><a
 href="https://sourceforge.net/project/showfiles.php?group_id=82651"
      >Downloads page</a></li>
@@ -109,7 +107,7 @@ href="https://sourceforge.net/projects/quickplot/">Sourceforge
   </td>
   <td>
 
-  <p style="padding-top:20px;padding-bottom:4px;">
+  <p style="padding-top:4px;padding-bottom:4px;">
   <span style="font-size:large;font-weight:bold;">Quickplot is hosted by</span>
   </p>
 

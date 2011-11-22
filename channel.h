@@ -75,7 +75,6 @@ struct qp_channel_series
                              * the array of value_types that
                              * was made with malloc(). */
 
-
   int is_increasing;
   int is_decreasing;
    
@@ -102,6 +101,8 @@ struct qp_channel
 {
   int form;
   int value_type;
+  /* A pointer to put extra stuff at */
+  void *data;
   uint64_t id;  /* unique id for this channel and all copies */
   union
   {
@@ -132,6 +133,9 @@ int qp_channel_series_is_reading(qp_channel_t channel)
 
 extern
 qp_channel_t qp_channel_create(int channel_form, int value_type);
+
+extern
+qp_channel_t qp_channel_linear_create(double start, double step);
 
 /* if orig != NULL this returns a channel that points to the
  * same data as orig.  After a copy is made you may not write

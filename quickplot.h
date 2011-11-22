@@ -112,7 +112,7 @@ size_t qp_app_read(const char *filename);
  * x and y are channel numbers starting at 0
  * \return 0 on success and 1 on failure */
 extern
-int qp_qp_graph(qp_qp_t qp, const size_t *x, const size_t *y,
+int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y,
     size_t num, const char *name);
 
 extern

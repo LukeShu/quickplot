@@ -35,8 +35,8 @@ EXTRA_DIST =\
  imgSaveImage.xpm\
  quickplot_icon.png\
  quickplot_icon.xpm\
+ screenshot_small.png\
  screenshot1.jpg\
- screenshot1_small.png\
  screenshot2.png\
  screenshot3.png\
  favicon.ico\
@@ -80,8 +80,8 @@ html_DATA =\
  help.html\
  index.html\
  quickplot_icon.png\
+ screenshot_small.png\
  screenshot1.jpg\
- screenshot1_small.png\
  screenshot2.png\
  screenshot3.png\
  background_ft.png\

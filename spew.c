@@ -130,15 +130,23 @@ void qp_spew(int level, int show_errno, const char *format, ...)
 
   if(level > 4)
     level = 4;
-  else if(level < 0)
-    level = 0;
+  else if(level < 1)
+    level = 1;
 
   if(level >= spew_level)
   {
     va_list ap;
     last_spewed = 1;
 
-    fprintf(spew_file, "QP: ");
+    
+    if(level == 2)
+      fprintf(spew_file, "%sQP:%s ", blu, trm);
+    else if(level == 3)
+      fprintf(spew_file, "%sQP:%s ", byel, trm);
+    else if(level == 4)
+      fprintf(spew_file, "%sQP:%s ", bred, trm);
+    else
+      fprintf(spew_file, "QP: ");
 
     va_start(ap, format);
     vfprintf(spew_file, format, ap);

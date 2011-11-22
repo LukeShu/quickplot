@@ -31,9 +31,9 @@
 #include "debug.h"
 
 
-#define DELTA_HUE  (1.0/4.5575324428)
+#define DELTA_HUE  (6.0/4.6575324428)
 #define DELTA_SAT  (0.18255);
-#define DELTA_VAL  (0.160324);
+#define DELTA_VAL  (0.160324/6.0);
 
 #if 1
 /* constants for hue_func() */

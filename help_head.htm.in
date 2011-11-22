@@ -32,7 +32,7 @@
 @STYLE_CSS@
 
 table.options {
-  background-color:#89ACEC;
+  background-color:#7B87D0;
   margin-left:6px;
   margin-right:0px;
   margin-top:15px;
@@ -89,14 +89,33 @@ tr.b {
 <h1>Quickplot Help</h1>
 </center>
 
+
+<h2>Terminology</h2>
+
+
 <p>
-Quickplot can load data from GUIs (graphical user interfaces), files listed
-on the command line, or by reading the data from standard input.&nbsp; Data
-is loaded into channels.&nbsp; A channel represents a series of numbers,
-like for example the values for one variable, or a column of numbers in
-a spreadsheet.&nbsp; Any two channels may be plotted against each other.
+We need to distinguish between the two terms plot and graph.&nbsp;
+In Quickplot we say we put many plots on a graph.&nbsp;
+This process we call plotting.&nbsp;
+A graph displays one or more plots.&nbsp;
+Quickplot displays each graph in a page tab, like pages in
+a web browser.&nbsp;
+The distinction between plot and graph is required in order
+to understand Quickplot and Quickplot commands.
 </p>
 
+<p>
+Quickplot can load data from: GUIs (graphical user interfaces), files listed
+on the command line, and from standard input (pipes).&nbsp; Data
+is loaded into channels.&nbsp; A channel represents a series of numbers,
+like for example the values for one variable, or a column of numbers in
+a spreadsheet.&nbsp; Any two channels may be plotted against each other
+whether they are from the same file or not.&nbsp; 
+A plot graphically representation of two channels, call them the X and Y
+channels.&nbsp;
+Any number of plots may be made on a graph.&nbsp;
+The graph is like the paper we put the plots on.
+</p>
 
 
 <h2>Zooming</h2>
@@ -121,12 +140,13 @@ plot region you want to zoom to.&nbsp; Press the right mouse button
 and hold and drag the zoom box.&nbsp; Release the
 right mouse button then it is at another corner of the zoom
 region.&nbsp; Now Quickplot will zoom into that zoom region.&nbsp; You
-can zoom in as many times as you like, or calculations will permit.
+can zoom in as many times as you like.
 </p>
 
 <p>
-You can also press the shift key and the control key while
-pulling the zoom box to "shift" and "resize about the center"
+While holding the left mouse button
+you can press the shift key or the control key while
+pulling the zoom box to "shift" or "resize about the center"
 respectively.
 </p>
 
@@ -143,14 +163,14 @@ You can do this any number of times.
 <li>
 
 <p>
-<b>Zooming Out</b> &nbsp;&nbsp; Put the pointer (mouse) in the plot
+<b>Zooming Out</b> &nbsp;&nbsp; Put the pointer (mouse) in the graph
 window.&nbsp; Press the right mouse button and hold and drag the zoom
 box.&nbsp; Release the right mouse button then it (the zoom box) is
-past one edge of the plot window.&nbsp; Now Quickplot will zoom out to
+past one edge of the graph window.&nbsp; Now Quickplot will zoom out to
 the previous zoom level.&nbsp; Pressing the z key will do the same thing.
 </p>
 
-<p> Or to zoom out to a full view (top zoom level) of the plot: Put
+<p> Or to zoom out to a full view (top zoom level) of the plot: put
 the pointer (mouse) in the plot window.&nbsp; Press the right mouse
 button and hold and drag the zoom box.&nbsp; Release the right mouse
 button then the zoom box is past two edges (a corner) of the plot
@@ -197,7 +217,7 @@ positions that are closest to mouse pointer X position.</li>
 <h2>Loadable File Formats</h2>
 
 <p>
-Quickplot can read ASCII text 
+Quickplot can read ASCII text and sound files
 </p>
 
 <ul>
@@ -245,11 +265,17 @@ Quickplot can also read the numbers NAN (not a number), INFINITY
 and numbers larger than the largest double as points that are skipped
 when plotting.&nbsp; Any non-number series of characters may be used
 to separate numbers, not just spaces and tabs.&nbsp; There must be a
-newline character between sets of samples.&nbsp; Any missing numbers will
+newline character between samples.&nbsp; Any missing numbers will
 be automatically read as NAN.&nbsp;
 The special values NAN and INFINITY may be read.&nbsp;
 When plotting if X and/or Y is NAN or INFINITY the point is just not
 plotted making a brake in the connecting line, when lines are drawn.
+</p>
+
+<p>
+Quickplot can read
+<a href="http://en.wikipedia.org/wiki/Comma-separated_values">CSV</a>
+files.
 </p>
 
 </li>
@@ -289,7 +315,7 @@ channel would load 1.32 million data points.
 
 
 <a name=usage_synopses></a>
-<h3>Usage: quickplot [<span class=op>OPTIONS</span>]</h3>
+<h3>Usage: quickplot [OPTIONS]</h3>
 
 
 
@@ -341,7 +367,7 @@ starts.&nbsp;
 
 
 
-<h3><span class=op>OPTIONS</span></h3>
+<h3>OPTIONS</h3>
 
 
 

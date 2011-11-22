@@ -320,7 +320,7 @@ void DrawXGrid(cairo_t *cr, PangoLayout *pangolayout,
         
       for(j = yLabel_start; j <= yLabel_max; j += yLabel_inc)
       {
-        cairo_translate(cr, x+3+ gr->grid_line_width /2,
+        cairo_translate(cr, x+3+ gr->grid_line_width/2,
 	    qp_plot_get_ypixel(z, j*ypow_part)
 	    - 5 /* 1/2 font height */);
         pango_layout_set_text(pangolayout, str, -1);
@@ -347,7 +347,7 @@ void DrawXGrid(cairo_t *cr, PangoLayout *pangolayout,
   for(i=xmin_mat; i <= xmax_mat; i += xinc)
   {
     int x;
-    x = qp_plot_get_xpixel(z, i*xpow_part);
+    x = qp_plot_get_xpixel(z, i*xpow_part); // gr->grid_line_width;
     cairo_move_to(cr, x, 0);
     cairo_line_to(cr, x, height);
   }
@@ -497,7 +497,7 @@ void DrawYGrid(cairo_t *cr, PangoLayout *pangolayout,
   for(i=ymin_mat; i <= ymax_mat; i += yinc)
   {
     int y;
-    y = qp_plot_get_ypixel(z, i*ypow_part);
+    y = qp_plot_get_ypixel(z, i*ypow_part); // - gr->grid_line_width;
     cairo_move_to(cr, 0, y);
     cairo_line_to(cr, width, y);
   }
@@ -585,7 +585,7 @@ void qp_graph_grid_draw(struct qp_graph *gr, struct qp_plot *p,
   ASSERT(gr->drawing_area);
   ASSERT(gr->qp);
   ASSERT(gr->qp->window);
-  
+
   PreDrawGrid(gr, p,
 	  &xmin_mat, &xmax_mat, &xinc, &xpow_part,
 	  &ymin_mat, &ymax_mat, &yinc, &ypow_part,

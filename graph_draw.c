@@ -397,7 +397,7 @@ void draw_grid(struct qp_graph *gr, cairo_t *cr,
     qp_plot_scale(p, xscale, xshift, yscale, yshift);
 
     /* This will draw the grid if gr->show_grid
-     * but other wise sets gr->sig_fig_x and/or
+     * but either way sets gr->sig_fig_x and/or
      * gr->sig_fig_y */
     qp_graph_grid_draw(gr, p, cr, width, height);
   }
@@ -445,6 +445,9 @@ void graph_draw(struct qp_graph *gr, cairo_t *cr,
       gr->background_color.a);
 
   cairo_paint(cr);
+
+  cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
+  cairo_set_line_join(cr, CAIRO_LINE_JOIN_ROUND);
 
 
   if(gr->qp->shape)
@@ -499,14 +502,13 @@ void graph_draw(struct qp_graph *gr, cairo_t *cr,
       if(gr->x11)
       {
         XSetLineAttributes(gr->x11->dsp, gr->x11->gc, INT(p->line_width),
-            LineSolid, CapButt, JoinRound);
+            LineSolid, CapRound, JoinRound);
         XSetForeground(gr->x11->dsp, gr->x11->gc, p->l.x);
       }
       else
       {
         cairo_set_source_rgba(cr, p->l.c.r, p->l.c.g, p->l.c.b, p->l.c.a);
         cairo_set_line_width(cr, p->line_width);
-        cairo_set_line_cap(cr, CAIRO_LINE_CAP_ROUND);
       }
 
       if(qp_plot_begin(p, xscale, xshift, yscale, yshift,
@@ -601,7 +603,11 @@ void graph_draw(struct qp_graph *gr, cairo_t *cr,
           cairo_fill(cr);
       }
     }
-
+    /* The mouse pointer value picker needs this to be reset from the
+     * - point_w2 offset above.  Needed for all plots when
+     * using the value picker GUI */
+    qp_plot_scale(p, xscale, xshift, yscale, yshift);
+ 
     p = (struct qp_plot *) qp_sllist_next(gr->plots);
   }
 }

@@ -91,27 +91,28 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 
 <table summary="list of Quickplot key short-cuts" style="margin-bottom:0px;">
 
-<tr><td><b>a</b></td> <td>show information <b><u>a</u></b>bout Quickplot using a web browser</td</tr>
-<tr><td><b>b</b></td> <td>toggles the visibility of the <b><u>b</u></b>utton bar</td</tr>
-<tr><td><b>c</b></td> <td><b><u>c</u></b>opies the current focused main window</td</tr>
-<tr><td><b>d</b></td> <td><b><u>d</u></b>elete the main window. This will not close the last main window.</td</tr>
-<tr><td><b>f</b></td> <td>toggles the visibility of the main border (<b><u>f</u></b>rame)</td</tr>
-<tr><td><b>g</b></td> <td>show/hide the <b><u>g</u></b>raph configuration widget</td</tr>
-<tr><td><b>h</b></td> <td>show <b><u>h</u></b>elp using a web browser</td</tr>
-<tr><td><b>i</b></td> <td>save a PNG <b><u>i</u></b>mage of the graph</td</tr>
-<tr><td><b>m</b></td> <td>show/hide the <b><u>m</u></b>enu bar</td</tr>
-<tr><td><b>n</b></td> <td>make a <b><u>n</u></b>ew graph</td</tr>
-<tr><td><b>o</b></td> <td><b><u>o</u></b>pen a data file</td</tr>
-<tr><td><b>p</b></td> <td>show/hide the <b><u>p</u></b>lot lister widget</td</tr>
-<tr><td><b>q</b></td> <td><b><u>q</u></b>uit</td</tr>
-<tr><td><b>r</b></td> <td>toggles the between d<b><u>r</u></b>awing with Cairo and X11</td</tr>
-<tr><td><b>s</b></td> <td>toggles the visibility of the <b><u>s</u></b>tatus bar</td</tr>
-<tr><td><b>t</b></td> <td>toggles the visibility of the graph <b><u>t</u></b>abs</td</tr>
-<tr><td><b>u</b></td> <td>toggles f<b><u>u</u></b>ll screen viewing</td</tr>
-<tr><td><b>w</b></td> <td>makes a new main <b><u>w</u></b>indow</td</tr>
-<tr><td><b>x</b></td><td>toggles the X11 shape e<b><u>x</u></b>tension on and off</td</tr>
-<tr><td><b>z</b></td> <td><b><u>z</u></b>oom out one level</td</tr>
-<tr><td><b>Z</b></td> <td><b><u>Z</u></b>oom out all the way</td</tr>
+<tr><td><b>a</b></td> <td>show information <b>a</b>bout Quickplot using a web browser</td</tr>
+<tr><td><b>b</b></td> <td>show/hide the <b>b</b>utton bar</td</tr>
+<tr><td><b>c</b></td> <td><b>c</b>opies the current focused main window</td</tr>
+<tr><td><b>d</b></td> <td><b>d</b>elete the main window. This will not close the last main window.</td</tr>
+<tr><td><b>e</b></td> <td>toggles the visibility of the main window bord<b>e</b>r</td</tr>
+<tr><td><b>f</b></td> <td>toggles <b>f</b>ull screen viewing</td</tr>
+<tr><td><b>g</b></td> <td>show/hide the <b>g</b>raph configuration widget</td</tr>
+<tr><td><b>h</b></td> <td>show <b>h</b>elp using a web browser</td</tr>
+<tr><td><b>i</b></td> <td>save a PNG <b>i</b>mage of the graph</td</tr>
+<tr><td><b>m</b></td> <td>show/hide the <b>m</b>enu bar</td</tr>
+<tr><td><b>n</b></td> <td>make a <b>n</b>ew graph</td</tr>
+<tr><td><b>o</b></td> <td><b>o</b>pen a data file</td</tr>
+<tr><td><b>p</b></td> <td>show/hide the <b>p</b>lot lister widget</td</tr>
+<tr><td><b>q</b></td> <td><b>q</b>uit</td</tr>
+<tr><td><b>r</b></td> <td>toggles the between d<b>r</b>awing with Cai<b>r</b>o and X11</td</tr>
+<tr><td><b>s</b></td> <td>show/hide of the <b>s</b>tatus bar</td</tr>
+<tr><td><b>t</b></td> <td>show/hide of the graph <b>t</b>abs</td</tr>
+<tr><td><b>u</b></td> <td>show/hide of all G<b>U</b>Is</td></tr>
+<tr><td><b>w</b></td> <td>makes a new main <b>w</b>indow</td</tr>
+<tr><td><b>x</b></td><td>toggles the X11 shape e<b>x</b>tension on and off</td</tr>
+<tr><td><b>z</b></td> <td><b>z</b>oom out one level</td</tr>
+<tr><td><b>Z</b></td> <td><b>Z</b>oom out all the way</td</tr>
 </table>
 
 <table summary="The Rest of Quickplot key short-cuts" style="margin-top:0px;">

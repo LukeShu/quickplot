@@ -123,6 +123,46 @@ gboolean ecb_key_release(GtkWidget *w, GdkEvent *event, gpointer data)
   return FALSE;
 }
 
+static inline
+void toggle_all_guis(struct qp_qp *qp)
+{
+  int showing;
+
+  showing =
+    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar))
+    ||
+    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_buttonbar))
+    ||
+    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_tabs))
+    ||
+    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_statusbar));
+
+  if(showing)
+  {
+    /* Hide them */
+    if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar)))
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_menubar));
+    if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_buttonbar)))
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_buttonbar));
+    if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_tabs)))
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_tabs));
+    if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_statusbar)))
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_statusbar));
+
+    return;
+  }
+
+  /* Show them */
+  if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar)))
+    gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_menubar));
+  if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_buttonbar)))
+    gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_buttonbar));
+  if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_tabs)))
+    gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_tabs));
+  if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_statusbar)))
+    gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_statusbar));
+}
+
 gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
 {
   struct qp_qp *qp;
@@ -169,9 +209,13 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       if(app->main_window_count > 1)
         ecb_close(NULL, NULL, qp);
       break;
+    case GDK_KEY_E:
+    case GDK_KEY_e:
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_border));
+      break;
     case GDK_KEY_F:
     case GDK_KEY_f:
-      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_border));
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_fullscreen));
       break;
     case GDK_KEY_G:
     case GDK_KEY_g:
@@ -217,7 +261,7 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_U:
     case GDK_KEY_u:
-      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_fullscreen));
+      toggle_all_guis(qp);
       break;
     case GDK_KEY_W:
     case GDK_KEY_w:
@@ -911,8 +955,7 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event,
        * and save_x, save_y. */
 
 
-      if(save_x - start_x < 3 ||
-          save_y - start_y < 3)
+      if((save_x - start_x)*(save_y - start_y) < 9)
       {
         /* we just shrink the plots a little */
         /* We make a zoom level that zooms out */

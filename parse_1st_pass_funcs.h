@@ -120,7 +120,7 @@ void parse_1st_grid_text_color(char *arg, int argc, char **argv, int *i)
 static inline
 void parse_1st_linear_channel(char *arg, int argc, char **argv, int *i)
 {
-  parse_linear_channel(0, argc, argv, i, NULL, NULL);
+  parse_linear_channel(0, arg, argc, argv, i, NULL, NULL);
 }
 
 

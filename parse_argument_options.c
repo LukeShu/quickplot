@@ -102,7 +102,6 @@ void qp_getargs_1st_pass(int argc, char **argv)
   qp_spew_init(3);
 #endif
 
-
   /* This is the an auto-generated function */
   parse_args_1st_pass(argc, argv);
 
@@ -164,6 +163,6 @@ void qp_getargs_2nd_pass(int argc, char **argv)
   }
 
   /* Setup/draw the plots in the tabs */
-  g_idle_add_full(G_PRIORITY_LOW + 10, idle_callback, NULL, NULL);
+  g_idle_add_full(G_PRIORITY_LOW + 10, startup_idle_callback, NULL, NULL);
 }
 

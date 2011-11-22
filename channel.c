@@ -53,6 +53,21 @@ qp_channel_t qp_channel_func_double_create(double (*func)(double),
   return c;
 }
 
+qp_channel_t qp_channel_linear_create(double start, double step)
+{
+  struct qp_channel *c;
+
+  /* TODO: rewrite this making this a function and not a
+   * big memory pig like it is now. */
+
+  c = qp_channel_create(QP_CHANNEL_FORM_SERIES, QP_TYPE_DOUBLE);
+  c->data = qp_malloc(2*sizeof(double));
+  ((double *) c->data)[0] = start;
+  ((double *) c->data)[1] = step;
+
+  return c;
+}
+
 
 qp_channel_t qp_channel_create(int form, int value_type)
 {
@@ -80,6 +95,7 @@ qp_channel_t qp_channel_create(int form, int value_type)
   channel->form = form;
   channel->value_type = value_type;
   channel->id = (++channel_create_count);
+  channel->data = 0;
 
 
   switch(form)
@@ -111,6 +127,7 @@ qp_channel_t qp_channel_create(int form, int value_type)
   
   return channel;
 }
+
 
 void qp_channel_destroy(qp_channel_t channel)
 {

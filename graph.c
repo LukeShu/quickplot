@@ -54,7 +54,7 @@ char *unique_name(const char *name)
   char buf[32];
   char *test_name = NULL;
   size_t len = 0;
-  int i = 0;
+  int i = 1;
 
   ++graph_create_count;
 
@@ -88,10 +88,9 @@ char *unique_name(const char *name)
 
     if(g)
     {
-      ++i;
       if(test_name == name)
-        test_name = (char*) qp_malloc(len = strlen(name)+16);
-      snprintf(test_name, len, "%s-%d", name, i);
+        test_name = (char*) qp_malloc(len = (strlen(name)+16));
+      snprintf(test_name, len, "%s[%d]", name, ++i);
     }
     else
     {
@@ -124,18 +123,6 @@ void add_graph_close_button(struct qp_graph *gr)
   gtk_widget_set_name(close_button, "tab_close_button");
   gtk_widget_set_tooltip_text(close_button,"Close tab");
   gtk_widget_show(close_button);
-}
-
-static
-void get_root_window_size(void)
-{
-  GdkWindow *root;
-  root = gdk_get_default_root_window();
-  ASSERT(root);
-  app->root_window_width = gdk_window_get_width(root);
-  app->root_window_height = gdk_window_get_height(root);
-  ASSERT(app->root_window_width > 0);
-  ASSERT(app->root_window_height > 0);
 }
 
 
@@ -214,8 +201,7 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
    * antialiasing in X11 shape drawing mode. */
   gr->font_antialias_set = 1; /* boolean */
 
-  if(app->root_window_width <= 0)
-    get_root_window_size();
+  ASSERT(app->root_window_width > 10);
 
   gr->drawing_area = gtk_drawing_area_new();
   gtk_widget_set_app_paintable(gr->drawing_area, TRUE);
