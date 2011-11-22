@@ -138,7 +138,18 @@ svn co https://quickplot.svn.sf.net/svnroot/quickplot/trunk quickplot
 This will create a directory named quickplot in the current directory.
 </p>
 
+<h3>News</h3>
 
+<p>
+Quickplot is currently under active development, a complete
+re-write.&nbsp;
+We hope to have a new release, 0.9.*, out some time in
+December 2011.&nbsp;
+For now consider getting the source from Subversion as described 
+above.&nbsp; The current Subversion code is just missing a couple
+GUIs, but is in many ways more functional than Quickplot
+version 0.8.*.
+</p>
 
 
 <div style="margin-bottom:34px;">
