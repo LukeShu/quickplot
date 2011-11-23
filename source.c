@@ -276,6 +276,43 @@ int read_ascii(qp_source_t source, struct qp_reader *rd)
       break;
   }
 
+  if(app->op_skip_lines)
+  {
+    size_t skip_lines;
+    skip_lines = app->op_skip_lines;
+
+    while(skip_lines--)
+    {
+      errno = 0;
+      n = Getline(&line, &line_buf_len, rd->file);
+
+      ++line_count;
+
+      if(n == -1 || errno)
+      {
+        if(!errno)
+        {
+          /* end-of-file so it is zero length */
+          WARN("getline() read no data in file %s\n",
+            source->name);
+          QP_WARN("read no data in file %s\n",
+            source->name);
+        }
+        else
+        {
+          EWARN("getline() read no data in file %s\n",
+            source->name);
+          QP_EWARN("read no data in file %s\n",
+            source->name);
+        }
+
+        if(line)
+          free(line);
+        return 1; /* error */
+      }
+    }
+  }
+
 
   do
   {
@@ -428,7 +465,9 @@ int read_sndfile(struct qp_source *source, struct qp_reader *rd)
   size_t count;
   SNDFILE *file;
   SF_INFO info;
+  size_t skip_lines;
 
+  skip_lines = app->op_skip_lines;
 
   file = sf_open_fd(rd->fd, SFM_READ, &info, 0);
   if(!file)
@@ -437,6 +476,14 @@ int read_sndfile(struct qp_source *source, struct qp_reader *rd)
         rd->filename);
     return 1; /* not a libsndfile */
   }
+  else if(info.frames < skip_lines)
+  {
+    QP_INFO("file \"%s\" is readable by libsndfile with %ld "
+        "samples which is less the lines to skip from --skip-lines=%zu\n",
+        rd->filename, info.frames, skip_lines);
+    return -1; /* error */
+  }
+
 
   rate = info.samplerate;
   x = qp_malloc(sizeof(double)*(info.channels+1));
@@ -460,6 +507,12 @@ int read_sndfile(struct qp_source *source, struct qp_reader *rd)
 
     if(sf_readf_double(file, x, 1) < 1)
       break;
+
+    if(skip_lines)
+    {
+      --skip_lines;
+      continue;
+    }
 
     /* TODO: use other channel types like load as shorts or ints */
 
@@ -657,15 +710,24 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   
   add_source_buffer_remove_menus(source);
 
-  INFO("created source with %zu sets of values "
+  
+  {
+    char skip[64];
+    skip[0] = '\0';
+    if(app->op_skip_lines)
+      snprintf(skip, 64, "(after skipping %zu) ", app->op_skip_lines);
+
+
+    INFO("created source with %zu sets of values %s"
       "in %zu channels from file %s\n",
-      source->num_values, source->num_channels,
+      source->num_values, skip, source->num_channels,
       filename);
 
-  QP_NOTICE("created source with %zu sets of "
-      "values in %zu channels from file \"%s\"\n",
-      source->num_values, source->num_channels,
+    QP_NOTICE("created source with %zu sets of "
+      "values %sin %zu channels from file \"%s\"\n",
+      source->num_values, skip, source->num_channels,
       filename);
+  }
 
   qp_rd = NULL;
 

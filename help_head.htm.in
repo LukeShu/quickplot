@@ -109,9 +109,12 @@ Quickplot can load data from: GUIs (graphical user interfaces), files listed
 on the command line, and from standard input (pipes).&nbsp; Data
 is loaded into channels.&nbsp; A channel represents a series of numbers,
 like for example the values for one variable, or a column of numbers in
-a spreadsheet.&nbsp; Any two channels may be plotted against each other
+a spreadsheet.&nbsp; Other names for channel may be
+dimension, coordinate, degree-of-freedom, field, or component.&nbsp;
+We call them all channels in Quickplot.&nbsp;
+Any two channels may be plotted against each other
 whether they are from the same file or not.&nbsp; 
-A plot graphically representation of two channels, call them the X and Y
+A plot is a graphically representation of two channels, call them the X and Y
 channels.&nbsp;
 Any number of plots may be made on a graph.&nbsp;
 The graph is like the paper we put the plots on.

@@ -215,8 +215,9 @@ struct qp_option options[] =
                                                   " See option: ::--labels@@.",                               "qp_strdup"
                                                                                                               "(\" \")",  "char *"    },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--labels",             "-L", 0,         "read labels from the top of a text data plot file.  See "
-                                                  "also: ::--label-separator@@ and ::--no-labels@@.",         "0",        "int"       },
+{ {0,1}, "--labels",             "-L", 0,         "read labels from the first line of a text file that "
+                                                  "is not skipped.  See also: ::--skip-lines@@, "
+                                                  "::--label-separator@@ and ::--no-labels@@.",               "0",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {2,0}, "--libsndfile-version", 0,    0,         "print the version of libsndfile that Quickplot was "
                                                   "built with and then exit",                                 0,          0           },
@@ -380,7 +381,9 @@ struct qp_option options[] =
                                                   "override the effect of the ::--verbose@@ option.",         0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--skip-lines",         "-S", "NUM",     "skip the first ::NUM@@ lines when reading the file.  "
-                                                  "This just applies when reading text files.",               "0",        "size_t"    },
+                                                  "This applies of all types of files that quickplot can "
+                                                  "read.  Set ::NUM@@ to zero to stop skipping lines.",
+                                                               /* TODO: make skip list not just n lines */    "0",        "size_t"    },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--statusbar",          0,    0,         "show the status bar below the graph.  This is the "
                                                   "default.  See also ::--no-statusbar@@",                    "1",        "int"       },

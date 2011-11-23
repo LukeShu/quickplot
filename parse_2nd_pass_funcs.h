@@ -570,6 +570,6 @@ void parse_2nd_same_y_scale(char *arg, int argc, char **argv, int *i)
 static inline
 void parse_2nd_skip_lines(char *arg, int argc, char **argv, int *i)
 {
-  app->op_point_size = get_long(arg, 0, INT_MAX - 10, "--skip-lines");
+  app->op_skip_lines = get_long(arg, 0, INT_MAX - 10, "--skip-lines");
 }
 

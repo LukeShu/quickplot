@@ -137,6 +137,7 @@ that one can make pretty pictures with.
       <li>more row comment formats
       <li>reads infinity and nan
       <li>will read any text file and pick out the numbers
+      <li>reads CSV files
     </ul>
   <li>Cairo drawing that provides translucent and transparent colors using RGBA
   <li>makes graphs with the X11 shape extension that float plots
