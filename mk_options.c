@@ -286,7 +286,7 @@ struct qp_option options[] =
                                                   "See also ::--linear-channel@@.",                           0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-lines",           "-i", 0,         "plot without drawing lines in the graph.  See also "
-                                                  "--show-lines.",                                            0,          0           },
+                                                  "--lines.",                                                 0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-maximize",        0,    0,         "don't maximize the main window.  This is the default.  "
                                                   "See also ::--maximize@@.",                                 0,          0           },
@@ -363,7 +363,7 @@ struct qp_option options[] =
                                                   "are scaled when you have more than one plot on a graph "
                                                   "** ## ::Y@@  yes same y scale ## ::N@@  no different y "
                                                   "scales ## ::A@@  auto, be smart about it.  This is the "
-                                                  "default. && See also ::--same-x-scale@@.&& ",              "-1",       "int"       },
+                                                  "default. && See also ::--same-x-scale@@. ",                "-1",       "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--shape",              0,    0,         "make graphs see through.  This is insanely cool.  It "
                                                   "uses the X11 shape extension which was made famous by "
