@@ -241,7 +241,7 @@ struct qp_option options[] =
                                                   "this option with a sound file would prepend an "
                                                   "additional channel.  Any file loaded that contains just "
                                                   "a single channel will automatically have a channel "
-                                                  "prepended.  Using this option with a single channel files "
+                                                  "prepended.  Using this option with a single channel file "
                                                   "will not prepend an additional channel, but will let you "
                                                   "set the start and step values for that prepended "
                                                   "channel.  See also ::--no-linear-channel@@.",              "NULL",     "struct "
@@ -356,14 +356,14 @@ struct qp_option options[] =
                                                   "are scaled when you have more than one plot on a graph "
                                                   "** ## ::Y@@  yes same x scale ## ::N@@  no different x "
                                                   "scales ## ::A@@  auto, be smart about it.  This is the "
-                                                  "default. &&",                                              "-1",       "int"       },
+                                                  "default. && See also ::--same-y-scale@@.",                 "-1",       "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--same-y-scale",       "-y", "Y|N|A",  "use in place of ::--same-scale@@ or ::--auto-scale@@ "
                                                   "for finer control over how the x values of the plots "
                                                   "are scaled when you have more than one plot on a graph "
                                                   "** ## ::Y@@  yes same y scale ## ::N@@  no different y "
                                                   "scales ## ::A@@  auto, be smart about it.  This is the "
-                                                  "default. && ",                                             "-1",       "int"       },
+                                                  "default. && See also ::--same-x-scale@@.&& ",              "-1",       "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--shape",              0,    0,         "make graphs see through.  This is insanely cool.  It "
                                                   "uses the X11 shape extension which was made famous by "
@@ -401,8 +401,9 @@ struct qp_option options[] =
                                                   "but there will be no translucent colors and "
                                                   "anti-aliasing in the drawing of the plot lines and "
                                                   "points. There will be translucent colors and "
-                                                  "anti-aliasing in the background and grid, but not in "
-                                                  "saved images.  You can start drawing with X11 and "
+                                                  "anti-aliasing in the background and grid, but there "
+                                                  "will be translucent colors in saved images.  You can "
+                                                  "start drawing with X11 and "
                                                   "switch to drawing with Cairo when you want to save an "
                                                   "image, using the ::r@@ key or the menu.  That will save "
                                                   "you time.  See also ::--cairo-draw@@.",                    "1",        "int"       },
