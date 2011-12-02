@@ -151,6 +151,13 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
   gr->close_button = NULL;
   gr->pixbuf_surface = NULL;
 
+
+  gr->same_x_scale = 1;
+  gr->same_y_scale = 1;
+  gr->same_x_limits = 1;
+  gr->same_y_limits = 1;
+
+
   /* This is the initial zoom in normalized units */
   /* qp_zoom_create(xscale, xshift, yscale, yshift) */
   gr->z = qp_zoom_create(0.95,0.025,0.92,0.04);
@@ -225,9 +232,9 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
    * buffering the drawing of the graph. */
   gtk_widget_set_double_buffered(gr->drawing_area, FALSE);
 
-#if 0
+#if 1
   {
-    const GdkRGBA rgba = { 0.0, 0.0, 0.0, 0.0 };
+    const GdkRGBA rgba = { 0.0, 0.0, 0.0, 1.0 };
     gtk_widget_override_background_color(gr->drawing_area,
         GTK_STATE_FLAG_NORMAL, &rgba);
   }

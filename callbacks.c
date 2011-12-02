@@ -205,8 +205,15 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_D:
     case GDK_KEY_d:
-    case GDK_KEY_Escape:
       if(app->main_window_count > 1)
+        ecb_close(NULL, NULL, qp);
+      break;
+    case GDK_KEY_Escape:
+      if(qp->graph_detail->window == w)
+        cb_graph_detail_show_hide(NULL, qp);
+      else if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_fullscreen)))
+        gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_fullscreen));
+      else if(app->main_window_count > 1)
         ecb_close(NULL, NULL, qp);
       break;
     case GDK_KEY_E:
@@ -219,6 +226,7 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_G:
     case GDK_KEY_g:
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_detail));
       break;
     case GDK_KEY_H:
     case GDK_KEY_h:
@@ -779,6 +787,15 @@ gboolean cb_switch_page(GtkNotebook *notebook, GtkWidget *page,
 
   if(gr->qp->shape)
     gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window),app->waitCursor);
+
+  gr->qp->update_graph_detail = 0;
+
+  if(gr->qp->graph_detail)
+    if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(gr->qp->view_graph_detail)))
+      /* qp->graph_detail is showing
+       * We need to update it, but if there is a new graph we will
+       * wait until after the graph drawn. */
+      gr->qp->update_graph_detail = 1;
 
   return TRUE;
 }

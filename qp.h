@@ -196,7 +196,10 @@ struct qp_graph
   struct qp_zoom *z;
 
   /* bool value == do all the plots have the same scale? */
-  int same_xscale, same_yscale;
+  int same_x_scale, same_y_scale;
+  /* do all the plots have the same min and max */
+  int same_x_limits, same_y_limits;
+
   int show_grid, grid_numbers;
   /* maximum pixel space between grid lines
    * the smallest it could be is 1/3 of this */
@@ -314,6 +317,38 @@ struct qp_app
   int gui_can_exit;
 };
 
+struct qp_slider
+{
+  int min, max, extended_max;
+  GtkWidget *entry, *scale;
+  int *val;
+  int is_plot_line_width;
+  struct qp_graph *gr;
+};
+
+struct qp_graph_detail
+{
+  GtkWidget *window,
+            *config_label,
+            *show_container,
+            *background_color_picker,
+            *grid_color_picker,
+            *numbers_color_picker,
+            *font_picker,
+            *x_scale,
+            *y_scale,
+            *selector_x_vbox,
+            *selector_y_vbox,
+            *selector_drawing_area,
+            *selector_hbox;
+
+  struct qp_slider *line_width_slider,
+                   *point_size_slider,
+                   *grid_line_width_slider,
+                   *grid_x_line_space_slider,
+                   *grid_y_line_space_slider;
+};
+
 /* There is one of these per quickplot main window
  * The window does not have to be made. */
 struct qp_qp
@@ -331,13 +366,20 @@ struct qp_qp
             *view_shape,
             *view_x11_draw,
             *view_cairo_draw,
+            *view_graph_detail,
             *delete_window_menu_item,
             *menubar,
             *file_menu,
             *buttonbar,
+            *button_graph_detail,
             *notebook, /* graph tabs */
             *statusbar,
             *status_entry;
+
+  
+  struct qp_graph_detail *graph_detail;
+
+
 
   //int wait_warning_showing;
 
@@ -345,6 +387,10 @@ struct qp_qp
    * in the drawing_area, all drawing areas being in the
    * same position and size for a given qp_qp. */
   int pointer_x, pointer_y;
+
+  /* A flag to update the graph_detail after
+   * a graph draw */
+  int update_graph_detail;
 
   int wait_cursor_showing;
 
@@ -391,12 +437,18 @@ int qp_launch_browser(const char *fileName);
 extern
 void qp_get_root_window_size(void);
 
+/* Setup the widget for a particular graph */
+extern
+void qp_qp_graph_detail_init(struct qp_qp *qp);
+
 extern
 void qp_qp_set_status(struct qp_qp *qp);
 
 extern
 void add_source_buffer_remove_menus(struct qp_source *source);
 
+extern
+void qp_app_plot_selectors_remake(void);
 
 #ifdef QP_DEBUG
 extern
@@ -416,6 +468,8 @@ void qp_graph_zoom_out(struct qp_graph *gr, int all);
 extern
 void qp_graph_switch_draw_mode(struct qp_graph *gr);
 
+extern
+void qp_graph_set_grid_font(struct qp_graph *gr);
 
 extern
 void qp_qp_graph_remove(qp_qp_t qp, qp_graph_t graph);

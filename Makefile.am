@@ -122,6 +122,7 @@ libquickplot_la_SOURCES =\
  get_opt.c\
  get_opt.h\
  graph.c\
+ graph_detail.c\
  graph_draw.c\
  graph_grid.c\
  imgCopyWindow.xpm\

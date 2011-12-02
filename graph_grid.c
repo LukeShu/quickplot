@@ -226,7 +226,7 @@ void DrawXGrid(cairo_t *cr, PangoLayout *pangolayout,
       ymax_mat *= 100;
       ypow_part /= 100;
 
-      if(gr->same_yscale)
+      if(gr->same_y_scale)
 	{
 	  yLabel_inc = (qp_plot_get_yval(z, 0) -
 			qp_plot_get_yval(z, view_height))/
@@ -389,7 +389,7 @@ void DrawYGrid(cairo_t *cr, PangoLayout *pangolayout,
       xinc *= 100;
       xpow_part /= 100;
 
-      if(gr->same_xscale)
+      if(gr->same_x_scale)
 	{
 	  xLabel_inc = (qp_plot_get_xval(z, view_width) -
 			qp_plot_get_xval(z, 0))/
@@ -476,8 +476,9 @@ void DrawYGrid(cairo_t *cr, PangoLayout *pangolayout,
 
       for(j = xLabel_start; j <= xLabel_max; j += xLabel_inc)
       {
-        cairo_translate(cr, qp_plot_get_xpixel(z, j*xpow_part) + 16,
-                            y+ gr->grid_line_width/2);
+        cairo_translate(cr,
+            qp_plot_get_xpixel(z, j*xpow_part) + gr->grid_line_width/2 + 10,
+            y+ gr->grid_line_width/2);
         pango_layout_set_text(pangolayout, str, -1);
         pango_cairo_update_layout(cr, pangolayout);
         pango_cairo_show_layout(cr, pangolayout);
@@ -505,7 +506,6 @@ void DrawYGrid(cairo_t *cr, PangoLayout *pangolayout,
   cairo_stroke(cr);
 }
 
-static
 void qp_graph_set_grid_font(struct qp_graph *gr)
 {
   PangoFontDescription *desc = NULL;
@@ -634,12 +634,12 @@ void qp_graph_grid_draw(struct qp_graph *gr, struct qp_plot *p,
 
  
 
-  if(gr->same_xscale)
+  if(gr->same_x_scale)
       DrawXGrid(cr, pangolayout, gr, p,
 	    xmin_mat, xmax_mat, xinc, xpow_part,
 	    ymin_mat, ymax_mat, yinc, ypow_part,
             width, height, view_height);
-  if(gr->same_yscale)
+  if(gr->same_y_scale)
       DrawYGrid(cr, pangolayout, gr, p,
 	    xmin_mat, xmax_mat, xinc, xpow_part,
 	    ymin_mat, ymax_mat, yinc, ypow_part,

@@ -56,8 +56,8 @@ The two graphs will be in two different tab pages in the one main window.
 will make main window with a graph in full screen without GUIs, another smaller main window
 with the same plot in the top right corner with GUIs except for the buttons bar,
 and another small main window in the bottom left corner with a default graph of
-the file <span class=code>load2.txt</span> with a translucent blueish background
-drawn with Cairo.&nbsp;
+the file <span class=code>load2.txt</span> drawn with Cairo with a translucent blueish
+gray background.&nbsp;
 The main windows are made when they have to be, which at the
 <span class=code>--default-graph</span>, <span class=code>--graph "0 1"</span>, and
 at the end of the command line when for the default graph of the file
@@ -140,10 +140,14 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 <tr><td><b>Z</b></td> <td><b>Z</b>oom out all the way</td</tr>
 </table>
 
+
 <table summary="The Rest of Quickplot key short-cuts" style="margin-top:0px;">
-<tr><td style="white-space:nowrap;"><b>esc</b></td> <td>close the current focused window. This will not close the last main window.</td</tr>
-<tr><td style="white-space:nowrap;"><b>left/right arrow</b></td>
-  <td>the right and left arrow keys cycle though graph tabs when the buttons and tabs are not showing</td</tr>
+  <tr><td style="white-space:nowrap;"><b>esc</b></td> <td>close the current focused 
+      window. This will not close the last main window.  If the current focused window
+      is in full screen this will change is to non-full sreen.</td</tr>
+  <tr><td style="white-space:nowrap;"><b>left/right arrow</b></td>
+    <td>the right and left arrow keys cycle though graph tabs when the buttons
+      and tabs are not showing</td</tr>
 </table>
 
 

@@ -386,7 +386,7 @@ void draw_grid(struct qp_graph *gr, cairo_t *cr,
       double xscale, double xshift, double yscale, double yshift,
       int width, int height)
 {
-  if((gr->same_xscale || gr->same_yscale) &&
+  if((gr->same_x_scale || gr->same_y_scale) &&
       qp_sllist_length(gr->plots) > 0)
   {
     struct qp_plot *p;
@@ -458,7 +458,7 @@ void graph_draw(struct qp_graph *gr, cairo_t *cr,
 
   draw_grid(gr, cr, xscale, xshift, yscale, yshift, width, height);
 
-  if(gr->show_grid && (gr->same_xscale || gr->same_yscale) &&
+  if(gr->show_grid && (gr->same_x_scale || gr->same_y_scale) &&
       qp_sllist_length(gr->plots) > 0)
   {
     struct qp_plot *p;
@@ -919,6 +919,12 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
     //cairo_surface_write_to_png(cairo_get_target(gdk_cr), "y.png");
   }
 
+  if(gr->qp->update_graph_detail && gr->qp->graph_detail)
+  {
+    gr->qp->update_graph_detail = 0;
+    /* make the graph configure window show stuff about this graph */
+    qp_qp_graph_detail_init(gr->qp);
+  }
 }
 
 

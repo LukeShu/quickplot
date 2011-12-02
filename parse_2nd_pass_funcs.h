@@ -9,6 +9,8 @@
 static inline
 void parse_2nd_File(const char *filename)
 {
+  /* by default pipe is read before the
+   * first non-pipe file. */
   check_load_stdin(0);
   load_file(filename);
 }

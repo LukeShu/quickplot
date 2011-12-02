@@ -90,6 +90,43 @@ void qp_plot_scale(struct qp_plot *p,
 }
 
 
+static inline
+void qp_plot_x_rescale(struct qp_plot *p, double xmin, double xmax)
+{
+  if(xmax > xmin)
+  {
+    p->xscale0 = 1.0/(xmax - xmin);
+    p->xshift0 = - xmin/(xmax - xmin);
+  }
+  else
+  {
+    struct qp_channel_series *cs;
+    ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
+    cs = &(p->x->series);
+
+    p->xscale0 = 1.0/(cs->max - cs->min);
+    p->xshift0 = - cs->min/(cs->max - cs->min);
+  }
+}
+
+static inline
+void qp_plot_y_rescale(struct qp_plot *p, double ymin, double ymax)
+{
+  if(ymax > ymin)
+  {
+    p->yscale0 = 1.0/(ymax - ymin);
+    p->yshift0 = - ymin/(ymax - ymin);
+  }
+  else
+  {
+    struct qp_channel_series *cs;
+    ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
+    cs = &(p->y->series);
+
+    p->yscale0 = 1.0/(cs->max - cs->min);
+    p->yshift0 = - cs->min/(cs->max - cs->min);
+  }
+}
 
 
 /*****************************************************************/
@@ -110,7 +147,8 @@ int qp_plot_begin(struct qp_plot *p,
 
   if(p->x->form == QP_CHANNEL_FORM_SERIES &&
       p->y->form == QP_CHANNEL_FORM_SERIES &&
-      p->x->series.is_increasing)
+      p->x->series.is_increasing &&
+      qp_channel_series_length(p->x) == qp_channel_series_length(p->y))
   {
     /* culling */
     /* this is likely the most common case

@@ -66,6 +66,11 @@ CB(copy_window);
 CB(new_graph_tab);
 CB(save_png_image_file);
 
+
+// graph_details.c
+CB(graph_detail_show_hide);
+CB(view_graph_detail);
+
 #undef ECB
 #undef CB
 

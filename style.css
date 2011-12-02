@@ -119,6 +119,19 @@ a.nav:active {
     color: #800;
     background-color:#B4BBF2;
 }
-
-
+pre {
+  border:2px solid #7B87D0;
+  margin-left:10px;
+  margin-right:10px;
+  padding: 10px;
+  background-color: #9CCCE9;
+  border-top-left-radius:10px;
+  -moz-border-radius-topleft:10px;
+  border-top-right-radius:10px;
+  -moz-border-radius-topright:10px;
+  border-bottom-right-radius:10px;
+  -moz-border-radius-bottomright:10px;
+  border-bottom-left-radius:10px;
+  -moz-border-radius-bottomleft:10px;
+}
 

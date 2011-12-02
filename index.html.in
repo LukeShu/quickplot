@@ -30,15 +30,6 @@
 <style type='text/css'><!--
 /* inline the style sheet so it does not get lost */
 @STYLE_CSS@
-pre {
-     margin-left:30px;
-     margin-right:30px;
-     background:#D2D9EA;
-     padding-left:6px;
-     padding-right:6px;
-     padding-top:6px;
-     padding-bottom:6px;
-}
 li {
   margin:5px;
   padding:0px;

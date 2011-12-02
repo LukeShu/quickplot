@@ -208,6 +208,7 @@ qp_qp_t qp_qp_create(void)
   qp = qp_malloc(sizeof(struct qp_qp));
   qp->graphs = qp_sllist_create(NULL);
   qp->window = NULL;
+  qp->graph_detail = NULL;
   qp_sllist_append(app->qps, qp);
   default_qp = qp;
 
@@ -252,6 +253,12 @@ void qp_qp_destroy(qp_qp_t qp)
 
   qp_sllist_destroy(qp->graphs, 0);
   qp_sllist_remove(app->qps, qp, 0);
+
+  if(qp->graph_detail)
+  {
+    gtk_widget_destroy(qp->graph_detail->window);
+    free(qp->graph_detail);
+  }
 
   if(qp->window)
   {
@@ -524,14 +531,16 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       VASSERT(0, "More code needed here");
   }
 
+  g->same_x_scale = app->op_same_x_scale;
+  g->same_x_limits = same_extremes;
 
   if(same_extremes)
   {
     /* same_extremes means they should be same scales */
-    app->op_same_x_scale = 1;
+    g->same_x_scale = 1;
   }
 
-  if(app->op_same_x_scale == -1)
+  if(g->same_x_scale == -1)
   {
     if(dx_min == INFINITY)
     {
@@ -556,7 +565,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       xmax = -INFINITY;
     }
   }
-  else if(app->op_same_x_scale)
+  else if(g->same_x_scale)
   {
      if(xmax == xmin)
       {
@@ -593,7 +602,6 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
   }
 
 
-
   get_source_channel_num(app->sources, y[0], &chan_0, NULL);
   same_extremes = 1;
 
@@ -618,14 +626,16 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       VASSERT(0, "More code needed here");
   }
 
+  g->same_y_scale = app->op_same_y_scale;
+  g->same_y_limits = same_extremes;
 
   if(same_extremes)
   {
     /* same_extremes means they should be same scales */
-    app->op_same_y_scale = 1;
+    g->same_y_scale = 1;
   }
 
-  if(app->op_same_y_scale == -1)
+  if(g->same_y_scale == -1)
   {
     if(dy_min == INFINITY)
     {
@@ -650,7 +660,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       ymax = -INFINITY;
     }
   }
-  else if(app->op_same_y_scale)
+  else if(g->same_y_scale)
   {
     if(ymax == ymin)
       {
@@ -688,8 +698,8 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
 
 
   /* Okay here is what the scaling really is */
-  g->same_xscale = (xmax > xmin)?1:0;
-  g->same_yscale = (ymax > ymin)?1:0;
+  g->same_x_scale = (xmax > xmin)?1:0;
+  g->same_y_scale = (ymax > ymin)?1:0;
 
   DEBUG("xmax=%.30g xmin=%.30g\n", xmax, xmin);
 
@@ -789,7 +799,7 @@ void qp_qp_set_status(struct qp_qp *qp)
     /* we assume the plots have had the graph scales initialized */
     shift = (gr->grab_x || gr->grab_y)?"with shift":"";
 
-    if(gr->same_xscale && gr->qp->pointer_x >= 0)
+    if(gr->same_x_scale && gr->qp->pointer_x >= 0)
       snprintf(x_s, IMIN(NUM_LEN, gr->sig_fig_x + 8),
           "%+.*g                                  ",
           gr->sig_fig_x,
@@ -798,7 +808,7 @@ void qp_qp_set_status(struct qp_qp *qp)
       snprintf(x_s, IMIN(NUM_LEN, 8),
           "                                           ");
 
-    if(gr->same_yscale && gr->qp->pointer_y >= 0)
+    if(gr->same_y_scale && gr->qp->pointer_y >= 0)
       snprintf(y_s, IMIN(NUM_LEN, gr->sig_fig_y + 8),
           "%+.*g                                  ",
           gr->sig_fig_y,
@@ -807,10 +817,12 @@ void qp_qp_set_status(struct qp_qp *qp)
       snprintf(y_s, IMIN(NUM_LEN, 8),
           "                                           ");
 
-    snprintf(status, STR_LEN, "%s  %s  {%s} %s %zu plots,"
+    snprintf(status, STR_LEN, "%s  %s  {%s} %s %zu plot%s,"
         " Zoom Level %d %s", x_s, y_s, gr->name,
         (gr->x11)?"(x11 draw)":"(cairo draw)",
-        qp_sllist_length(gr->plots), gr->zoom_level, shift);
+        qp_sllist_length(gr->plots),
+        (qp_sllist_length(gr->plots) > 1)?"s":"",
+        gr->zoom_level, shift);
   }
   else
     snprintf(status, STR_LEN, "%s no plots", gr->name);

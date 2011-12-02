@@ -740,6 +740,8 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   else if(rd.fd != -1)
     close(rd.fd);
 
+  qp_app_plot_selectors_remake();
+
   return source;
 
 fail:
@@ -771,6 +773,9 @@ qp_source_t qp_source_create_from_func(
   /* TODO: add code here */
 
   add_source_buffer_remove_menus(source);
+
+  qp_app_plot_selectors_remake();
+
   return source;
 }
 
@@ -814,7 +819,6 @@ int remove_plots_from_graph(struct qp_graph *gr, struct qp_source *source)
        if(qp_channel_equals(p->x, *c) ||
            qp_channel_equals(p->y, *c))
        {
-         
           rp = p;
           break;
        }
@@ -924,6 +928,8 @@ void qp_source_destroy(qp_source_t source)
   
   free(source->name);
   free(source);
+
+  qp_app_plot_selectors_remake();
 }
 
 

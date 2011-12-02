@@ -99,12 +99,6 @@ GtkWidget *create_menu(GtkWidget *menubar,
   return menu;
 }
 
-static
-void dummy_callback(GtkWidget *w, void *ptr)
-{
-  NOTICE("%s(w=%p, ptr=%p)\n",__func__, w, ptr);
-}
-
 static inline
 GtkWidget *create_menu_item(GtkWidget *menu,
 	 const char *label,
@@ -180,7 +174,7 @@ void add_source_buffer_remove_menus(struct qp_source *s)
 
 
 static inline
-void create_button(GtkWidget *hbox, GtkAccelGroup *accelGroup,
+GtkWidget *create_button(GtkWidget *hbox, GtkAccelGroup *accelGroup,
        const char *label, guint key,
        void (*callback)(GtkWidget*, void*),
        gpointer data)
@@ -192,6 +186,7 @@ void create_button(GtkWidget *hbox, GtkAccelGroup *accelGroup,
 			     GTK_ACCEL_VISIBLE);
   gtk_widget_show(b);
   g_signal_connect(G_OBJECT(b),"clicked", G_CALLBACK(callback), data);
+  return b;
 }
 
 
@@ -210,6 +205,7 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
 {
   GtkWidget *vbox;
   GtkAccelGroup *accelGroup;
+  GdkPixbuf *pixbuf;
 
   qp = qp_qp_check(qp);
   if(qp->window)
@@ -285,7 +281,7 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
       gtk_window_set_title(GTK_WINDOW(qp->window), title);
   }
 
-  gtk_widget_set_events(qp->window, gtk_widget_get_events(qp->window));
+  //gtk_widget_set_events(qp->window, gtk_widget_get_events(qp->window));
 
   if(app->root_window_width < 1)
     qp_get_root_window_size();
@@ -326,8 +322,10 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
   }
 
   gtk_window_set_icon(GTK_WINDOW(qp->window),
-		      gdk_pixbuf_new_from_xpm_data(quickplot_icon));
+		      pixbuf = gdk_pixbuf_new_from_xpm_data(quickplot_icon));
   
+  g_object_unref(G_OBJECT(pixbuf));
+
   accelGroup = gtk_accel_group_new();
   gtk_window_add_accel_group(GTK_WINDOW(qp->window), accelGroup);
 
@@ -370,9 +368,9 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
          * have the correct sensitive state. */
         struct qp_qp *oqp;
         ASSERT(qp_sllist_length(app->qps) > 0);
-        for(oqp=(struct qp_qp *)qp_sllist_begin(app->qps);
-          oqp; oqp=(struct qp_qp *)qp_sllist_next(app->qps))
-          if(qp->window)
+        for(oqp=qp_sllist_begin(app->qps);
+          oqp; oqp=qp_sllist_next(app->qps))
+          if(oqp->window)
           {
             gtk_widget_set_sensitive(oqp->delete_window_menu_item, TRUE);
             break;
@@ -432,11 +430,10 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
           GDK_KEY_Z, TRUE, cb_zoom_out_all, qp, TRUE);
       
       create_menu_item_seperator(menu);
-      
-      create_check_menu_item(menu, "_Graph Configure", GDK_KEY_G,
-          FALSE, dummy_callback, (void *) 0x050);
-      create_check_menu_item(menu, "_Plot Lists", GDK_KEY_P,
-          FALSE, dummy_callback, (void *) 15);
+     
+      qp->view_graph_detail =
+      create_check_menu_item(menu, "_Graph Details", GDK_KEY_G,
+          FALSE, cb_view_graph_detail, qp);
       /*******************************************************************
        *                   Help menu
        *******************************************************************/
@@ -459,8 +456,9 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
         GDK_KEY_O, cb_open_file, qp);
     create_button(qp->buttonbar, accelGroup, "_New Graph Tab ...",
         GDK_KEY_N, cb_new_graph_tab, qp);
-    create_button(qp->buttonbar, accelGroup, "Show Confi_g ...",
-        GDK_KEY_G, dummy_callback, (void *) 0x3000);
+    qp->button_graph_detail = 
+      create_button(qp->buttonbar, accelGroup, "_Graph Details",
+        GDK_KEY_G, cb_graph_detail_show_hide, qp);
      create_button(qp->buttonbar, accelGroup, "Save PNG _Image ...",
         GDK_KEY_I, cb_save_png_image_file, qp);
 
