@@ -740,7 +740,7 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   else if(rd.fd != -1)
     close(rd.fd);
 
-  qp_app_plot_selectors_remake();
+  qp_app_graph_detail_source_remake();
 
   return source;
 
@@ -774,7 +774,7 @@ qp_source_t qp_source_create_from_func(
 
   add_source_buffer_remove_menus(source);
 
-  qp_app_plot_selectors_remake();
+  qp_app_graph_detail_source_remake();
 
   return source;
 }
@@ -929,7 +929,8 @@ void qp_source_destroy(qp_source_t source)
   free(source->name);
   free(source);
 
-  qp_app_plot_selectors_remake();
+  qp_app_graph_detail_source_remake();
+  
 }
 
 

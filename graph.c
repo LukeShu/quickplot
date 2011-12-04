@@ -234,7 +234,7 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
 
 #if 1
   {
-    const GdkRGBA rgba = { 0.0, 0.0, 0.0, 1.0 };
+    const GdkRGBA rgba = QP_DA_BG_RGBA;
     gtk_widget_override_background_color(gr->drawing_area,
         GTK_STATE_FLAG_NORMAL, &rgba);
   }

@@ -716,7 +716,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
         &chan_x, &cnx)->name;
     yname = get_source_channel_num(app->sources, y[i],
         &chan_y, &cny)->name;
-    snprintf(pname, 128, "%s-%zu VS %s-%zu", yname, cny, xname, cnx);
+    snprintf(pname, 128, "%s[%zu] VS %s[%zu]", yname, cny, xname, cnx);
     qp_plot_create(g, chan_x, chan_y, pname, xmin, xmax, ymin, ymax);
   }
 

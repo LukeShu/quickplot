@@ -106,7 +106,7 @@ Quickplot can also make png images with translucent colors.
 
 <p>
 In most use cases the command to plot your data is
-<span class=code>quickplot FILENAME</span> and Quickplots' default
+<span class=code>quickplot FILENAME</span> and Quickplot's default
 graphs may be all you need.
 </p>
 

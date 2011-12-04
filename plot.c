@@ -53,6 +53,22 @@ void free_x11_colors(struct qp_plot *p, struct qp_graph *gr)
   }
 }
 
+void qp_plot_set_X11_color(struct qp_plot *p, struct qp_color *c)
+{
+  XColor x;
+  x.pixel = 0;
+
+  x.red   = 65535 * c->c.r;
+  x.green = 65535 * c->c.g;
+  x.blue  = 65535 * c->c.b;
+  x.flags = 0;
+
+  XAllocColor(p->gr->x11->dsp, DefaultColormap(p->gr->x11->dsp,
+        DefaultScreen(p->gr->x11->dsp)), &x);
+  ASSERT(x.pixel);
+  c->x = x.pixel;
+}
+
 static inline
 void make_x11_colors(struct qp_plot *p, struct qp_graph *gr)
 {
@@ -61,29 +77,11 @@ void make_x11_colors(struct qp_plot *p, struct qp_graph *gr)
   if(gr->x11)
   {
     /* Turn the cairo rgba colors into XColors */
-    int i;
-    struct qp_color *c[2];
-
-    c[0] = &p->p;
-    c[1] = &p->l;
     if(!gr->x11->dsp)
       gr->x11->dsp = gdk_x11_get_default_xdisplay();
 
-    for(i=0;i<2;++i)
-    {
-      XColor x;
-      x.pixel = 0;
-
-      x.red   = 65535 * c[i]->c.r;
-      x.green = 65535 * c[i]->c.g;
-      x.blue  = 65535 * c[i]->c.b;
-      x.flags = 0;
-
-      XAllocColor(gr->x11->dsp, DefaultColormap(gr->x11->dsp,
-            DefaultScreen(gr->x11->dsp)), &x);
-      ASSERT(x.pixel);
-      c[i]->x = x.pixel;
-    }
+    qp_plot_set_X11_color(p, &p->l);
+    qp_plot_set_X11_color(p, &p->p);
   }
 }
 
@@ -112,6 +110,7 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   p = (struct qp_plot*) qp_malloc(sizeof(*p));
   qp_sllist_append(gr->plots, p);
   p->name = qp_strdup(name);
+  p->gr = gr;
 
 
   /* get default point and line colors */

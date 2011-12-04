@@ -63,10 +63,11 @@ int save_x, save_y,
 #define DIR_STR  "\\"
 #endif
 
+#define QP_DA_BG_RGBA     { 1.0, 1.0, 1.0, 1.0 }
 
 
 /* converting the values to ints before plotting
- * increases draw rate by an order of magnitude!! */
+ * increases Cairo draw rate by an order of magnitude!! */
 #define INT(x)  ((int)(((x)>0.0)?(x)+0.5:(x)-0.5))
 
 
@@ -99,6 +100,7 @@ struct qp_color
 struct qp_plot
 {
   struct qp_channel *x, *y;
+  struct qp_graph *gr;
   char *name;
 
   /* point and line colors */
@@ -120,9 +122,10 @@ struct qp_plot
    * based on the nature of the data. */
   size_t num_read;
 
-
   double line_width, point_size;
 
+  /* These show the middle mouse picker plot values */
+  GtkWidget *x_entry, *y_entry;
 
   /* Virtual functions in C */
 
@@ -321,7 +324,9 @@ struct qp_slider
 {
   int min, max, extended_max;
   GtkWidget *entry, *scale;
+  void (*callback)(struct qp_slider *s);
   int *val;
+  double *dval;
   int is_plot_line_width;
   struct qp_graph *gr;
 };
@@ -337,16 +342,20 @@ struct qp_graph_detail
             *font_picker,
             *x_scale,
             *y_scale,
-            *selector_x_vbox,
-            *selector_y_vbox,
-            *selector_drawing_area,
-            *selector_hbox;
+            *selecter_x_vbox,
+            *selecter_y_vbox,
+            *selecter_drawing_area,
+            *selecter_hbox,
+            *plot_list_hbox,
+            *plot_list_drawing_area;
 
   struct qp_slider *line_width_slider,
                    *point_size_slider,
                    *grid_line_width_slider,
                    *grid_x_line_space_slider,
-                   *grid_y_line_space_slider;
+                   *grid_y_line_space_slider,
+                   **plot_line_width_slider,
+                   **plot_point_size_slider;
 };
 
 /* There is one of these per quickplot main window
@@ -448,7 +457,10 @@ extern
 void add_source_buffer_remove_menus(struct qp_source *source);
 
 extern
-void qp_app_plot_selectors_remake(void);
+void qp_app_graph_detail_source_remake(void);
+
+extern
+void qp_plot_set_X11_color(struct qp_plot *p, struct qp_color *c);
 
 #ifdef QP_DEBUG
 extern

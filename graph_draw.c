@@ -751,7 +751,10 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
 
   if(gr->waiting_to_resize_draw && !gr->qp->shape)
   {
-    cairo_set_source_rgb(gdk_cr, 0.0, 0.0, 0.0);
+    cairo_set_source_rgba(gdk_cr, gr->background_color.r,
+      gr->background_color.g, gr->background_color.b,
+      gr->background_color.a);
+
     cairo_paint(gdk_cr);
     g_idle_add_full(G_PRIORITY_LOW, idle_callback, gr, NULL);
     /* We draw after the other widgets are drawn, incase drawing

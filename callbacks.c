@@ -209,7 +209,7 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
         ecb_close(NULL, NULL, qp);
       break;
     case GDK_KEY_Escape:
-      if(qp->graph_detail->window == w)
+      if(qp->graph_detail && qp->graph_detail->window == w)
         cb_graph_detail_show_hide(NULL, qp);
       else if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_fullscreen)))
         gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_fullscreen));

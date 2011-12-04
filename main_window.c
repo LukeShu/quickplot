@@ -502,6 +502,7 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
       }
     }
     gtk_entry_set_text(GTK_ENTRY(qp->status_entry), "status bar");
+    // This "editable" does not work.
     //g_object_set_property(G_OBJECT(qp->status_entry), "editable", FALSE);
     gtk_widget_show(qp->status_entry);
 
