@@ -387,7 +387,8 @@ void draw_grid(struct qp_graph *gr, cairo_t *cr,
       int width, int height)
 {
   if((gr->same_x_scale || gr->same_y_scale) &&
-      qp_sllist_length(gr->plots) > 0)
+      qp_sllist_length(gr->plots) > 0 &&
+      gr->show_grid)
   {
     struct qp_plot *p;
     p = qp_sllist_first(gr->plots);
@@ -395,10 +396,6 @@ void draw_grid(struct qp_graph *gr, cairo_t *cr,
     /* We need to initialize the plot scaling for this
      * graph grid drawing */
     qp_plot_scale(p, xscale, xshift, yscale, yshift);
-
-    /* This will draw the grid if gr->show_grid
-     * but either way sets gr->sig_fig_x and/or
-     * gr->sig_fig_y */
     qp_graph_grid_draw(gr, p, cr, width, height);
   }
 }

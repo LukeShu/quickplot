@@ -591,15 +591,6 @@ void qp_graph_grid_draw(struct qp_graph *gr, struct qp_plot *p,
 	  &ymin_mat, &ymax_mat, &yinc, &ypow_part,
           width, height);
 
-  /* sig_fig_* hold the number of digits we should display
-   * in the x,y values in the status bar */
-  gr->sig_fig_x = INT(
-          log10(MAX_ABS(xmin_mat, xmax_mat) + 10) +
-          log10(width + 10));
-  gr->sig_fig_y = INT(
-          log10(MAX_ABS(ymin_mat, ymax_mat) + 10) +
-          log10(height + 10));
-
 
   if(!gr->show_grid) return;
 

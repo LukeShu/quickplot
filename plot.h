@@ -78,6 +78,42 @@ int qp_plot_get_ypixel(struct qp_plot *p, double y)
   return INT(p->yscale*y + p->yshift);
 }
 
+static inline
+void qp_plot_get_sig_fig(struct qp_plot *p, int width, int height)
+{
+  double a, b, k;
+
+  if(p->sig_fig_x) return;
+
+  a = qp_plot_get_xval(p, 0);
+  b = qp_plot_get_xval(p, 1);
+  ASSERT(b > a);
+  k = 1.0/(b - a);
+
+  b = ABSVAL(qp_plot_get_xval(p, width));
+  a = ABSVAL(a);
+  if(b < a)
+    b = a;
+  a = log10(b*k);
+  p->sig_fig_x = INT(a);
+  if(p->sig_fig_x < 1)
+    p->sig_fig_x = 1;
+
+  a = qp_plot_get_yval(p, 1);
+  b = qp_plot_get_yval(p, 0);
+  ASSERT(b > a);
+  k = 1.0/(b - a);
+
+  a = ABSVAL(qp_plot_get_xval(p, width));
+  b = ABSVAL(b);
+  if(b < a)
+    b = a;
+  a = log10(b*k);
+  p->sig_fig_y = INT(a);
+  if(p->sig_fig_y < 1)
+    p->sig_fig_y = 1;
+}
+
 
 static inline
 void qp_plot_scale(struct qp_plot *p,
@@ -87,6 +123,8 @@ void qp_plot_scale(struct qp_plot *p,
   p->xshift = INT(xscale*p->xshift0 + xshift);
   p->yscale = yscale*p->yscale0;
   p->yshift = INT(yscale*p->yshift0 + yshift);
+
+  p->sig_fig_x = 0;
 }
 
 
@@ -107,6 +145,8 @@ void qp_plot_x_rescale(struct qp_plot *p, double xmin, double xmax)
     p->xscale0 = 1.0/(cs->max - cs->min);
     p->xshift0 = - cs->min/(cs->max - cs->min);
   }
+
+  p->sig_fig_x = 0;
 }
 
 static inline

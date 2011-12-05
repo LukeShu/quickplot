@@ -796,22 +796,34 @@ void qp_qp_set_status(struct qp_qp *qp)
     char *shift;
     struct qp_plot *p;
     p = qp_sllist_first(gr->plots);
+
+    if(!p->xscale)
+      /* The plot has not been drawn yet. */
+      return;
+
+    if(!p->sig_fig_x)
+    {
+      GtkAllocation a;
+      gtk_widget_get_allocation(gr->drawing_area, &a);
+      qp_plot_get_sig_fig(p, a.width, a.height);
+    }
+
     /* we assume the plots have had the graph scales initialized */
     shift = (gr->grab_x || gr->grab_y)?"with shift":"";
 
     if(gr->same_x_scale && gr->qp->pointer_x >= 0)
-      snprintf(x_s, IMIN(NUM_LEN, gr->sig_fig_x + 8),
+      snprintf(x_s, IMIN(NUM_LEN, p->sig_fig_x + 8),
           "%+.*g                                  ",
-          gr->sig_fig_x,
+          p->sig_fig_x,
           qp_plot_get_xval(p, qp->pointer_x + gr->pixbuf_x + gr->grab_x));
     else
       snprintf(x_s, IMIN(NUM_LEN, 8),
           "                                           ");
 
     if(gr->same_y_scale && gr->qp->pointer_y >= 0)
-      snprintf(y_s, IMIN(NUM_LEN, gr->sig_fig_y + 8),
+      snprintf(y_s, IMIN(NUM_LEN, p->sig_fig_y + 8),
           "%+.*g                                  ",
-          gr->sig_fig_y,
+          p->sig_fig_y,
           qp_plot_get_yval(p, qp->pointer_y + gr->pixbuf_y + gr->grab_y));
     else
       snprintf(y_s, IMIN(NUM_LEN, 8),

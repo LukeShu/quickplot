@@ -111,6 +111,8 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   qp_sllist_append(gr->plots, p);
   p->name = qp_strdup(name);
   p->gr = gr;
+  p->x_entry = NULL;
+  p->y_entry = NULL;
 
 
   /* get default point and line colors */
@@ -261,11 +263,14 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   p->yscale0 = 1.0/(ymax - ymin);
   p->yshift0 = -ymin/(ymax - ymin);
 
-  p->xscale = 1.0;
+  p->xscale = 0.0;
   p->xshift = 0.0;
 
-  p->yscale = 1.0;
+  p->yscale = 0.0;
   p->yshift = 0.0;
+
+  p->sig_fig_x = 0;
+  p->sig_fig_y = 0;
 
   return p;
 }

@@ -156,6 +156,7 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
   gr->same_y_scale = 1;
   gr->same_x_limits = 1;
   gr->same_y_limits = 1;
+  gr->value_mode = (2<<2) | 2;
 
 
   /* This is the initial zoom in normalized units */

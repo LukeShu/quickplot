@@ -1,8 +1,12 @@
 Left off at
 
+  Fix and use plot sig fig in status
+
+  values in plot list
+  
   add sub-grid
 
-  fix plots with a single point
+  read labels
 
   initialize app->op_geometry
 
@@ -16,8 +20,6 @@ Left off at
   find/check all the GTK+ argument options
 
   check the status x y print format when there is no grid
-
-  submit Cairo line drawing bug 
 
   Make man page.
 

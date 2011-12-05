@@ -126,6 +126,7 @@ struct qp_plot
 
   /* These show the middle mouse picker plot values */
   GtkWidget *x_entry, *y_entry;
+  int sig_fig_x, sig_fig_y;
 
   /* Virtual functions in C */
 
@@ -151,7 +152,6 @@ struct qp_plot
 
   size_t (* channel_series_x_get_index)(struct qp_channel *c);
 
-  
   //size_t (* num_vals)(struct qp_plot *p);
 };
 
@@ -193,6 +193,13 @@ struct qp_graph
    * so it is positively changing in the up direction. */
   int xscale, xshift, yscale, yshift;
 
+  /* First two bits:
+   * Pointer Value          = 0,
+   * Interpolate Plot Value = 1,
+   * Pick Plot Value        = 2,
+   * third and forth bits are available modes: 0 = 0, 1 = 0 or 1, or 2 = 0, 1 or 2 */
+  int value_mode;
+
 
   /* The first zoom in the stack is the identity transformation.
    * Zooms are normalized to a 0,0 to 1,1 box */
@@ -214,8 +221,6 @@ struct qp_graph
   char *grid_font;
   PangoLayout *pangolayout;
 
-
-  int sig_fig_x, sig_fig_y;
 
   int zoom_level; /* starting at 0 */
 
@@ -331,8 +336,16 @@ struct qp_slider
   struct qp_graph *gr;
 };
 
+
+#define PL_IS_SHOWING (1<<4)
+
 struct qp_graph_detail
 {
+  /* see graph::valuemode
+   * first 4 bits for modes
+   * and fifth bit for is showing */
+  int plot_list_modes;
+
   GtkWidget *window,
             *config_label,
             *show_container,
@@ -347,6 +360,7 @@ struct qp_graph_detail
             *selecter_drawing_area,
             *selecter_hbox,
             *plot_list_hbox,
+            *plot_list_combo_box,
             *plot_list_drawing_area;
 
   struct qp_slider *line_width_slider,

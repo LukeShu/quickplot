@@ -335,6 +335,11 @@ gboolean cb_plot_list_draw(GtkWidget *w, cairo_t *cr, struct qp_qp *qp)
   struct qp_plot *p;
   size_t i = 0;
 
+  if(qp->update_graph_detail)
+    /* We need to wait for a graph draw
+     * and then this will be called again. */
+    return TRUE;
+
   gtk_widget_get_allocation(w, &da_a);
 
   gr = qp->current_graph;
@@ -518,7 +523,7 @@ void plot_list_make(struct qp_qp *qp)
     set_margin(w, 0, 0, 10, 6);
     if(pfd)
       gtk_widget_override_font(w, pfd);
-    p->x_entry = w;
+    p->y_entry = w;
     gtk_entry_set_width_chars(GTK_ENTRY(w), CHAR_WIDTH);
     gtk_grid_attach(GTK_GRID(grid), w, 2, 2*row+1, 1, 1);
     gtk_widget_show(w);
@@ -607,6 +612,44 @@ void plot_list_remake(struct qp_qp *qp)
 
   plot_list_make(qp);
 }
+
+static
+void plot_list_combo_box_init(struct qp_graph *gr, struct qp_graph_detail *gd)
+{
+  int modes, current_modes;
+  GtkWidget *combo;
+  combo = gd->plot_list_combo_box;
+
+  modes = ((gr->value_mode) & (3<<2)) >> 2; /* possible modes */
+  current_modes = ((gd->plot_list_modes) & (3<<2)) >> 2; /* current possible modes */
+ 
+  if(current_modes != modes)
+  {
+    if(modes > current_modes)
+    {
+      if(current_modes < 1)
+        gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo), 1, "Interpolate Plot Values");
+      if(modes == 2)
+        gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo), 2, "Pick Plot Values");
+    }
+    else
+    {
+      if(modes < 2 && current_modes == 2)
+        gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combo), 2);
+      if(current_modes >= 1 && modes == 0)
+        gtk_combo_box_text_remove(GTK_COMBO_BOX_TEXT(combo), 1);
+    }
+  }
+  gtk_combo_box_set_active(GTK_COMBO_BOX(combo), gr->value_mode & 3);
+
+  if(gr->value_mode & 3)
+    gtk_combo_box_set_button_sensitivity(GTK_COMBO_BOX(combo), GTK_SENSITIVITY_ON);
+  else
+    gtk_combo_box_set_button_sensitivity(GTK_COMBO_BOX(combo), GTK_SENSITIVITY_OFF);
+
+  gd->plot_list_modes = ((gd->plot_list_modes) & PL_IS_SHOWING) | gr->value_mode;
+}
+
 
 /* Setup the widget for a particular graph */
 void qp_qp_graph_detail_init(struct qp_qp *qp)
@@ -705,9 +748,23 @@ void qp_qp_graph_detail_init(struct qp_qp *qp)
 
   gtk_widget_queue_draw(qp->graph_detail->selecter_drawing_area);
 
+  plot_list_combo_box_init(gr, gd);
+
   qp->current_graph = gr;
 
   plot_list_remake(qp);
+}
+
+static
+void cb_plot_list_mode(GtkComboBox *w, struct qp_qp *qp)
+{
+  if(qp->current_graph)
+  {
+    qp->current_graph->value_mode = 
+      ((qp->current_graph->value_mode)   & (~3)) | gtk_combo_box_get_active(w);
+    qp->graph_detail->plot_list_modes =
+      (qp->graph_detail->plot_list_modes & (~3)) | gtk_combo_box_get_active(w);
+  }
 }
 
 static
@@ -720,7 +777,6 @@ void cb_show_grid(GtkWidget *w, void *data)
     return;
 
   gr->show_grid = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
-  DEBUG("on=%d\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)));
 }
 
 static
@@ -733,7 +789,6 @@ void cb_show_grid_numbers(GtkWidget *w, void *data)
     return;
 
  gr->grid_numbers = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
-  DEBUG("on=%d\n", gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w)));
 }
 
 static
@@ -750,8 +805,6 @@ void cb_show_lines(GtkWidget *w, void *data)
   on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
   for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
     p->lines = on;
-
-  DEBUG("on=%d\n", on);
 }
 
 static
@@ -768,8 +821,6 @@ void cb_show_points(GtkWidget *w, void *data)
   on = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(w));
   for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
     p->points = on;
-
-  DEBUG("on=%d\n", on);
 }
 
 static
@@ -840,18 +891,17 @@ gboolean ecb_close_graph_detail(
     GtkWidget *w, GdkEvent *event, gpointer data)
 {
   cb_graph_detail_show_hide(NULL, data);
-  DEBUG("\n");
   return TRUE;/* TRUE means event is handled */
 }
 
 static
-void cb_same_x_scale(GtkComboBox *w, gpointer data)
+void cb_same_x_scale(GtkComboBox *w, struct qp_qp *qp)
 {
   struct qp_graph *gr;
   struct qp_plot *p;
   double min=INFINITY, max=-INFINITY;
 
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = qp->current_graph;
   if(!gr)
     return;
   
@@ -1443,25 +1493,24 @@ gboolean cb_graph_detail_switch_page(GtkNotebook *notebook,
   if(page_num == 2 && qp->graph_detail &&
       qp->graph_detail->plot_line_width_slider) /* Plots List */
   {
-    struct qp_slider **s;
+    struct qp_slider **lws, **pss;
     struct qp_plot *p;
     struct qp_sllist *l;
+    /* Go through 3 lists in one loop.  All lists the same length. */
     l = qp->current_graph->plots;
-    p=qp_sllist_begin(l);
-    for(s=qp->graph_detail->plot_line_width_slider;p && *s;++s)
+    p = qp_sllist_begin(l);
+    pss=qp->graph_detail->plot_point_size_slider;
+    for(lws=qp->graph_detail->plot_line_width_slider;lws && *lws;++lws)
     {
-      set_slider_entry(*s, p->line_width);
-      set_slider_entry(*s, p->point_size);
+      set_slider_entry(*lws, p->line_width);
+      set_slider_entry(*pss, p->point_size);
       p=qp_sllist_next(l);
+      ++pss;
     }
-    p=qp_sllist_begin(l);
-    for(s=qp->graph_detail->plot_point_size_slider;p && *s;++s)
-    {
-      set_slider_entry(*s, p->line_width);
-      set_slider_entry(*s, p->point_size);
-      p=qp_sllist_next(l);
-    }
+    qp->graph_detail->plot_list_modes |= PL_IS_SHOWING;
   }
+  else if(qp->graph_detail)
+    qp->graph_detail->plot_list_modes &= ~PL_IS_SHOWING;
 
   return TRUE;
 }
@@ -1549,7 +1598,6 @@ void graph_detail_create(struct qp_qp *qp)
             gd->x_scale = combo_box = gtk_combo_box_text_new();
             gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo_box), 0, "Different X Scales");
             gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo_box), 1, "Same X Scales");
-            //gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), 0);
             g_signal_connect(G_OBJECT(combo_box), "changed", G_CALLBACK(cb_same_x_scale), qp);
             gtk_box_pack_start(GTK_BOX(vbox), combo_box, FALSE, FALSE, 0);
             gtk_widget_show(combo_box);
@@ -1557,7 +1605,6 @@ void graph_detail_create(struct qp_qp *qp)
             gd->y_scale = combo_box = gtk_combo_box_text_new();
             gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo_box), 0, "Different Y Scales");
             gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo_box), 1, "Same Y Scales");
-            //gtk_combo_box_set_active(GTK_COMBO_BOX(combo_box), 0);
             g_signal_connect(G_OBJECT(combo_box), "changed", G_CALLBACK(cb_same_y_scale), qp);
             gtk_box_pack_start(GTK_BOX(vbox), combo_box, FALSE, FALSE, 0);
             gtk_widget_show(combo_box);
@@ -1730,11 +1777,17 @@ void graph_detail_create(struct qp_qp *qp)
        *                   Plots List
        *************************************************************************/
 
-      GtkWidget *vbox, *tab_label, *scrollwin;
+      GtkWidget *vbox, *tab_label, *scrollwin, *combo_box;
 
       vbox = gtk_vbox_new(FALSE, 0);
 
 
+      gd->plot_list_combo_box = combo_box = gtk_combo_box_text_new();
+      gd->plot_list_modes = 0;
+      gtk_combo_box_text_insert_text(GTK_COMBO_BOX_TEXT(combo_box), 0, "Pointer Value");
+      g_signal_connect(G_OBJECT(combo_box), "changed", G_CALLBACK(cb_plot_list_mode), qp);
+      gtk_box_pack_start(GTK_BOX(vbox), combo_box, FALSE, FALSE, 0);
+      gtk_widget_show(combo_box);
 
 
       scrollwin = gtk_scrolled_window_new(gtk_adjustment_new(0,0,0,0,0,0),

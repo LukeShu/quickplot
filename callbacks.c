@@ -27,6 +27,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <math.h>
 
 
 #include <gtk/gtk.h>
@@ -800,6 +801,37 @@ gboolean cb_switch_page(GtkNotebook *notebook, GtkWidget *page,
   return TRUE;
 }
 
+static
+void do_mouse_pick_button(struct qp_graph *gr, int x, int y)
+{
+  struct qp_plot *p;
+  int mode;
+  mode = ((gr->qp->graph_detail->plot_list_modes) & 3);
+
+  ASSERT(mode == 0 || mode == 1 || mode == 2);
+
+  x += gr->pixbuf_x + gr->grab_x;
+  y += gr->pixbuf_y + gr->grab_y;
+
+  switch(mode)
+  {
+    case 0:
+      for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+      {
+        char text[64];
+        snprintf(text, 64, "%.*g", p->sig_fig_x, qp_plot_get_xval(p, x));
+        gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
+        snprintf(text, 64, "%.*g", p->sig_fig_y, qp_plot_get_yval(p, y));
+        gtk_entry_set_text(GTK_ENTRY(p->y_entry), text);
+      }
+      break;
+    case 1:
+      break;
+    case 2:
+      break;
+  }
+}
+
 gboolean ecb_graph_button_press(GtkWidget *w, GdkEvent *event, gpointer data)
 {
   struct qp_graph *gr;
@@ -850,7 +882,15 @@ gboolean ecb_graph_button_press(GtkWidget *w, GdkEvent *event, gpointer data)
       gdk_window_set_cursor(gtk_widget_get_window(gr->drawing_area), app->grabCursor); 
       break;
     case PICK_BUTTON:
-
+      if(gr->qp->graph_detail && (gr->qp->graph_detail->plot_list_modes & PL_IS_SHOWING))
+      {
+        struct qp_plot *p;
+        GtkAllocation a;
+        gtk_widget_get_allocation(gr->drawing_area, &a);
+        for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+          qp_plot_get_sig_fig(p, a.width, a.height);
+        do_mouse_pick_button(gr, save_x, save_y);
+      }
       break;
     case ZOOM_BUTTON:
       gdk_window_set_cursor(gtk_widget_get_window(gr->drawing_area), app->zoomCursor);
@@ -931,7 +971,8 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event,
         qp_qp_set_status(gr->qp);
       break;
     case PICK_BUTTON:
-
+      if(gr->qp->graph_detail && (gr->qp->graph_detail->plot_list_modes & PL_IS_SHOWING))
+        do_mouse_pick_button(gr, gr->qp->pointer_x, gr->qp->pointer_y);
       break;
     case ZOOM_BUTTON:
       {
@@ -1093,7 +1134,8 @@ gboolean ecb_graph_pointer_motion(GtkWidget *w, GdkEvent *event, gpointer data)
      
       break;
     case PICK_BUTTON:
-
+      if(gr->qp->graph_detail && (gr->qp->graph_detail->plot_list_modes & PL_IS_SHOWING))
+        do_mouse_pick_button(gr, gr->qp->pointer_x, gr->qp->pointer_y);
       break;
     case ZOOM_BUTTON:
       {
