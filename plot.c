@@ -113,6 +113,8 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   p->gr = gr;
   p->x_entry = NULL;
   p->y_entry = NULL;
+  p->x_picker = NULL;
+  p->y_picker = NULL;
 
 
   /* get default point and line colors */
@@ -289,6 +291,10 @@ void qp_plot_destroy(qp_plot_t plot, struct qp_graph *gr)
       qp_channel_destroy(plot->x);
     if(plot->y->form == QP_CHANNEL_FORM_SERIES)
       qp_channel_destroy(plot->y);
+    if(plot->x_picker && plot->x_picker->form == QP_CHANNEL_FORM_SERIES)
+      qp_channel_destroy(plot->x_picker);
+    if(plot->y_picker && plot->y_picker->form == QP_CHANNEL_FORM_SERIES)
+      qp_channel_destroy(plot->y_picker);
 
     /* If using X11 to draw we need to free the X11 colors */
     if(gr->x11)

@@ -96,8 +96,9 @@ struct qp_option options[] =
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,1}, "--background-color",   "-C", "RGBA",    "set the color of the graph background.  RGBA may be any "
                                                   "string that GTK+ can parse into a RGB or RGBA color.  "
-                                                  "For example ::--background-color='rgba(0,0,255,0.5)'@@ "
-                                                  "will make translucent blue.",                              0,          "struct "
+                                                  "For examples ::--background-color='rgba(0,0,255,0.5)'@@ "
+                                                  "will make translucent blue, and ::-C '#050'@@ will make "
+                                                  "a dark green.",                                            0,          "struct "
                                                                                                                           "qp_colora" },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--border",             "-b", 0,         "add a border to main window.  This is the default.  See "

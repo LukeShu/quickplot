@@ -119,10 +119,10 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 <tr><td><b>a</b></td> <td>show information <b>a</b>bout Quickplot using a web browser</td</tr>
 <tr><td><b>b</b></td> <td>show/hide the <b>b</b>utton bar</td</tr>
 <tr><td><b>c</b></td> <td><b>c</b>opies the current focused main window</td</tr>
-<tr><td><b>d</b></td> <td><b>d</b>elete the main window. This will not close the last main window.</td</tr>
+<tr><td><b>d</b></td> <td><b>d</b>elete the main window.&nbsp; This will not close the last main window.</td</tr>
 <tr><td><b>e</b></td> <td>toggles the visibility of the main window bord<b>e</b>r</td</tr>
 <tr><td><b>f</b></td> <td>toggles <b>f</b>ull screen viewing</td</tr>
-<tr><td><b>g</b></td> <td>show/hide the <b>g</b>raph configuration widget</td</tr>
+<tr><td><b>g</b></td> <td>show/hide the <b>g</b>raph detail widget</td</tr>
 <tr><td><b>h</b></td> <td>show <b>h</b>elp using a web browser</td</tr>
 <tr><td><b>i</b></td> <td>save a PNG <b>i</b>mage of the graph</td</tr>
 <tr><td><b>m</b></td> <td>show/hide the <b>m</b>enu bar</td</tr>

@@ -191,29 +191,44 @@ zoom).&nbsp; Pressing the Z (shift-z) will do the same thing.
 <h2>Graph Value Picking</h2>
 
 
+
 <p>
-<em>(need to write the code for this in 0.9.*)</em>
+First open the Graph Details window by typing 'g', by using the
+View menu, or by clicking the Graph Details button on the button bar.&nbsp;
+Then select the "Plots List and Values" tab.&nbsp;
 The middle mouse button is used for picking and
 displaying X and Y values from the graph.&nbsp; Just try it and see.
 </p>
 
 <p> There are three modes of number display value picking, which may
-be selected on the Plot List pop-up window:
+be selected on the top of the "Plots List and Values" page (tab):
 </p>
 
 <ul>
 
-<li><b>Pick Pointer Values</b>&nbsp;&nbsp; shows values where the mouse
+<li><b>Pointer Values</b>&nbsp;&nbsp; shows values where the mouse
 pointer is in the scale of the respective plot</li>
 
 <li><b>Interpolate Plot Values</b>&nbsp;&nbsp; shows values where the
 X position of the mouse pointer is with the Y value displayed being a
-linearly interpolated value</li>
+linearly interpolated value.&nbsp;
+This requires that all plots be functions of one particular channel.</li>
 
 <li><b>Pick Plot Point Values</b>&nbsp;&nbsp; shows X and Y plot point
-positions that are closest to mouse pointer X position.</li>
+positions that are closest to mouse pointer X position.&nbsp;
+This also requires that all plots be functions of one particular channel.
+</li>
 
 </ul>
+
+<p>
+For the "Pointer Values" and "Interpolate Plot Values" modes the
+number of significant digits displayed will vary with the value change
+per pixel.&nbsp;
+So you will not see digits that are not representative of the
+mouse position.&nbsp;
+Zooming will change the number of significant digits displayed.
+</p>
 
 
 

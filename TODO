@@ -1,21 +1,35 @@
 Left off at
 
-  Fix and use plot sig fig in status
+  Add Label reading.
+  
+  Fix html page footer to not link pages that you are at.
+
+  Change graph tab name when graph gets it's first plot.
+
+
+  Full control of graph colors and fonts:
+
+    Add x/y line grid color, x/y line number font
+    x/y line number color, and sub grid x/y line
+    colors.
+
+
+  Add another Cairo draw mode that will use sub-pixel values
+  or basically use Cairo the way it was meant to be used.
+  It will be much slower at drawing than the current
+  Quickplot Cairo draw mode, but may make much better
+  static images.  It could make images that are not
+  restricted by the computer display.
+
+  Fix and use plot sig fig in status (may be done)
 
   values in plot list
   
   add sub-grid
 
-  read labels
-
   initialize app->op_geometry
 
-  fix the status sig figs to be less.  It changes in
-  digits that do not seem significant.
-
-  remake homepage
-
-  alternate the colors of row in the key binding list in help
+  alternate the colors of row in the key binding list in help??
 
   find/check all the GTK+ argument options
 
@@ -26,7 +40,7 @@ Left off at
 
   Make function channels that use less memory
      - linear channel
-     - sine functions and etc
+     - sine functions and other elementary functions
 
 
   Add Channel functions.
@@ -51,20 +65,7 @@ Left off at
   Test the startup of large data sets plotting more than
   one graph tab and more than one window.
 
-  Pretty up the common html footer:
-    
-    * include a plot image that has
-      a transparent background and grid
-    
-    * an index to all the html files.
-
-
   Try setting the status text on long redraws to say "drawing"
-
-
-
-  New tab callback  generates default plots if app->op_make_default_graph is set
-  or pops up the graph config plot selector if not.
 
 
   Add widget that shows and edits all app options.

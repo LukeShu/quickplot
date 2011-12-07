@@ -175,11 +175,14 @@ double qp_channel_series_double_end(qp_channel_t c)
 static inline
 void check_min_max(struct qp_channel_series *cs, double val)
 {
-  if(val > cs->max && is_good_double(val))
+  if(!is_good_double(val)) return;
+
+  if(val > cs->max)
     cs->max = val;
   else
     cs->is_increasing = 0;
-  if(val < cs->min && is_good_double(val))
+
+  if(val < cs->min)
     cs->min = val;
   else
     cs->is_decreasing = 0;

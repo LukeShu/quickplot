@@ -44,6 +44,7 @@ void x11_DrawLine(struct qp_graph *gr,
     double from_x, double from_y,
     double to_x, double to_y)
 {
+  /* This draws a line at least 10 times faster than Cairo */
   XDrawLine(gr->x11->dsp, gr->x11->pixmap, gr->x11->gc,
       INT(from_x), INT(from_y), INT(to_x), INT(to_y));
 }
@@ -640,10 +641,42 @@ inline
 void draw_zoom_box(cairo_t *gdk_cr, struct qp_graph *gr)
 {
   cairo_set_operator(gdk_cr, CAIRO_OPERATOR_OVER);
-  cairo_set_source_rgba(gdk_cr, 0.84, 0.9, 1.0, 0.6);
+  cairo_set_source_rgba(gdk_cr, 0.84, 0.9, 1.0, 0.5);
   cairo_rectangle(gdk_cr, gr->z_x, gr->z_y, gr->z_w, gr->z_h);
   cairo_fill(gdk_cr);
   gr->draw_zoom_box = 2;
+}
+
+static inline
+void draw_value_pick_line(cairo_t *gdk_cr, struct qp_graph *gr,
+    int width, int height)
+{
+  int x, y, mode;
+  mode = gr->value_mode & 3;
+  x = gr->value_pick_x - gr->pixbuf_x - gr->grab_x;
+  y = gr->value_pick_y - gr->pixbuf_y - gr->grab_y;
+
+  cairo_set_operator(gdk_cr, CAIRO_OPERATOR_OVER);
+  cairo_set_line_width(gdk_cr, 4);
+  cairo_set_source_rgba(gdk_cr, 0.94, 0.94, 1.0, 0.65);
+  cairo_move_to(gdk_cr, x, 0);
+  cairo_line_to(gdk_cr, x, height);
+  if(!mode)
+  {
+    cairo_move_to(gdk_cr, 0, y);
+    cairo_line_to(gdk_cr, width, y);
+  }
+  cairo_stroke(gdk_cr);
+  cairo_set_line_width(gdk_cr, 2);
+  cairo_set_source_rgba(gdk_cr, 0.004, 0.004, .004, 0.7);
+  cairo_move_to(gdk_cr, x, 0);
+  cairo_line_to(gdk_cr, x, height);
+  if(!mode)
+  {
+    cairo_move_to(gdk_cr, 0, y);
+    cairo_line_to(gdk_cr, width, y);
+  }
+  cairo_stroke(gdk_cr);
 }
 
 
@@ -792,6 +825,9 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
 
     if(gr->draw_zoom_box == 1)
       draw_zoom_box(gdk_cr, gr);
+    if(gr->draw_value_pick)
+      draw_value_pick_line(gdk_cr, gr, allocation.width, allocation.height);
+
 
     if(gr->pixbuf_needs_draw)
     {
@@ -878,6 +914,8 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
     draw_from_pixbuf(gdk_cr, gr, allocation.width, allocation.height);
     if(gr->draw_zoom_box)
       draw_zoom_box(gdk_cr, gr);
+    if(gr->draw_value_pick)
+      draw_value_pick_line(gdk_cr, gr, allocation.width, allocation.height);
 
 
     if(empty)
@@ -911,8 +949,7 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
       cairo_region_destroy(window_region);
 
 
-    if(gr->pixbuf_needs_draw)
-      gr->pixbuf_needs_draw = 0;
+    gr->pixbuf_needs_draw = 0;
 
     gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window), NULL);
     // debuging

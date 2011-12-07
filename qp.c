@@ -442,7 +442,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
   int op_new_window;
   int same_extremes = 1;
   struct qp_channel *chan_0;
-  struct qp_graph *g, *last_graph;
+  struct qp_graph *gr, *last_graph;
   double dx_min = INFINITY, dy_min = INFINITY,
          xmin = INFINITY, xmax = -INFINITY,
          ymin = INFINITY, ymax = -INFINITY;
@@ -504,7 +504,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
 
   last_graph = qp_sllist_last(qp->graphs);
 
-  g = qp_graph_create(qp, name);
+  gr = qp_graph_create(qp, name);
 
   get_source_channel_num(app->sources, x[0], &chan_0, NULL);
   same_extremes = 1;
@@ -531,16 +531,16 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       VASSERT(0, "More code needed here");
   }
 
-  g->same_x_scale = app->op_same_x_scale;
-  g->same_x_limits = same_extremes;
+  gr->same_x_scale = app->op_same_x_scale;
+  gr->same_x_limits = same_extremes;
 
   if(same_extremes)
   {
     /* same_extremes means they should be same scales */
-    g->same_x_scale = 1;
+    gr->same_x_scale = 1;
   }
 
-  if(g->same_x_scale == -1)
+  if(gr->same_x_scale == -1)
   {
     if(dx_min == INFINITY)
     {
@@ -565,7 +565,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       xmax = -INFINITY;
     }
   }
-  else if(g->same_x_scale)
+  else if(gr->same_x_scale)
   {
      if(xmax == xmin)
       {
@@ -626,16 +626,16 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       VASSERT(0, "More code needed here");
   }
 
-  g->same_y_scale = app->op_same_y_scale;
-  g->same_y_limits = same_extremes;
+  gr->same_y_scale = app->op_same_y_scale;
+  gr->same_y_limits = same_extremes;
 
   if(same_extremes)
   {
     /* same_extremes means they should be same scales */
-    g->same_y_scale = 1;
+    gr->same_y_scale = 1;
   }
 
-  if(g->same_y_scale == -1)
+  if(gr->same_y_scale == -1)
   {
     if(dy_min == INFINITY)
     {
@@ -660,7 +660,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       ymax = -INFINITY;
     }
   }
-  else if(g->same_y_scale)
+  else if(gr->same_y_scale)
   {
     if(ymax == ymin)
       {
@@ -698,10 +698,10 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
 
 
   /* Okay here is what the scaling really is */
-  g->same_x_scale = (xmax > xmin)?1:0;
-  g->same_y_scale = (ymax > ymin)?1:0;
+  gr->same_x_scale = (xmax > xmin)?1:0;
+  gr->same_y_scale = (ymax > ymin)?1:0;
 
-  DEBUG("xmax=%.30g xmin=%.30g\n", xmax, xmin);
+  //DEBUG("xmax=%.30g xmin=%.30g\n", xmax, xmin);
 
 
   //DEBUG("x=[%g,%g] y=[%g,%g] dx_min=%g dy_min=%g\n",
@@ -717,16 +717,16 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
     yname = get_source_channel_num(app->sources, y[i],
         &chan_y, &cny)->name;
     snprintf(pname, 128, "%s[%zu] VS %s[%zu]", yname, cny, xname, cnx);
-    qp_plot_create(g, chan_x, chan_y, pname, xmin, xmax, ymin, ymax);
+    qp_plot_create(gr, chan_x, chan_y, pname, xmin, xmax, ymin, ymax);
   }
 
 #if QP_DEBUG
   {
     struct qp_plot *p;
     size_t i = 0;
-    INFO("Created graph \"%s\" with %zu plots:\n", g->name, num);
-    for(p=qp_sllist_begin(g->plots);
-        p; ++i, p=qp_sllist_next(g->plots))
+    INFO("Created graph \"%s\" with %zu plots:\n", gr->name, num);
+    for(p=qp_sllist_begin(gr->plots);
+        p; ++i, p=qp_sllist_next(gr->plots))
     {
       size_t len = (size_t) -1;
       if(p->x->form == QP_CHANNEL_FORM_SERIES)
@@ -747,9 +747,9 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
   {
     struct qp_plot *p;
     size_t i = 0;
-    QP_INFO("Created graph \"%s\" with %zu plots:\n", g->name, num);
-    for(p=qp_sllist_begin(g->plots);
-        p; ++i, p=qp_sllist_next(g->plots))
+    QP_INFO("Created graph \"%s\" with %zu plots:\n", gr->name, num);
+    for(p=qp_sllist_begin(gr->plots);
+        p; ++i, p=qp_sllist_next(gr->plots))
     {
       size_t len = (size_t) -1;
       if(p->x->form == QP_CHANNEL_FORM_SERIES)
@@ -769,6 +769,8 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
   /* remove the last graph if it is empty */
   if(last_graph && qp_sllist_length(last_graph->plots) == 0)
     qp_graph_destroy(last_graph);
+
+  qp_graph_detail_set_value_mode(gr);
 
   return 0;
 }

@@ -689,6 +689,7 @@ gboolean ecb_graph_configure(GtkWidget *wdgt, GdkEvent *event, gpointer data)
   gr->pixbuf_y = (gr->pixbuf_height - allocation.height)/2;
 
   gr->pixbuf_needs_draw = 1;
+  gr->draw_value_pick = 0;
 
   // Too bad this does not work
   gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window),
@@ -801,40 +802,262 @@ gboolean cb_switch_page(GtkNotebook *notebook, GtkWidget *page,
   return TRUE;
 }
 
-static
-void do_mouse_pick_button(struct qp_graph *gr, int x, int y)
+/* i is the current index starting at 0 and 
+ * ending at num_points-1.  So when i == -1
+ * we must start over and when i == num_points
+ * we end (start). */
+static inline
+void get_next_val(struct qp_plot *p, ssize_t *i)
+{
+  double x = NAN, y;
+  if(*i == -1)
+  {
+    x = p->channel_x_begin(p->x_picker);
+    y = p->channel_y_begin(p->y_picker);
+    ++(*i);
+  }
+  while((!is_good_double(x) || !is_good_double(y)) &&
+      *i < p->num_points-1)
+  {
+    x = p->channel_x_next(p->x_picker);
+    y = p->channel_y_next(p->y_picker);
+    ++(*i);
+  }
+  if(is_good_double(x) && is_good_double(y))
+  {
+    p->xval = x;
+    p->yval = y;
+  }
+}
+
+static inline
+void get_prev_val(struct qp_plot *p, ssize_t *i)
+{
+  double x = NAN, y;
+  if(*i == p->num_points)
+  {
+    x = p->channel_x_end(p->x_picker);
+    y = p->channel_y_end(p->y_picker);
+    --(*i);
+  }
+  while((!is_good_double(x) || !is_good_double(y)) &&
+      *i > 0)
+  {
+    x = p->channel_x_prev(p->x_picker);
+    y = p->channel_y_prev(p->y_picker);
+    --(*i);
+  }
+  if(is_good_double(x) && is_good_double(y))
+  {
+    p->xval = x;
+    p->yval = y;
+  }
+}
+
+void set_value_pick_entries(struct qp_graph *gr, int x, int y)
 {
   struct qp_plot *p;
   int mode;
-  mode = ((gr->qp->graph_detail->plot_list_modes) & 3);
-
+  mode = ((gr->value_mode) & 3);
   ASSERT(mode == 0 || mode == 1 || mode == 2);
 
-  x += gr->pixbuf_x + gr->grab_x;
-  y += gr->pixbuf_y + gr->grab_y;
-
-  switch(mode)
+  if(mode == 0)
   {
-    case 0:
-      for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-      {
-        char text[64];
-        snprintf(text, 64, "%.*g", p->sig_fig_x, qp_plot_get_xval(p, x));
-        gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
-        snprintf(text, 64, "%.*g", p->sig_fig_y, qp_plot_get_yval(p, y));
-        gtk_entry_set_text(GTK_ENTRY(p->y_entry), text);
-      }
-      break;
-    case 1:
-      break;
-    case 2:
-      break;
+    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+    {
+      char text[64];
+      snprintf(text, 64, "%.*g", p->sig_fig_x, qp_plot_get_xval(p, x));
+      gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
+
+      snprintf(text, 64, "%.*g", p->sig_fig_y, qp_plot_get_yval(p, y));
+      gtk_entry_set_text(GTK_ENTRY(p->y_entry), text);
+    }
+    return;
   }
+    
+  for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+  {
+    double xval, yval, x_pix;
+    char text[64];
+    ssize_t i;
+
+    /* the channel p->x_picker is assumed to be
+     * monotonically increasing. */
+
+    x_pix = qp_plot_get_xval(p, x);
+
+    if(!p->x_picker)
+    {
+      ssize_t j;
+
+      ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
+      p->x_picker = qp_channel_series_create(p->x, 0);
+      p->y_picker = qp_channel_series_create(p->y, 0);
+      i = -1;
+      get_next_val(p, &i);
+      p->picker_i = i;
+      p->num_points = qp_channel_series_length(p->x_picker);
+      j = qp_channel_series_length(p->y_picker);
+      if(p->num_points > j)
+        p->num_points = j;
+    }
+    else
+      i = p->picker_i;
+
+    /* TODO: Make work for the case when values can be NAN and INFINTY */
+
+    xval = p->xval;
+    yval = p->yval;
+
+    if(xval == x_pix || (i == p->num_points-1 && xval <= x_pix) ||
+        p->num_points == 1 || (i == 0 && xval >= x_pix))
+      goto finish;
+
+    while(i < p->num_points-1 && p->xval < x_pix)
+    {
+      xval = p->xval;
+      yval = p->yval;
+      get_next_val(p, &i);
+    }
+
+    if(i == p->num_points-1 && p->xval <= x_pix)
+    {
+      xval = p->xval;
+      yval = p->yval;
+      goto finish;
+    }
+
+    if(i < p->num_points-1 && xval < x_pix) /* p->xval >= x_pix */
+    {
+      if(mode == 1)
+      {
+        /* interpolate the y value */
+        yval = yval + (x_pix - xval)*(p->yval - yval)/(p->xval - xval);
+        xval = x_pix;
+      }
+      else /* mode == 2 */
+      {
+        /* pick the closest value */
+        if(p->xval - x_pix < x_pix - xval)
+        {
+          xval = p->xval;
+          yval = p->yval;
+        }
+        else /* xval, yval are the closest values */
+        {
+          /* go to the previous value */
+          if(i>1)
+          {
+            /* goto i-1 */
+            get_prev_val(p, &i);
+            xval = p->xval;
+            yval = p->yval;
+          }
+          else
+          {
+            /* i == 1  goto i = 0 */
+            i = -1;
+            get_next_val(p, &i);
+          }
+        }
+      }
+
+      goto finish;
+    }
+
+    ASSERT(p->xval >= x_pix);
+
+    /* Now: p->xval >= x_pix */
+
+    while(i > 0 && p->xval > x_pix)
+    {
+      xval = p->xval;
+      yval = p->yval;
+      get_prev_val(p, &i);
+    }
+
+    if(p->xval > x_pix)
+    {
+      /* i == 0 */
+      xval = p->xval;
+      yval = p->yval;
+      goto finish;
+    }
+
+    /* p->xval <= x_pix && xval > x_pix */
+
+    /* interpolate the y value */
+    if(mode == 1)
+    {
+        yval = p->yval + (x_pix - p->xval)*(yval - p->yval)/(xval - p->xval);
+        xval = x_pix;
+    }
+    else /* mode == 2 */
+    {
+      /* pick the closest value */
+      if(x_pix - p->xval < xval - x_pix)
+      {
+        xval = p->xval;
+        yval = p->yval;
+      }
+      else if(i < p->num_points-2)
+      {
+        get_next_val(p, &i);
+      }
+      else
+      {
+        /* i == p->num_points-2  goto i = num_points -1 */
+        i = p->num_points;
+        get_prev_val(p, &i);
+        xval = p->xval;
+        yval = p->yval;
+      }
+    }
+
+  finish:
+
+    if(xval == p->xval)
+    {
+      gr->value_pick_x = qp_plot_get_xpixel(p, xval);
+      gr->value_pick_y = qp_plot_get_ypixel(p, yval);
+      snprintf(text, 64, "%.16g", xval);
+      gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
+      snprintf(text, 64, "%.16g", yval);
+      gtk_entry_set_text(GTK_ENTRY(p->y_entry), text);
+    }
+    else
+    {
+      snprintf(text, 64, "%.*g", p->sig_fig_x, xval);
+      gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
+      snprintf(text, 64, "%.*g", p->sig_fig_y, yval);
+      gtk_entry_set_text(GTK_ENTRY(p->y_entry), text);
+    }
+
+    if(i == 0)
+    {
+      i = -1;
+      get_next_val(p, &i);
+    }
+    else if(i == p->num_points-1)
+    {
+      i = p->num_points;
+      get_prev_val(p, &i);
+    }
+    p->picker_i = i;
+  }
+}
+
+static inline
+void get_value_picks(struct qp_graph *gr, int x, int y)
+{
+  gr->value_pick_x = x + gr->pixbuf_x + gr->grab_x;
+  gr->value_pick_y = y + gr->pixbuf_y + gr->grab_y;
 }
 
 gboolean ecb_graph_button_press(GtkWidget *w, GdkEvent *event, gpointer data)
 {
   struct qp_graph *gr;
+  gr = data;
   ASSERT(data);
   ASSERT(event->type == GDK_BUTTON_PRESS ||
       event->type == GDK_2BUTTON_PRESS ||
@@ -845,7 +1068,8 @@ gboolean ecb_graph_button_press(GtkWidget *w, GdkEvent *event, gpointer data)
    * Double presses can come without a single press
    * before. */
 
-  gr = data;
+  gr->qp->pointer_x = event->button.x;
+  gr->qp->pointer_y = event->button.y;
   
   //ERROR("graph named: \"%s\" [type=%d] mouse at=(%g,%g) button=%d\n",
   //    gr->name, event->type,
@@ -882,14 +1106,22 @@ gboolean ecb_graph_button_press(GtkWidget *w, GdkEvent *event, gpointer data)
       gdk_window_set_cursor(gtk_widget_get_window(gr->drawing_area), app->grabCursor); 
       break;
     case PICK_BUTTON:
-      if(gr->qp->graph_detail && (gr->qp->graph_detail->plot_list_modes & PL_IS_SHOWING))
+      if(gr->qp->graph_detail)
       {
         struct qp_plot *p;
-        GtkAllocation a;
-        gtk_widget_get_allocation(gr->drawing_area, &a);
-        for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-          qp_plot_get_sig_fig(p, a.width, a.height);
-        do_mouse_pick_button(gr, save_x, save_y);
+
+        get_value_picks(gr, save_x, save_y);
+        if((p = qp_sllist_last(gr->plots)) && !p->sig_fig_x)
+        {
+          GtkAllocation a;
+          gtk_widget_get_allocation(gr->drawing_area, &a);
+          for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+            qp_plot_get_sig_fig(p, a.width, a.height);
+        }
+
+        set_value_pick_entries(gr, gr->value_pick_x, gr->value_pick_y);
+        gr->draw_value_pick = 1;
+        gtk_widget_queue_draw(gr->drawing_area);
       }
       break;
     case ZOOM_BUTTON:
@@ -913,15 +1145,16 @@ void Order(int *x, int *y)
   }
 }
 
-gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event,
-    gpointer data)
+gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event, gpointer data)
 {
-  struct qp_graph *gr;
   double width, height;
+  struct qp_graph *gr;
+  gr = data;
   ASSERT(data);
   ASSERT(event->type == GDK_BUTTON_RELEASE);
-  gr = data;
   //DEBUG("graph named: \"%s\"\n", gr->name);
+  if(qp_sllist_length(gr->plots) == 0)
+    return TRUE;
 
   gr->qp->pointer_x = event->button.x;
   gr->qp->pointer_y = event->button.y;
@@ -965,20 +1198,26 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event,
         gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window),
             app->waitCursor);
         gtk_widget_queue_draw(gr->drawing_area);
+        gr->draw_value_pick = 0;
       }
       else
         /* In case there is mouse motion */
         qp_qp_set_status(gr->qp);
       break;
     case PICK_BUTTON:
-      if(gr->qp->graph_detail && (gr->qp->graph_detail->plot_list_modes & PL_IS_SHOWING))
-        do_mouse_pick_button(gr, gr->qp->pointer_x, gr->qp->pointer_y);
+      if(gr->qp->graph_detail)
+      {
+        get_value_picks(gr, gr->qp->pointer_x, gr->qp->pointer_y);
+        set_value_pick_entries(gr, gr->value_pick_x, gr->value_pick_y);
+        gtk_widget_queue_draw(gr->drawing_area);
+      }
       break;
     case ZOOM_BUTTON:
       {
         int queue_draw = 0;
         int starting_zoom_level;
         starting_zoom_level = gr->zoom_level;
+        gr->draw_value_pick = 0;
 
         gdk_window_set_cursor(gtk_widget_get_window(gr->drawing_area), NULL);
         if(gr->draw_zoom_box)
@@ -1093,11 +1332,15 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event,
 
 gboolean ecb_graph_pointer_motion(GtkWidget *w, GdkEvent *event, gpointer data)
 {
-  struct qp_graph *gr;
   struct qp_qp *qp;
+  struct qp_graph *gr;
+  gr = data;
   ASSERT(data);
   ASSERT(event->type == GDK_MOTION_NOTIFY);
-  gr = data;
+
+  if(qp_sllist_length(gr->plots) == 0)
+    return TRUE;
+
   qp = gr->qp;
 
   gr->qp->pointer_x = event->motion.x;
@@ -1134,8 +1377,13 @@ gboolean ecb_graph_pointer_motion(GtkWidget *w, GdkEvent *event, gpointer data)
      
       break;
     case PICK_BUTTON:
-      if(gr->qp->graph_detail && (gr->qp->graph_detail->plot_list_modes & PL_IS_SHOWING))
-        do_mouse_pick_button(gr, gr->qp->pointer_x, gr->qp->pointer_y);
+      if(gr->qp->graph_detail)
+      {
+        get_value_picks(gr, gr->qp->pointer_x, gr->qp->pointer_y);
+        set_value_pick_entries(gr, gr->value_pick_x, gr->value_pick_y);
+        gr->draw_value_pick = 1;
+        gtk_widget_queue_draw(gr->drawing_area);
+      }
       break;
     case ZOOM_BUTTON:
       {

@@ -657,6 +657,39 @@ qp_source_t qp_source_create(const char *filename, int value_type)
     }
     ASSERT(source->num_channels == i);
   }
+  {
+    /****** Check that there is at least one point in all the channels */
+    ssize_t i, num;
+    double *x;
+    num = source->num_values;
+    x = qp_malloc(sizeof(double)*source->num_channels);
+    for(i=0;i<source->num_channels;++i)
+      x[i] = qp_channel_series_double_begin(source->channels[i]);
+
+    while(num)
+    {
+      for(i=0;i<source->num_channels;++i)
+        if(!is_good_double(x[i]))
+          break;
+
+      if(i == source->num_channels)
+        break;
+
+      --num;
+      if(!num)
+        break;
+
+      for(i=0;i<source->num_channels;++i)
+        x[i] = qp_channel_series_double_next(source->channels[i]);
+    }
+
+    if(!num)
+    {
+      QP_WARN("Failed to find a good point in data from file \"%s\"\n",
+          filename);
+      goto fail;
+    }
+  }
 
   
   if(source->num_channels == 0)

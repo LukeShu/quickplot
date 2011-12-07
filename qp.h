@@ -100,6 +100,13 @@ struct qp_color
 struct qp_plot
 {
   struct qp_channel *x, *y;
+ 
+  /* For value picking */
+  struct qp_channel *x_picker, *y_picker;
+  size_t num_points, picker_i; /* current picker index */
+  double xval, yval; /* last values read from x_picker and y_picker */
+
+
   struct qp_graph *gr;
   char *name;
 
@@ -193,13 +200,6 @@ struct qp_graph
    * so it is positively changing in the up direction. */
   int xscale, xshift, yscale, yshift;
 
-  /* First two bits:
-   * Pointer Value          = 0,
-   * Interpolate Plot Value = 1,
-   * Pick Plot Value        = 2,
-   * third and forth bits are available modes: 0 = 0, 1 = 0 or 1, or 2 = 0, 1 or 2 */
-  int value_mode;
-
 
   /* The first zoom in the stack is the identity transformation.
    * Zooms are normalized to a 0,0 to 1,1 box */
@@ -257,6 +257,21 @@ struct qp_graph
 
   int draw_zoom_box;      // flag to tell to draw a zoom box
   int z_x, z_y, z_w, z_h; // zoom box geometry in drawing_area pixels
+  int draw_value_pick;
+  /* Value pick mode
+   * First two bits:
+   * Pointer Value          = 0,
+   * Interpolate Plot Value = 1,
+   * Pick Plot Value        = 2,
+   * third and forth bits are available modes:
+   * 0 = 0, 1 = 0 or 1, or 2 = 0, 1 or 2 */
+  int value_mode,
+      /* The pick x y values depend on the mode
+       * if it's mode=2 Pick Plot Value then
+       * value_pick_x (y) with not necessarily be the
+       * same as qp->pointer_x (y). */
+      value_pick_x, value_pick_y;
+
 
   int waiting_to_resize_draw;
 
@@ -440,12 +455,17 @@ struct qp_app *app;
 extern
 struct qp_app *qp_app_create(void);
 
+extern
+void set_value_pick_entries(struct qp_graph *gr, int x, int y);
 
 extern
 void qp_getargs_1st_pass(int argc, char **argv);
 
 extern
 void qp_getargs_2nd_pass(int argc, char **argv);
+
+extern
+void qp_graph_detail_set_value_mode(struct qp_graph *gr);
 
 
 extern
