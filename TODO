@@ -7,9 +7,8 @@ DO NOW!!!!!!!!!!
   Add Copy window funtionality.
 
 
+  Make a release :) 
 
-
-  Add Label reading.
 
   Make 'N' put up the Select Channel to Plot tab in the Graph Details.
 
@@ -35,7 +34,9 @@ DO NOW!!!!!!!!!!
         * or Ruby source files
      - do not include it in the source.
 
-  Add move plot to front button
+  Add move grid to front option
+
+  Add move plot to front button/function
 
   Full control of graph colors and fonts:
    Like:
