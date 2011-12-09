@@ -709,14 +709,16 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
 
   for(i=0; i<num; ++i)
   {
-    char pname[128], *xname, *yname;
+    char pname[128];
     struct qp_channel *chan_x, *chan_y;
     size_t cnx, cny;
-    xname = get_source_channel_num(app->sources, x[i],
-        &chan_x, &cnx)->name;
-    yname = get_source_channel_num(app->sources, y[i],
-        &chan_y, &cny)->name;
-    snprintf(pname, 128, "%s[%zu] VS %s[%zu]", yname, cny, xname, cnx);
+    struct qp_source *sx, *sy;
+
+    sx = get_source_channel_num(app->sources, x[i], &chan_x, &cnx);
+    sy = get_source_channel_num(app->sources, y[i], &chan_y, &cny);
+
+    qp_source_get_plot_name(pname, 128, sx, sy, cnx, cny);
+
     qp_plot_create(gr, chan_x, chan_y, pname, xmin, xmax, ymin, ymax);
   }
 

@@ -136,7 +136,10 @@ void toggle_all_guis(struct qp_qp *qp)
     ||
     gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_tabs))
     ||
-    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_statusbar));
+    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_statusbar))
+    ||
+    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_detail));
+
 
   if(showing)
   {
@@ -149,6 +152,8 @@ void toggle_all_guis(struct qp_qp *qp)
       gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_tabs));
     if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_statusbar)))
       gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_statusbar));
+    if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_detail)))
+      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_detail));
 
     return;
   }
@@ -162,6 +167,11 @@ void toggle_all_guis(struct qp_qp *qp)
     gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_tabs));
   if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_statusbar)))
     gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_statusbar));
+#if 0
+  /* Maybe not this one */
+  if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_detail)))
+    gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_detail));
+#endif
 }
 
 gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)

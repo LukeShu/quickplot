@@ -280,7 +280,7 @@ struct qp_option options[] =
 { {0,1}, "--no-gui",             "-z", 0,         "don't show the menu bar, button bar, tabs bar, and "
                                                   "status bar.  See also ::--gui@@.",                         0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--no-labels",          "-Q", 0,         "don't read plot channel labels from the file.  This is "
+{ {0,1}, "--no-labels",          "-Q", 0,         "don't read channel labels from the file.  This is "
                                                   "the deafult.  See also ::--labels@@.",                     0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-linear-channel",  "-k", 0,         "turn off adding a linear channel for up coming files.  "
@@ -348,7 +348,7 @@ struct qp_option options[] =
                                                   "whether to read standard input or not.  See options "
                                                   "::--file@@, ::--pipe@@ and ::--no-pipe@@.",                "0",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--same-scale",         "-s", 0,         "plot all in a graph plots on the same scale.  See also "
+{ {0,1}, "--same-scale",         "-s", 0,         "plot all plots in the same graph scale.  See also "
                                                   "::--different-scale@@, ::--same-x-scale@@ and "
                                                   "::--same-y-scale@@.",                                      0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
@@ -371,7 +371,7 @@ struct qp_option options[] =
                                                   "xeyes.  The X11 shape extension may be a little flashy "
                                                   "on some systems.  Try using ::--shape@@ with the "
                                                   "::--no-gui@@, ::--no-grid@@, and ::--no-border@@ "
-                                                  "options to make a floating plot line on your display.  "
+                                                  "options to make a floating graph on your display.  "
                                                   "The use of the X11 shape extension is a property of the "
                                                   "main window, not each graph tab.  This option may not "
                                                   "work well with fullscreen view.  This is will slow down "
@@ -398,15 +398,14 @@ struct qp_option options[] =
                                                   "returning 0 exit status",                                  0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--x11-draw",           "-q", 0,         "draw points and lines using the X11 API.  This is the "
-                                                  "default.  Drawing may be much faster than with cairo, "
-                                                  "but there will be no translucent colors and "
+                                                  "default.  Drawing may be much faster than with Cairo, "
+                                                  "but there will be no translucent colors and no "
                                                   "anti-aliasing in the drawing of the plot lines and "
                                                   "points. There will be translucent colors and "
-                                                  "anti-aliasing in the background and grid, but there "
-                                                  "will be translucent colors in saved images.  You can "
-                                                  "start drawing with X11 and "
-                                                  "switch to drawing with Cairo when you want to save an "
-                                                  "image, using the ::r@@ key or the menu.  That will save "
+                                                  "anti-aliasing in the background and grid.  You can "
+                                                  "start drawing with X11 and switch to drawing with Cairo "
+                                                  "when you want to save an image, using the ::r@@ key or "
+                                                  "the View menu.  That will save "
                                                   "you time.  See also ::--cairo-draw@@.",                    "1",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,0}, 0,                      0,    0,         0,                                                          0,          0           }

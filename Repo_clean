@@ -76,7 +76,9 @@ rm -f\
 rm -rf .deps .libs conftest.dir autom4te.cache m4
 
 rm -f config.h* stamp-h* compile\
- quickplot *.xpm *.html *.txt *.htm REPO_VERSION\
+ quickplot *.xpm *.txt REPO_VERSION\
+ *.htm _ScreenShot_*_thumb.png _ScreenShot_*_thumb-*.png\
+ about.html help.html index.html screenshots.html\
  config.h.in config.h mk_options quickplot.pc
 
 # generated source files

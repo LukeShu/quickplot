@@ -247,11 +247,14 @@ on the same scale when auto scale is selected])
 
 
 
-
 AC_SUBST(NUMBER_OF_PLOTS)
 AC_DEFINE_UNQUOTED(NUMBER_OF_PLOTS, $NUMBER_OF_PLOTS,
     [The default maximum number of plot per file])
 
+
+AM_CONDITIONAL([IS_SVN_CO], [test -f .svn/all-wcprops])
+
+AM_CONDITIONAL([HAVE_LOCAL_SCREENSHOTS], [test -f screenshots.html.in])
 
 #################################################################
 # We show all warnings to the user before erroring out.  This
@@ -269,15 +272,15 @@ fi
 
 #################################################################
 
-AC_CONFIG_FILES([
+AC_CONFIG_FILES(
 Makefile
 quickplot.pc
 footer.htm
 about.htm
 help_head.htm
 help_tail.htm
-index.html
-])
+index.htm
+)
 
 AC_OUTPUT
 

@@ -84,9 +84,7 @@ ul {
 
 
   <ul style="font-weight:bold;">
-    <li>Screen shots <a href="screenshot1.jpg">1</a> <a
-     href="screenshot2.png">2</a>
-       <a href="screenshot3.png">3</a></li>
+    <li><a href="@SCREENSHOT_URL@">Screen Shots</a></li>
     <li><a
 href="https://sourceforge.net/project/showfiles.php?group_id=82651"
      >Downloads page</a></li>
@@ -132,14 +130,13 @@ This will create a directory named quickplot in the current directory.
 <h3>News</h3>
 
 <p>
-Quickplot is currently under active development, a complete
-re-write.&nbsp;
-We hope to have a new release, 0.9.*, out some time in
-December 2011.&nbsp;
-For now consider getting the source from Subversion as described 
-above.&nbsp; The current Subversion code is just missing a couple
-GUIs, but is in many ways more functional than Quickplot
-version 0.8.*.
+Quickplot is currently under active development.&nbsp;
+A complete re-write was done and there is a new release that
+requires the use of GTK+ version 3 without GTKmm.&nbsp;
+We consider this rewrite, version 0.9.*, much better than
+version 0.8.15 in many ways.&nbsp; See the
+new features list at
+<a href="about.html#features">about.html#features</a>.
 </p>
 
 

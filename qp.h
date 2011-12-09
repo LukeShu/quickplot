@@ -28,6 +28,7 @@
 
 #include <stdint.h>
 #include <sys/types.h>
+#include <string.h>
 #include <limits.h>
 #include <X11/Xlib.h>
 #include <gtk/gtk.h>
@@ -166,6 +167,8 @@ struct qp_plot
 struct qp_source
 {
   char *name;
+  char **labels;
+  size_t num_labels;
 
   size_t num_values;
   int value_type; /* can be multi-type */
@@ -594,4 +597,29 @@ void qp_app_check(void)
   if(!app)
     qp_app_create();
 }
+
+static inline
+void qp_source_get_plot_name(char *pname, size_t plen,
+    struct qp_source *sx, struct qp_source *sy,
+    size_t channel_num_x, size_t channel_num_y)
+{
+  size_t len = 0;
+      
+  if(channel_num_y >= sy->num_labels)
+    snprintf(pname, plen, "%s[%zu] VS ",
+        sy->name, channel_num_y);
+  else
+    snprintf(pname, plen, "%s VS ",
+        sy->labels[channel_num_y]);
+  
+  len = strlen(pname);
+
+  if(channel_num_x >= sx->num_labels)
+    snprintf(&pname[len], plen-len, "%s[%zu]",
+        sx->name, channel_num_x);
+  else
+    snprintf(&pname[len], plen-len, "%s",
+        sx->labels[channel_num_x]);
+}
+
 

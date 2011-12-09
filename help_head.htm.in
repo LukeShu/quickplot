@@ -77,7 +77,9 @@ tr.a {
 tr.b {
   background-color:#C4D9EF;
 }
-
+tr.c {
+  background-color:#B1C7DC;
+}
 --></style>
 </head>
 
@@ -139,7 +141,7 @@ mouse button and the graph will stop moving with the pointer.
 <li>
 <p>
 <b>Zooming In</b>&nbsp;&nbsp; Put the pointer (mouse) on a corner of a
-plot region you want to zoom to.&nbsp; Press the right mouse button
+graph region you want to zoom to.&nbsp; Press the right mouse button
 and hold and drag the zoom box.&nbsp; Release the
 right mouse button then it is at another corner of the zoom
 region.&nbsp; Now Quickplot will zoom into that zoom region.&nbsp; You
@@ -173,12 +175,12 @@ past one edge of the graph window.&nbsp; Now Quickplot will zoom out to
 the previous zoom level.&nbsp; Pressing the z key will do the same thing.
 </p>
 
-<p> Or to zoom out to a full view (top zoom level) of the plot: put
-the pointer (mouse) in the plot window.&nbsp; Press the right mouse
+<p> Or to zoom out to a full view (top zoom level) of the graph: put
+the pointer (mouse) in the graph window.&nbsp; Press the right mouse
 button and hold and drag the zoom box.&nbsp; Release the right mouse
-button then the zoom box is past two edges (a corner) of the plot
+button then the zoom box is past two edges (a corner) of the graph
 window.&nbsp; Now Quickplot will zoom out to the top zoom level (no
-zoom).&nbsp; Pressing the Z (shift-z) will do the same thing.
+zoom).&nbsp; Pressing Z (shift-z) will do the same thing.
 </p>
 </li>
 
@@ -235,7 +237,7 @@ Zooming will change the number of significant digits displayed.
 <h2>Loadable File Formats</h2>
 
 <p>
-Quickplot can read ASCII text and sound files
+Quickplot can read ASCII text and sound files:
 </p>
 
 <ul>
@@ -354,7 +356,7 @@ The order of argument options matters.&nbsp;
 Options take effect in the order that
 they are given with later options overriding
 earlier ones.&nbsp;
-The options that cause actions like plot "something" must
+The options that cause actions like graph "something" must
 come after the option that says to read the file that has
 "something" in it.&nbsp;
 In general the order of argument options gives

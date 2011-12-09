@@ -47,7 +47,6 @@ h1 {
      -moz-border-radius-bottomright:20px;
      border-bottom-left-radius:20px;
      -moz-border-radius-bottomleft:20px;
-
 }
 h2 {
      background-color:#A8C8E8;
@@ -107,6 +106,9 @@ a.nav {
     color:#0000EE;
     font-style: normal;
     text-decoration: none;
+}
+span.nav {
+    color:#203;
 }
 a.nav:visited {
     color:#551AA0;

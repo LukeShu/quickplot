@@ -128,7 +128,7 @@ _qp_spew_debug_append_is_on(void);
 
 #define qp_malloc(x) _qp_malloc((x), __FILE__, __LINE__, __func__)
 
-/** malloc wrapper that checks for failure */  
+/** malloc() wrapper that checks for failure */  
 static inline
 void *_qp_malloc(size_t s, const char *file, int line,
     const char *func)
@@ -153,7 +153,7 @@ void *_qp_malloc(size_t s, const char *file, int line,
 
 #define qp_realloc(x,s) _qp_realloc((x),(s), __FILE__, __LINE__, __func__)
 
-/** realloc wrapper that checks for failure */  
+/** realloc() wrapper that checks for failure */  
 static inline
 void *_qp_realloc(void *x, size_t s, const char *file, int line,
     const char *func)
@@ -178,7 +178,7 @@ void *_qp_realloc(void *x, size_t s, const char *file, int line,
 
 #define qp_strdup(x) _qp_strdup((x), __FILE__, __LINE__, __func__)
 
-/** strdup wrapper that checks for failure */  
+/** strdup() wrapper that checks for failure */  
 static inline
 char *_qp_strdup(const char *s, const char *file, int line,
     const char *func)
@@ -200,6 +200,32 @@ char *_qp_strdup(const char *s, const char *file, int line,
   }
   return p;
 }
+
+#define qp_strndup(x, n) _qp_strndup((x), (n), __FILE__, __LINE__, __func__)
+
+/** strndup() wrapper that checks for failure */  
+static inline
+char *_qp_strndup(const char *s, size_t n, const char *file, int line,
+    const char *func)
+{
+  char *p;
+  errno = 0;
+  p = strndup(s, n);
+#ifdef QP_DEBUG
+  _qp_assert(file, line, func, (long long) p, "strndup()",
+      " strndup(\"%s\", %zu) failed\n", s, n);
+#endif
+  if(!s) /* for non-debug build case failure */
+  {
+    char errstr[128];
+    strerror_r(errno, errstr, 128);
+    printf("%s:%d:%s() strndup(\"%s\", %zu) failed: errno=%d: %s\n",
+        file, line, func, s, n, errno, errstr);
+    exit(1);
+  }
+  return p;
+}
+
 
 
 #else /* #ifndef _QP_DEBUG_H_ */

@@ -313,6 +313,87 @@ int read_ascii(qp_source_t source, struct qp_reader *rd)
     }
   }
 
+#define CHUNK 16
+
+  WARN("app->op_labels=%d\n", app->op_labels);
+
+  if(app->op_labels)
+  {
+    char *s, *sep;
+    size_t sep_len, num_labels = 0, mem_len = CHUNK;
+
+    source->labels = qp_malloc(sizeof(char *)*(mem_len+1));
+
+    errno = 0;
+    n = Getline(&line, &line_buf_len, rd->file);
+
+    ++line_count;
+
+    if(n == -1 || errno)
+    {
+      if(!errno)
+      {
+        /* end-of-file so it is zero length */
+        WARN("getline() read no data in file %s\n",
+          source->name);
+        QP_WARN("read no data in file %s\n",
+          source->name);
+      }
+      else
+      {
+        EWARN("getline() read no data in file %s\n",
+          source->name);
+        QP_EWARN("read no data in file %s\n",
+          source->name);
+      }
+
+      if(line)
+          free(line);
+        return 1; /* error */
+    }
+
+    s = line;
+    sep = app->op_label_separator;
+    sep_len = strlen(sep);
+    
+    do
+    {
+      char *end;
+      size_t len;
+      end = s;
+      /* find the next seperator */
+      end = s;
+      while(*end && *end != '\n' && *end != '\r' &&
+          strncmp(end, sep, sep_len))
+        ++end;
+
+      /* *end == '\0' or end == "the seperator" */
+      len = end - s;
+      /* get a label */
+      source->labels[num_labels] = qp_strndup(s, len);
+      ++num_labels;
+
+      if(!(*end) || *end == '\n' || *end == '\r')
+        break;
+
+      /* skip the seperator */
+      s = end + sep_len;
+      if(!(*s))
+        break;
+
+      if(num_labels == mem_len)
+      {
+        mem_len += CHUNK;
+        source->labels = qp_realloc(source->labels,
+            sizeof(char *)*(mem_len+1));
+      }
+
+    } while(*s);
+
+    source->labels[num_labels] = NULL;
+    source->num_labels = num_labels;
+  }
+#undef CHUNK
 
   do
   {
@@ -447,6 +528,8 @@ make_source(const char *filename, int value_type)
   source->num_values = 0;
   source->value_type = (value_type)?value_type:QP_TYPE_DOUBLE;
   source->num_channels = 0;
+  source->labels = NULL;
+  source->num_labels = 0;
   /* NULL terminated array on channels */
   source->channels = qp_malloc(sizeof(struct qp_channel *));
   *(source->channels) = NULL;
@@ -529,6 +612,14 @@ int read_sndfile(struct qp_source *source, struct qp_reader *rd)
 
   if(count)
   {
+    char label0[128];
+    snprintf(label0, 128, "time (1/%d sec)", info.samplerate);
+  
+    source->labels = qp_malloc(sizeof(char *)*2);
+    source->labels[0] = qp_strdup(label0);
+    source->labels[1] = NULL;
+    source->num_labels = 1;
+
     DEBUG("read\nlibsndfile \"%s\" with %d sound channel(s), "
         "at rate %d Hz with %zu values, %g seconds of sound\n",
         rd->filename,
@@ -742,7 +833,6 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   }
   
   add_source_buffer_remove_menus(source);
-
   
   {
     char skip[64];
@@ -756,10 +846,20 @@ qp_source_t qp_source_create(const char *filename, int value_type)
       source->num_values, skip, source->num_channels,
       filename);
 
-    QP_NOTICE("created source with %zu sets of "
+    QP_INFO("created source with %zu sets of "
       "values %sin %zu channels from file \"%s\"\n",
       source->num_values, skip, source->num_channels,
       filename);
+#if QP_DEBUG
+    if(source->labels)
+    {
+      char **labels;
+      APPEND("Read labels:");
+      for(labels = source->labels; *labels; ++labels)
+        APPEND(" \"%s\"", *labels);
+      APPEND("\n");
+    }
+#endif
   }
 
   qp_rd = NULL;
@@ -958,6 +1058,15 @@ void qp_source_destroy(qp_source_t source)
   }
 
   qp_sllist_remove(app->sources, source, 0);
+
+  if(source->labels)
+  {
+    char **s;
+    for(s = source->labels; *s; ++s)
+      free(*s);
+    free(source->labels);
+  }
+    
   
   free(source->name);
   free(source);

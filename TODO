@@ -1,14 +1,44 @@
-Left off at
+
+Most of this is done, but we need to leave it so we may check
+it out more carefully.
+
+
+DO NOW!!!!!!!!!!
+  Add Copy window funtionality.
+
+
+
 
   Add Label reading.
-  
-  Fix html page footer to not link pages that you are at.
+
+  Make 'N' put up the Select Channel to Plot tab in the Graph Details.
+
+  Add configure tab that lets you change app default values.
+     - like turning off label reading.
+     - default background
+     - lines on/off
+     - points on/off
+
+  Add per user defaults that can be saved or auto saved
+  in a dot file.
+
+  Ruby bindings...
 
   Change graph tab name when graph gets it's first plot.
 
+  Add a screenshot gallary to the homepage
+     - link to it on the top page.
+     - thumb nails with command line option
+       and links to:
+        * with data files
+        * or c source file
+        * or Ruby source files
+     - do not include it in the source.
+
+  Add move plot to front button
 
   Full control of graph colors and fonts:
-
+   Like:
     Add x/y line grid color, x/y line number font
     x/y line number color, and sub grid x/y line
     colors.
@@ -23,8 +53,6 @@ Left off at
 
   Fix and use plot sig fig in status (may be done)
 
-  values in plot list
-  
   add sub-grid
 
   initialize app->op_geometry
@@ -43,14 +71,13 @@ Left off at
      - sine functions and other elementary functions
 
 
-  Add Channel functions.
+  Add Channel functions like linear, sine, cosine, exp, ln and so on
+    - do using plugins??
+    - plugins that quickplot compiles or Ruby??
 
   Add other channel data types other than double, like short and int
   for loading sound files with a smaller buffer.
 
-  Make the configure widget
-  Make the plots list widget
-  Make the color change widgets
 
   Add CAIRO X11 macro #ifdef to code to
   remove X11 specific code on none X11 platforms
@@ -142,6 +169,6 @@ Document the changes of reading ASCII files
 
 
 
-Add option to strip nan and/or inf from channels.
+Add option to strip nan and/or inf from channels.  ??
 
 

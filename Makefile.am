@@ -36,9 +36,6 @@ EXTRA_DIST =\
  quickplot_icon.png\
  quickplot_icon.xpm\
  screenshot_small.png\
- screenshot1.jpg\
- screenshot2.png\
- screenshot3.png\
  favicon.ico\
  background_ft.png\
  background_h1.png\
@@ -48,7 +45,7 @@ EXTRA_DIST =\
  about.htm.in\
  help_head.htm.in\
  help_tail.htm.in\
- index.html.in\
+ index.htm.in\
  about.txt\
  help.txt\
  bootstrap\
@@ -69,8 +66,8 @@ BUILT_SOURCES =\
  paths.h\
  parse_args.h\
  app_op_declare.h\
- app_op_init.h\
- help.html
+ app_op_init.h
+
 
 # The .xpm files are built but come in a tarball
 # .xpm files are not checked into the repository
@@ -81,9 +78,6 @@ html_DATA =\
  index.html\
  quickplot_icon.png\
  screenshot_small.png\
- screenshot1.jpg\
- screenshot2.png\
- screenshot3.png\
  background_ft.png\
  background_h1.png\
  background_h2.png\
@@ -97,8 +91,19 @@ DISTCLEANFILES =\
  app_op_declare.h\
  app_op_init.h\
  help.html\
+ index.html\
  parse_args.h\
  paths.h
+
+
+if HAVE_LOCAL_SCREENSHOTS
+html_DATA +=\
+ screenshots.html
+
+DISTCLEANFILES +=\
+ screenshots.html
+endif
+
 
 
 
@@ -223,6 +228,16 @@ if HAVE_LYNX
 SUFFIXES += .txt
 endif
 
+ABOUT_HTML_DEP = about.htm
+if IS_SVN_CO
+ABOUT_HTML_DEP += .svn/all-wcprops
+endif
+
+if HAVE_LOCAL_SCREENSHOTS
+SCREENSHOT_URL = screenshots.html
+else
+SCREENSHOT_URL = @PACKAGE_URL@screenshots.html
+endif
 
 .PHONY: hash md5 sha1 sha256 sha512
 
@@ -241,24 +256,56 @@ app_op_declare.h: mk_options
 app_op_init.h: mk_options
 	./mk_options -i > $@
 
+
+index.html: index.htm
+	sed $<\
+ -e "s!@SCREENSHOT_URL@!$(SCREENSHOT_URL)!"\
+ -e 's!@Top@!<span class=nav>\&nbsp;Top\&nbsp;</span>!'\
+ -e 's!@About@!<a class=nav href="about.html">\&nbsp;About\&nbsp;</a>!'\
+ -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\
+ > $@
+
+about.html: $(ABOUT_HTML_DEP)
+	reves="`./repo_version.sh`"; sed $<\
+ -e "s/@REPO_VERSION@/$$reves/"\
+ -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
+ -e 's!@About@!<span class=nav>\&nbsp;About\&nbsp;</span>!'\
+ -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\
+ > $@
+
 help.html: help_head.htm mk_options help_tail.htm
 	cat help_head.htm > $@
 	./mk_options -t >> $@
-	cat help_tail.htm >> $@
+	cat help_tail.htm | sed\
+ -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
+ -e 's!@About@!<a class=nav href="about.html">\&nbsp;About\&nbsp;</a>!'\
+ -e 's!@Help@!<span class=nav>\&nbsp;Help\&nbsp;</span>!'\
+ >> $@
+
+
+if HAVE_LOCAL_SCREENSHOTS
+
+install-exec-hook:
+	cp ScreenShot_* _ScreenShot_* $(htmldir)
+
+thumbs.htm: mk_thumbs.htm.bash
+	./mk_thumbs.htm.bash > $@
+
+screenshots.html: screenshots.html.in style.css thumbs.htm footer.htm
+	./mk_screenshots.html.bash < $< > $@
+
+screenshots:
+	rm -f screenshots.html thumbs.htm
+	$(MAKE) screenshots.html
+
+endif
 
 help_head.htm: style.css
 help_tail.htm: footer.htm
-index.html: style.css footer.htm
+index.htm: style.css footer.htm
 about.htm: style.css footer.htm
 
 
-# This is just so we have at least one installed file,
-# about.html, that will tell us what the package source
-# is.  This cannot be done in configure because we
-# want to be able to change repo_version (by checking
-# in file and stuff) without having to re-run configure.
-about.html: about.htm
-	reves="`./repo_version.sh`" ; sed -e "s/@REPO_VERSION@/$$reves/" $< > $@
 
 if HAVE_CONVERT
 .png.xpm:
