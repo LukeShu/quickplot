@@ -1,4 +1,3 @@
-
 Most of this is done, but we need to leave it so we may check
 it out more carefully.
 
@@ -142,32 +141,6 @@ Document the changes of reading ASCII files
      3 inf
      4 66.0
 
-     ... assuming you did not tell quickplot to read labels
-     for any of that.
-     
-     nan or NAN is a number that is-not-a-number.
-     It can be thought of as 0/0.
-     In order to make the channels (columns) that a read in
-     all consistent a nan is inserted in place of the blank
-     next to the 2 in the second channel.  This keeps the
-     values aligned.
-     In calculus it is a very popular number, or more
-     presciently indeterminate form.
-     It's used by quickplot to represent a absent (or missing)
-     value in a data channel or field if you will.
-     -NAN or -nan is read as nan in quickplot because -nan
-     is used in quickplot to mark ends of data.
-    
-     The above example if we plot the second column VS the first
-     column the first point (0,nan) will be skipped in the plot.
-     INF or inf stay for a value too large to be read like
-     infinity or 1x10^(1000000000000000000000000000000).
-     Quickplot with just make a not that there is a large value
-     when plotting.  -INF or -inf can be used in a similar
-     fashion for large negative numbers.
-
-     Quickplot can parse any plan text file without error.
-     But remember garbage in gives garbage out.
 
 
 
