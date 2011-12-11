@@ -56,7 +56,7 @@ ul {
   <span style="font-weight:bold; font-size:110%;">Quickplot</span>
   is a fast interactive 2D
   plotter with infinite zooming, value picking, pipe and regular file
-  input, and unlimited simultaneous plots displayed per graph.&nbsp;
+  input, with unlimited simultaneous plots displayed per graph.&nbsp;
   Quickplot is meant for looking at
   your data quickly and of secondary importance is making static
   pictures of your data.&nbsp; It's a data viewer, not a plot
@@ -131,11 +131,11 @@ This will create a directory named quickplot in the current directory.
 
 <p>
 
-<span style="font-size:%90;font-weight:bold">Dec 10
+<span style="font-size:%90;font-weight:bold">Dec 11
 2011</span>&nbsp;&nbsp;
 Quickplot is currently under active development.&nbsp;
 A complete re-write was done and there is a new release that
-requires the use of GTK+ version 3 without GTKmm.&nbsp;
+requires the use of GTK+ version 3, without GTKmm.&nbsp;
 We consider this rewrite, version 0.9.*, much better than
 version 0.8.15 in many ways.&nbsp; See the
 new features list at

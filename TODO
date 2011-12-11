@@ -3,9 +3,10 @@ Most of this is done, but we need to leave it so we may check
 it out more carefully.
 
 
-DO NOW!!!!!!!!!!
-  Add Copy window funtionality.
+  Refactor!!!
 
+
+  Disable the window copy when in Fullscreen mode.
 
   Make a release :) 
 

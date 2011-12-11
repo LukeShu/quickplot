@@ -44,6 +44,15 @@ CB(view_graph_tabs);
 CB(view_buttonbar);
 CB(view_statusbar);
 CB(view_border);
+//#undef NO_BIG_WIN_COPY
+/* Define NO_BIG_WIN_COPY to have the "copy window" disabled when the window
+ * is in fullscreen or maximized.  */
+#define NO_BIG_WIN_COPY
+#ifdef NO_BIG_WIN_COPY
+extern
+gboolean ecb_window_state(GtkWidget *widget, GdkEventWindowState *event,
+    struct qp_qp *qp);
+#endif
 CB(view_fullscreen);
 CB(view_cairo_draw);
 CB(view_shape);

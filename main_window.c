@@ -201,7 +201,18 @@ void qp_get_root_window_size(void)
   ASSERT(app->root_window_height > 0);
 }
 
-qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
+
+struct qp_qp_config
+{
+  int border, x11_draw, width, height, menubar, buttonbar, tabs, statusbar;
+};
+
+/* the qp_qp_config thing will over-ride the app->op_* stuff
+ * so that we may have this make a copy of a qp that exists
+ * and may have a different state than the app->op_* stuff */
+static
+qp_qp_t _qp_qp_window(struct qp_qp *qp, const char *title,
+    const struct qp_qp_config *c)
 {
   GtkWidget *vbox;
   GtkAccelGroup *accelGroup;
@@ -226,14 +237,19 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
   qp->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   ASSERT(qp->window);
 
-  qp->border = app->op_border;
+  qp->border = (c)?(c->border):(app->op_border);
   gtk_window_set_decorated(GTK_WINDOW(qp->window), qp->border);
   
 
-  qp->shape = app->op_shape;
-  qp->x11_draw = app->op_x11_draw;
+  qp->shape = (c)?0:(app->op_shape);
+  qp->x11_draw = (c)?(c->x11_draw):(app->op_x11_draw);
 
   gtk_container_set_border_width(GTK_CONTAINER(qp->window), 0);
+
+#ifdef NO_BIG_WIN_COPY
+  gtk_widget_set_events(qp->window,     /* for window-state-event */
+      gtk_widget_get_events(qp->window) | GDK_STRUCTURE_MASK);
+#endif
 
   ++main_window_create_count;
   ++(app->main_window_count);
@@ -242,30 +258,36 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
 
   {
 #define STR_LEN  128
-    char str[STR_LEN];
+    char string[STR_LEN];
 
     if(!title || !title[0])
     {
       if(qp_sllist_length(app->sources))
       {
-        size_t len = STR_LEN, p = 0;
+        size_t len = STR_LEN, l;
         struct qp_source *s;
-        s = (struct qp_source *) qp_sllist_begin(app->sources);
-        p += snprintf(str+p, len, "Quickplot: %s", s->name);
-        len -= p;
-        for(s=(struct qp_source *) qp_sllist_next(app->sources);
-            s && p < STR_LEN && len;
-            s=(struct qp_source *) qp_sllist_next(app->sources))
+        char *str;
+        str = string;
+        s = qp_sllist_begin(app->sources);
+        snprintf(str, len, "Quickplot: %s", s->name);
+        l = strlen(str);
+        str += l;
+        len -= l;
+        for(s= qp_sllist_next(app->sources);
+            s && len;
+            s= qp_sllist_next(app->sources))
         {
-          p += snprintf(str+p, len, " %s", s->name);
-          len -= p;
+          snprintf(str, len, " %s", s->name);
+          l = strlen(str);
+          str += l;
+          len -= l;
         }
         if(len == 0)
-          snprintf(str+(STR_LEN-5), 5, " ...");
+          snprintf(str-5, 5, " ...");
       }
       else
-        snprintf(str, 128, "Quickplot");
-      title = str;
+        sprintf(string, "Quickplot");
+      title = string;
     }
 #undef STR_LEN
 
@@ -286,10 +308,14 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
   if(app->root_window_width < 1)
     qp_get_root_window_size();
 
-  gtk_window_set_default_size(GTK_WINDOW(qp->window),
-      app->op_geometry.width, app->op_geometry.height);
+  {
+    int width, height;
+    width = (c)?(c->width):(app->op_geometry.width);
+    height = (c)?(c->height):(app->op_geometry.height);
+    gtk_window_set_default_size(GTK_WINDOW(qp->window), width, height);
+  }
 
-  if(app->op_geometry.x != INT_MAX && app->op_geometry.y != INT_MAX)
+  if(app->op_geometry.x != INT_MAX && app->op_geometry.y != INT_MAX && !c)
   {
     int x, y;
     x = app->op_geometry.x;
@@ -330,7 +356,8 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
   gtk_window_add_accel_group(GTK_WINDOW(qp->window), accelGroup);
 
 
-  vbox = gtk_vbox_new(FALSE, 0);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  gtk_box_set_homogeneous(GTK_BOX(vbox), FALSE);
   ASSERT(vbox);
 
   gtk_container_add(GTK_CONTAINER(qp->window), vbox);
@@ -357,8 +384,9 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
           GDK_KEY_N, TRUE, cb_new_graph_tab, qp, TRUE);
       create_menu_item(menu, "New _Window (Empty)", imgNewWindow, NULL,
           GDK_KEY_W, TRUE, cb_new_window, NULL, TRUE);
+      qp->copy_window_menu_item =
       create_menu_item(menu, "_Copy Window", imgCopyWindow, NULL,
-          GDK_KEY_C, TRUE, cb_copy_window, qp, TRUE);
+          GDK_KEY_C, TRUE, cb_copy_window, qp, (app->op_maximize)?FALSE:TRUE);
       qp->delete_window_menu_item =
       create_menu_item(menu, "_Delete Window", imgDeleteWindow, NULL,
           GDK_KEY_D, TRUE, cb_delete_window, qp, app->main_window_count != 1);
@@ -397,16 +425,16 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
       menu = create_menu(menubar, accelGroup, "View");
       qp->view_menubar =
       create_check_menu_item(menu, "_Menu Bar", GDK_KEY_M,
-          app->op_menubar, cb_view_menubar, qp);
+          (c)?(c->menubar):(app->op_menubar), cb_view_menubar, qp);
       qp->view_buttonbar =
       create_check_menu_item(menu, "_Button Bar", GDK_KEY_B,
-          app->op_buttons, cb_view_buttonbar, qp);
+          (c)?(c->buttonbar):(app->op_buttons), cb_view_buttonbar, qp);
       qp->view_graph_tabs =
       create_check_menu_item(menu, "Graph _Tabs", GDK_KEY_T,
-          app->op_tabs, cb_view_graph_tabs, qp);
+          (c)?(c->tabs):(app->op_tabs), cb_view_graph_tabs, qp);
       qp->view_statusbar =
       create_check_menu_item(menu, "_Status Bar", GDK_KEY_S,
-          app->op_statusbar, cb_view_statusbar, qp);
+          (c)?(c->statusbar):(app->op_statusbar), cb_view_statusbar, qp);
 
       create_menu_item_seperator(menu);
 
@@ -416,11 +444,10 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
       qp->view_border =
         create_check_menu_item(menu, "Window Bord_er", GDK_KEY_E,
           qp->border, cb_view_border, qp);
-      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(qp->view_border),
-          gtk_window_get_decorated(GTK_WINDOW(qp->window)));
+      gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(qp->view_border), qp->border);
       qp->view_fullscreen =
       create_check_menu_item(menu, "_Full Screen", GDK_KEY_F,
-          (app->op_maximize == 2), cb_view_fullscreen, qp);
+          (c)?0:(app->op_maximize == 2), cb_view_fullscreen, qp);
       qp->view_shape =
       create_check_menu_item(menu, "Shape _X11 Extension", GDK_KEY_X,
           qp->shape, cb_view_shape, qp);
@@ -443,13 +470,14 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
       create_menu_item(menu, "_Help", NULL, GTK_STOCK_HELP,
           GDK_KEY_H, TRUE, cb_help, NULL, TRUE);
     }
-    if(app->op_menubar)
+    if((c)?(c->menubar):(app->op_menubar))
       gtk_widget_show(menubar);  
 
     /*******************************************************************
      *                   Button Bar
      *******************************************************************/
-    qp->buttonbar = gtk_hbox_new(FALSE, 2);
+    qp->buttonbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+    gtk_box_set_homogeneous(GTK_BOX(qp->buttonbar), FALSE);
     gtk_box_pack_start(GTK_BOX(vbox), qp->buttonbar, FALSE, FALSE, 0);
     
     create_button(qp->buttonbar, accelGroup, "_Open File ...",
@@ -462,7 +490,7 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
      create_button(qp->buttonbar, accelGroup, "Save PNG _Image ...",
         GDK_KEY_I, cb_save_png_image_file, qp);
 
-    if(app->op_buttons)
+    if((c)?(c->buttonbar):(app->op_buttons))
 	gtk_widget_show(qp->buttonbar);
 
     /*******************************************************************
@@ -475,7 +503,7 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
     gtk_box_pack_start(GTK_BOX(vbox), qp->notebook, TRUE, TRUE, 0);
     g_object_set(G_OBJECT(qp->notebook), "scrollable", TRUE, NULL);
       
-    if(!app->op_tabs)
+    if((c)?(!c->tabs):(!app->op_tabs))
       gtk_notebook_set_show_tabs(GTK_NOTEBOOK(qp->notebook), FALSE);
 
     /* We need at least one graph tab to start with. */
@@ -486,7 +514,8 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
     /*******************************************************************
      *                   Status Bar
      *******************************************************************/
-    qp->statusbar = gtk_hbox_new(FALSE, 2);
+    qp->statusbar = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+    gtk_box_set_homogeneous(GTK_BOX(qp->statusbar), FALSE);
     gtk_box_pack_start(GTK_BOX(vbox), qp->statusbar, FALSE, FALSE, 0);
 
     qp->status_entry = gtk_entry_new();
@@ -506,7 +535,7 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
     //g_object_set_property(G_OBJECT(qp->status_entry), "editable", FALSE);
     gtk_widget_show(qp->status_entry);
 
-    if(app->op_statusbar)
+    if((c)?(c->statusbar):(app->op_statusbar))
 	gtk_widget_show(qp->statusbar);
     
     /*******************************************************************
@@ -518,6 +547,11 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
 
   g_signal_connect(G_OBJECT(qp->window), "key-release-event",
       G_CALLBACK(ecb_key_release), qp);
+
+#ifdef NO_BIG_WIN_COPY
+  g_signal_connect(G_OBJECT(qp->window), "window-state-event",
+      G_CALLBACK(ecb_window_state), qp);
+#endif
 
   g_signal_connect(G_OBJECT(qp->window), "delete_event",
       G_CALLBACK(ecb_close), qp);
@@ -554,11 +588,11 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
   qp->last_shape_region = NULL;
  
 
-  if(app->op_maximize == 1)
+  if(app->op_maximize == 1 && !c)
   {
     gtk_window_maximize(GTK_WINDOW(qp->window));
   }
-  else if(app->op_maximize == 2)
+  else if(app->op_maximize == 2 && !c)
   {
     gtk_window_fullscreen(GTK_WINDOW(qp->window));
   }
@@ -566,13 +600,118 @@ qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
   gtk_widget_show(vbox);
   gtk_widget_show(qp->window);
 
-  DEBUG("\n");
 
   return qp; /* success */
 }
 
-void qp_qp_copy(struct qp_qp *old_qp, struct qp_qp *new_qp)
+
+qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
 {
-  /* TODO: write more code here */
+  return _qp_qp_window(qp, title, NULL);
+}
+
+/* We flip back the tab and wait for the drawing to
+ * finish and then flip back to the next tab and
+ * so on, until all tabs have been flipped. */
+static
+gboolean qp_startup_idle_callback(gpointer data)
+{
+  struct qp_qp *qp = NULL;
+  static int front_page_num = -1;
+
+  qp = (struct qp_qp *) data;
+  ASSERT(qp->notebook);
+
+//DEBUG("front_page_num=%d  page=%d\n", front_page_num,
+//    gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook)));
+  
+  if(front_page_num == -1)
+  {
+    int n;
+
+    if((n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook))) == 1)
+    {
+      front_page_num = -1;
+      return FALSE; /* remove this idle callback */
+    }
+
+    front_page_num =
+      gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
+
+    if(front_page_num != 0)
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 0);
+    else
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 1);
+    return TRUE;
+  }
+  else
+  {
+    int n, c;
+    gtk_notebook_next_page(GTK_NOTEBOOK(qp->notebook));
+    n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook));
+    c = gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
+    if(c == front_page_num)
+    {
+      gtk_notebook_next_page(GTK_NOTEBOOK(qp->notebook));
+      c = gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
+    }
+
+    if(c == n-1)
+    {
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), front_page_num);
+      front_page_num = -1;
+      return FALSE; /* remove this idle callback */
+    }
+    return TRUE;
+  }
+}
+
+struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp)
+{
+  struct qp_qp *qp = NULL;
+  struct qp_graph *gr, *old_gr;
+  int width, height;
+  struct qp_qp_config config;
+
+  gtk_window_get_size(GTK_WINDOW(old_qp->window), &width, &height);
+
+  config.border = old_qp->border;
+  config.x11_draw = old_qp->x11_draw;
+  config.width = width;
+  config.height = height;
+  config.menubar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_menubar));
+  config.buttonbar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_buttonbar));
+  config.tabs = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_graph_tabs));
+  config.statusbar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_statusbar));
+
+  qp = _qp_qp_window(NULL, NULL, &config);
+
+  ASSERT(qp_sllist_length(old_qp->graphs) == 
+      gtk_notebook_get_n_pages(GTK_NOTEBOOK(old_qp->notebook)));
+
+  /* Copy all the graphs */
+  old_gr = qp_sllist_begin(old_qp->graphs);
+  gr = qp_sllist_first(qp->graphs);
+  ASSERT(gr);
+  qp_graph_copy(gr, old_gr);
+
+  for(old_gr=qp_sllist_next(old_qp->graphs);
+      old_gr; old_gr=qp_sllist_next(old_qp->graphs))
+  {
+    gr = qp_graph_create(qp, old_gr->name);
+    qp_graph_copy(gr, old_gr);
+  }
+
+  gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook),
+    gtk_notebook_get_current_page(GTK_NOTEBOOK(old_qp->notebook)));
+
+  qp->pointer_x = old_qp->pointer_x;
+  qp->pointer_y = old_qp->pointer_y;
+
+  
+  /* Setup/draw the plots in the tabs */
+  g_idle_add_full(G_PRIORITY_LOW + 10, qp_startup_idle_callback, qp, NULL);
+
+  return qp;
 }
 

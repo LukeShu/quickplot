@@ -128,6 +128,39 @@ struct qp_zoom *qp_zoom_create(double xscale, double xshift,
   return z;
 }
 
+/* We assume that there is one zoom from qp_zoom_create()
+ * to start with. */
+static inline
+void qp_zoom_copy(struct qp_zoom *z, const struct qp_zoom *org_z)
+{
+  ASSERT(org_z);
+  ASSERT(z);
+
+  if(z->next)
+  {
+    /* Remove and free the old stack */
+    struct qp_zoom *n;
+    for(n=z->next;n;n=n->next)
+      free(n);
+    z->next = NULL;
+  }
+
+  /* Copy the current zoom */
+  z->xscale = org_z->xscale;
+  z->yscale = org_z->yscale;
+  z->xshift = org_z->xshift;
+  z->yshift = org_z->yshift;
+
+  for(org_z = org_z->next; org_z; org_z = org_z->next)
+  {
+    /* copy the rest of the zoom stack */
+    z->next = qp_zoom_create(org_z->xscale, org_z->xshift,
+          org_z->yscale, org_z->yshift);
+    z = z->next;
+  }
+}
+
+
 static inline
 void qp_zoom_destroy(struct qp_zoom *z)
 {

@@ -280,12 +280,13 @@ struct qp_slider *create_slider_input(const char *label,
   slider->gr = NULL;
 
   frame = gtk_frame_new(label);
-  hbox = gtk_hbox_new(FALSE, 2);
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+  gtk_box_set_homogeneous(GTK_BOX(hbox), FALSE);
 
   v = 0.3;
   step = 1.0/((double)(max - min));
 
-  scale = gtk_hscale_new_with_range(0.0, 1.0, 0.001);
+  scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0.0, 1.0, 0.001);
   gtk_range_set_increments(GTK_RANGE(scale), step, 2*step);
   gtk_range_set_value(GTK_RANGE(scale), v);
   gtk_widget_set_size_request(scale, 100, -1);
@@ -478,7 +479,8 @@ GtkWidget *color_button_create(const char *text,
   gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
   set_color_button(picker, c);
 
-  hbox = gtk_hbox_new(FALSE, 1);
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
+  gtk_box_set_homogeneous(GTK_BOX(hbox), FALSE);
   gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 0);
   gtk_box_pack_start(GTK_BOX(hbox), picker, FALSE, FALSE, 0);
 
@@ -542,16 +544,24 @@ void plot_list_make(struct qp_qp *qp)
       sizeof(struct qp_slider *)*(num_plots+1));
   gd->plot_point_size_slider = qp_malloc(
       sizeof(struct qp_slider *)*(num_plots+1));
+  gd->plot_list_button_lines = qp_malloc(
+      sizeof(GtkWidget *)*(num_plots+1));
+  gd->plot_list_button_points = qp_malloc(
+      sizeof(GtkWidget *)*(num_plots+1));
+
   gd->plot_line_width_slider[num_plots] = NULL;
   gd->plot_point_size_slider[num_plots] = NULL;
+  gd->plot_list_button_lines[num_plots] = NULL;
+  gd->plot_list_button_points[num_plots] = NULL;
+
 
   grid = gtk_grid_new();
 
   qp->graph_detail->plot_list_drawing_area = w = gtk_drawing_area_new();
-  set_margin(w, 0, 6, 0, 0);
+  set_margin(w, 0, 0, 4, 4);
   gtk_widget_set_size_request(w, 100, -1);
   g_signal_connect(G_OBJECT(w), "draw", G_CALLBACK(cb_plot_list_draw), qp);
-  gtk_grid_attach(GTK_GRID(grid), w, 0, row, 1, 2*num_plots);
+  gtk_grid_attach(GTK_GRID(grid), w, 0, 0, 1, 2*num_plots+2);
   gtk_widget_override_background_color(w, GTK_STATE_FLAG_NORMAL, &rgba);
   gtk_widget_show(w);
 
@@ -559,13 +569,13 @@ void plot_list_make(struct qp_qp *qp)
   {
     GtkWidget *f;
 
-    w = gtk_hseparator_new();
+    w = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
     set_margin(w, 0, 0, 4, 4);
-    gtk_grid_attach(GTK_GRID(grid), w, 1, 2*row, 7, 1);
+    gtk_grid_attach(GTK_GRID(grid), w, 1, 2*row, 8, 1);
     gtk_widget_show(w);
 
     w = gtk_entry_new();
-    set_margin(w, 0, 0, 10, 6);
+    set_margin(w, 5, 2, 0, 0);
     if(pfd)
       gtk_widget_override_font(w, pfd);
     p->x_entry = w;
@@ -574,7 +584,7 @@ void plot_list_make(struct qp_qp *qp)
     gtk_widget_show(w);
 
     w = gtk_entry_new();
-    set_margin(w, 0, 0, 10, 6);
+    set_margin(w, 0, 0, 0, 0);
     if(pfd)
       gtk_widget_override_font(w, pfd);
     p->y_entry = w;
@@ -583,21 +593,19 @@ void plot_list_make(struct qp_qp *qp)
     gtk_widget_show(w);
 
     w = gtk_label_new(p->name);
-    f = gtk_frame_new(NULL);
-    gtk_container_add(GTK_CONTAINER(f), w);
-    gtk_widget_show(w);
-    set_margin(w, 2, 2, 0, 0);
-    w = f;
-    set_margin(w, 2, 2, 0, 0);
+    set_margin(w, 8, 8, 8, 8);
     gtk_grid_attach(GTK_GRID(grid), w, 3, 2*row+1, 1, 1);
     gtk_widget_show(w);
 
-    f = gtk_vbox_new(TRUE,1);
+    f = gtk_box_new(GTK_ORIENTATION_VERTICAL, 1);
+    gtk_box_set_homogeneous(GTK_BOX(f), TRUE);
+    gd->plot_list_button_lines[row] =
     w = gtk_check_button_new_with_label("Show Lines");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), p->lines);
     gtk_box_pack_start(GTK_BOX(f), w, TRUE, TRUE, 0);
     g_signal_connect(G_OBJECT(w), "toggled", G_CALLBACK(set_plot_lines), p);
     gtk_widget_show(w);
+    gd->plot_list_button_points[row] =
     w = gtk_check_button_new_with_label("Show Points");
     gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(w), p->points);
     gtk_box_pack_start(GTK_BOX(f), w, TRUE, TRUE, 0);
@@ -629,15 +637,26 @@ void plot_list_make(struct qp_qp *qp)
     gd->plot_point_size_slider[row]->gr = gr;
 
     w = color_button_create("Line Color", cb_plot_line_color, &(p->l.c), p);
-    set_margin(w, 4, 4, 8, 6);
+    set_margin(w, 4, 4, 6, 4);
     gtk_grid_attach(GTK_GRID(grid), w, 7, 2*row+1, 1, 1);
 
     w = color_button_create("Point Color", cb_plot_point_color, &(p->p.c), p);
-    set_margin(w, 4, 4, 8, 6);
+    set_margin(w, 4, 8, 6, 4);
     gtk_grid_attach(GTK_GRID(grid), w, 8, 2*row+1, 1, 1);
 
     ++row;
   }
+
+  w = gtk_separator_new(GTK_ORIENTATION_VERTICAL);
+  set_margin(w, 0, 1, 4, 4);
+  gtk_grid_attach(GTK_GRID(grid), w, 9, 0, 1, 2*row+1);
+  gtk_widget_show(w);
+
+  w = gtk_separator_new(GTK_ORIENTATION_HORIZONTAL);
+  set_margin(w, 0, 0, 4, 5);
+  gtk_grid_attach(GTK_GRID(grid), w, 1, 2*row, 8, 1);
+  gtk_widget_show(w);
+
 
   if(pfd)
     pango_font_description_free(pfd);
@@ -648,6 +667,43 @@ void plot_list_make(struct qp_qp *qp)
 
   if(gr->draw_value_pick)
     set_value_pick_entries(gr, gr->value_pick_x, gr->value_pick_y);
+}
+
+#define free_null_term_pointer_array(T, ptr) \
+  do {              \
+    T **p;          \
+    p = (ptr);      \
+    for(;*p;++p)    \
+      free(*p);     \
+    free(ptr);      \
+    ptr = NULL;     \
+  } while(0)
+
+/* called this when the main window is destroyed */
+void qp_graph_detail_destory(struct qp_qp *qp)
+{
+  struct qp_graph_detail *gd;
+  ASSERT(qp);
+  gd = qp->graph_detail;
+  ASSERT(gd);
+  gtk_widget_destroy(gd->window);
+
+  if(gd->plot_line_width_slider)
+  {
+    free_null_term_pointer_array(struct qp_slider, gd->plot_line_width_slider);
+    free_null_term_pointer_array(struct qp_slider, gd->plot_point_size_slider);
+    free(gd->plot_list_button_lines);
+    free(gd->plot_list_button_points);
+  }
+
+  free(gd->line_width_slider);
+  free(gd->point_size_slider);
+  free(gd->grid_line_width_slider);
+  free(gd->grid_x_line_space_slider);
+  free(gd->grid_y_line_space_slider);
+
+  free(gd);
+  qp->graph_detail = NULL;
 }
 
 static
@@ -665,28 +721,21 @@ void plot_list_remake(struct qp_qp *qp)
 
   if(qp->graph_detail->plot_line_width_slider)
   {
-    struct qp_slider **s;
-    for(s=qp->graph_detail->plot_line_width_slider;
-        *s;++s)
-      free(*s);
-    free(qp->graph_detail->plot_line_width_slider);
-    qp->graph_detail->plot_line_width_slider = NULL;
-  }
-
-  if(qp->graph_detail->plot_point_size_slider)
-  {
-    struct qp_slider **s;
-    for(s=qp->graph_detail->plot_point_size_slider;
-        *s;++s)
-      free(*s);
-    free(qp->graph_detail->plot_point_size_slider);
-    qp->graph_detail->plot_point_size_slider = NULL;
+    free_null_term_pointer_array(struct qp_slider, qp->graph_detail->plot_line_width_slider);
+    free_null_term_pointer_array(struct qp_slider, qp->graph_detail->plot_point_size_slider);
+    free(qp->graph_detail->plot_list_button_lines);
+    free(qp->graph_detail->plot_list_button_points);
+    qp->graph_detail->plot_list_button_lines =
+      qp->graph_detail->plot_list_button_points = NULL;
   }
 
   qp->graph_detail->plot_list_drawing_area = NULL;
 
   plot_list_make(qp);
 }
+
+#undef free_null_term_pointer_array
+
 
 static
 void plot_list_combo_box_init(struct qp_graph *gr, struct qp_graph_detail *gd)
@@ -726,9 +775,8 @@ void plot_list_combo_box_init(struct qp_graph *gr, struct qp_graph_detail *gd)
   gd->plot_list_modes = ((gd->plot_list_modes) & PL_IS_SHOWING) | gr->value_mode;
 }
 
-
-/* Setup the widget for a particular graph */
-void qp_qp_graph_detail_init(struct qp_qp *qp)
+static inline
+void configure_graph_init(struct qp_qp *qp)
 {
   struct qp_graph *gr;
   struct qp_graph_detail *gd;
@@ -739,17 +787,6 @@ void qp_qp_graph_detail_init(struct qp_qp *qp)
 
   gd = qp->graph_detail;
   gr = qp->current_graph;
-
-  {
-    char title[256];
-    snprintf(title, 256, "%s Graph Details", gr->name);
-    gtk_window_set_title(GTK_WINDOW(gd->window), title);
-  }
-  {
-    char text[128];        
-    snprintf(text, 128, "Configure Graph: %s", gr->name);
-    gtk_label_set_text(GTK_LABEL(gd->config_label), text);
-  }
 
   {
     /**************************************************
@@ -821,6 +858,40 @@ void qp_qp_graph_detail_init(struct qp_qp *qp)
   set_slider_entry(gd->grid_x_line_space_slider, gr->grid_x_space);
   gd->grid_y_line_space_slider->val = &(gr->grid_y_space);
   set_slider_entry(gd->grid_y_line_space_slider, gr->grid_y_space);
+
+  qp->current_graph = gr;
+}
+
+/* Setup the widget for a particular graph */
+void qp_qp_graph_detail_init(struct qp_qp *qp)
+{
+  struct qp_graph *gr;
+  struct qp_graph_detail *gd;
+
+  ASSERT(qp);
+  ASSERT(qp->graph_detail);
+  ASSERT(qp->graph_detail->window);
+
+  gd = qp->graph_detail;
+  gr = qp->current_graph;
+
+  {
+    char title[256];
+    snprintf(title, 256, "%s Graph Details", gr->name);
+    gtk_window_set_title(GTK_WINDOW(gd->window), title);
+  }
+  {
+    char text[128];        
+    snprintf(text, 128, "Configure Graph: %s", gr->name);
+    gtk_label_set_text(GTK_LABEL(gd->config_label), text);
+  }
+
+  if(gtk_notebook_get_current_page(GTK_NOTEBOOK(gd->notebook)) == 0)
+  {
+    qp->current_graph = gr;
+    configure_graph_init(qp);
+    qp->current_graph = NULL;
+  }
 
   gtk_widget_queue_draw(qp->graph_detail->selecter_drawing_area);
 
@@ -1279,12 +1350,6 @@ void cb_plotter(GtkButton *w, struct qp_plotter *pr)
 
   //qp_qp_graph_detail_init(gr->qp);
 
-  /* Disable the graph checking when we reset the combo_box widget */
-  gr->qp->current_graph = NULL;
-  set_combo_box_text(gr->qp->graph_detail->x_scale, gr->same_x_scale, gr->same_x_limits);
-  set_combo_box_text(gr->qp->graph_detail->y_scale, gr->same_y_scale, gr->same_y_limits);
-  gr->qp->current_graph = gr;
-
   qp_graph_detail_set_value_mode(gr);
   plot_list_remake(gr->qp);
 
@@ -1301,7 +1366,8 @@ GtkWidget *make_channel_selecter_column(GtkWidget *hbox, struct qp_qp *qp, int i
   GtkWidget *radio, *vbox;
   struct qp_source *s;
 
-  vbox = gtk_vbox_new(FALSE, 0);
+  vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+  gtk_box_set_homogeneous(GTK_BOX(vbox), FALSE);
 
   radio = gtk_radio_button_new_with_label(NULL, "none");
   gtk_box_pack_start(GTK_BOX(vbox), radio, FALSE, FALSE, 0);
@@ -1542,7 +1608,8 @@ GtkWidget *make_pretty_header_label(const char *text, GtkBox *vbox)
 {
   GtkWidget *hbox, *frame, *label;
 
-  hbox = gtk_hbox_new(TRUE, 14);
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 14);
+  gtk_box_set_homogeneous(GTK_BOX(hbox), TRUE);
   frame = gtk_frame_new(NULL);
   label = gtk_label_new(text);
 
@@ -1559,7 +1626,8 @@ static
 void make_redraw_button(GtkWidget *vbox, struct qp_qp *qp)
 {
   GtkWidget *button, *hbox;
-  hbox = gtk_hbox_new(TRUE, 14);
+  hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 14);
+  gtk_box_set_homogeneous(GTK_BOX(hbox), TRUE);
   button = gtk_button_new_with_label("Redraw Graph");
   g_signal_connect(button, "clicked", G_CALLBACK(cb_redraw), qp);
   gtk_box_pack_start(GTK_BOX(hbox), button, TRUE, TRUE, 8);
@@ -1595,17 +1663,31 @@ gboolean cb_graph_detail_switch_page(GtkNotebook *notebook,
     struct qp_plot *p;
     struct qp_sllist *l;
     struct qp_graph *gr;
-    /* Go through 3 lists in one loop.  All lists the same length. */
+    GtkWidget **lines, **points;
+    /* Go through 5 lists in one loop.  All lists the same length
+     * which is the number of plots. */
     gr = qp->current_graph;
     l = gr->plots;
     p = qp_sllist_begin(l);
-    pss=qp->graph_detail->plot_point_size_slider;
+    pss = qp->graph_detail->plot_point_size_slider;
+    lines = qp->graph_detail->plot_list_button_lines;
+    points = qp->graph_detail->plot_list_button_points;
+
     for(lws=qp->graph_detail->plot_line_width_slider;lws && *lws;++lws)
     {
+      int val;
       set_slider_entry(*lws, p->line_width);
       set_slider_entry(*pss, p->point_size);
+      val = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(*lines));
+      if((val && !p->lines) || (!val && p->lines))
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(*lines), p->lines);
+      val = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(*points));
+      if((val && !p->points) || (!val && p->points))
+        gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(*points), p->points);
       p=qp_sllist_next(l);
       ++pss;
+      ++lines;
+      ++points;
     }
     qp->graph_detail->plot_list_modes |= PL_IS_SHOWING;
     plot_list_combo_box_init(gr, qp->graph_detail);
@@ -1614,6 +1696,9 @@ gboolean cb_graph_detail_switch_page(GtkNotebook *notebook,
   }
   else if(qp->graph_detail)
     qp->graph_detail->plot_list_modes &= ~PL_IS_SHOWING;
+
+  if(page_num == 0 && qp->graph_detail)
+    configure_graph_init(qp);
 
   return TRUE;
 }
@@ -1651,7 +1736,7 @@ void graph_detail_create(struct qp_qp *qp)
     GtkWidget *notebook;
 
     notebook =  gtk_notebook_new();
-    gtk_notebook_set_show_border(GTK_NOTEBOOK(qp->notebook), FALSE);
+    gd->notebook = notebook;
     g_object_set(G_OBJECT(notebook), "scrollable", TRUE, NULL);
 
     {
@@ -1663,7 +1748,8 @@ void graph_detail_create(struct qp_qp *qp)
       GtkWidget *tab_label;
       GtkWidget *hbox;
 
-      vbox = gtk_vbox_new(FALSE, 0);
+      vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+      gtk_box_set_homogeneous(GTK_BOX(vbox), FALSE);
 
       gd->config_label = make_pretty_header_label("Configure Graph", GTK_BOX(vbox));
 
@@ -1671,14 +1757,16 @@ void graph_detail_create(struct qp_qp *qp)
         GtkWidget *scrollwin;
         scrollwin = gtk_scrolled_window_new(gtk_adjustment_new(0,0,0,0,0,0),
                     gtk_adjustment_new(0,0,0,0,0,0));
-        hbox = gtk_hbox_new(FALSE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+        gtk_box_set_homogeneous(GTK_BOX(hbox), FALSE);
         
         {
           /*****************************************************************************
            *             Left VBox
            *****************************************************************************/
           GtkWidget *ivbox;
-          ivbox = gtk_vbox_new(FALSE, 4);
+          ivbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 4);
+          gtk_box_set_homogeneous(GTK_BOX(ivbox), FALSE);
           gd->show_container = ivbox;
 
           {
@@ -1719,10 +1807,10 @@ void graph_detail_create(struct qp_qp *qp)
             /********************************************
              *           Color and Font
              ********************************************/
-            GtkWidget *table;
-            table = gtk_table_new (4, 2, FALSE);
-            gtk_table_set_col_spacing (GTK_TABLE (table), 0, 10);
-            gtk_table_set_row_spacings(GTK_TABLE (table), 3);
+            GtkWidget *grid;
+            grid = gtk_grid_new();
+            gtk_grid_set_row_spacing(GTK_GRID(grid), 3);
+            gtk_grid_set_column_spacing(GTK_GRID(grid), 10);
             {
               GtkWidget *label, *picker;
               label = gtk_label_new ("Background Color:");
@@ -1731,8 +1819,8 @@ void graph_detail_create(struct qp_qp *qp)
               gtk_color_button_set_title(GTK_COLOR_BUTTON(picker),
                   "Select the Graph Background Color");
               gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
-              gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, 0, 1);
-              gtk_table_attach_defaults (GTK_TABLE(table), picker, 1, 2, 0, 1);
+              gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 1, 1);
+              gtk_grid_attach(GTK_GRID(grid), picker, 1, 0, 1, 1);
               g_signal_connect(G_OBJECT(picker), "color-set",
                   G_CALLBACK(cb_background_color), qp);
               gtk_widget_show(label);
@@ -1744,8 +1832,8 @@ void graph_detail_create(struct qp_qp *qp)
               gtk_color_button_set_title(GTK_COLOR_BUTTON(picker),
                   "Select the Graph Grid Color");
               gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
-              gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, 1, 2);
-              gtk_table_attach_defaults(GTK_TABLE(table), picker, 1, 2, 1, 2);
+              gtk_grid_attach(GTK_GRID(grid), label, 0, 1, 1, 1);
+              gtk_grid_attach(GTK_GRID(grid), picker, 1, 1, 1, 1);
               g_signal_connect(G_OBJECT(picker), "color-set",
                   G_CALLBACK(cb_grid_color), qp);
               gtk_widget_show(label);
@@ -1757,8 +1845,8 @@ void graph_detail_create(struct qp_qp *qp)
               gtk_color_button_set_title(GTK_COLOR_BUTTON(picker),
                   "Select the Graph Grid Numbers Color");
               gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
-              gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, 2, 3);
-              gtk_table_attach_defaults(GTK_TABLE(table), picker, 1, 2, 2, 3);
+              gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
+              gtk_grid_attach(GTK_GRID(grid), picker, 1, 2, 1, 1);
               g_signal_connect(G_OBJECT(picker), "color-set",
                   G_CALLBACK(cb_grid_numbers_color), qp);
               gtk_widget_show(label);
@@ -1769,16 +1857,16 @@ void graph_detail_create(struct qp_qp *qp)
               gd->font_picker = picker = gtk_font_button_new ();
               gtk_font_button_set_title(GTK_FONT_BUTTON(picker),
                   "Select the Graph Grid Numbers Font");
-              gtk_table_attach_defaults(GTK_TABLE(table), label, 0, 1, 3, 4);
-              gtk_table_attach_defaults(GTK_TABLE(table), picker, 1, 2, 3, 4);
+              gtk_grid_attach(GTK_GRID(grid), label, 0, 3, 1, 1);
+              gtk_grid_attach(GTK_GRID(grid), picker, 1, 3, 1, 1);
               g_signal_connect(G_OBJECT(picker), "font-set",
                   G_CALLBACK(cb_grid_font), qp);
               gtk_widget_show(label);
               gtk_widget_show(picker);
             }
 
-            gtk_box_pack_start(GTK_BOX(ivbox), table, FALSE, FALSE, 0);
-            gtk_widget_show(table);
+            gtk_box_pack_start(GTK_BOX(ivbox), grid, FALSE, FALSE, 0);
+            gtk_widget_show(grid);
           }
 
 
@@ -1789,8 +1877,8 @@ void graph_detail_create(struct qp_qp *qp)
           /*****************************************************************************
            *             Right VBox
            *****************************************************************************/
-          ivbox = gtk_vbox_new(FALSE, 2);
-
+          ivbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 2);
+          gtk_box_set_homogeneous(GTK_BOX(ivbox), FALSE);
           {
             /***********************************************
              *          Int Number Sliders
@@ -1829,8 +1917,6 @@ void graph_detail_create(struct qp_qp *qp)
       tab_label = gtk_label_new("Configure Graph");
       gtk_notebook_append_page(GTK_NOTEBOOK(notebook), vbox, tab_label);
 
-      g_signal_connect(G_OBJECT(notebook), "switch-page",
-        G_CALLBACK(cb_graph_detail_switch_page), qp);
 
       gtk_widget_show(tab_label);
       gtk_widget_show(vbox);
@@ -1842,12 +1928,14 @@ void graph_detail_create(struct qp_qp *qp)
 
       GtkWidget *vbox, *tab_label, *scrollwin, *label, *hbox;
 
-      vbox = gtk_vbox_new(FALSE, 0);
+      vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+      gtk_box_set_homogeneous(GTK_BOX(vbox), FALSE);
 
       make_pretty_header_label("Select Channels to Plot or Unplot", GTK_BOX(vbox));
 
 
-      hbox = gtk_hbox_new(FALSE, 0);
+      hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+      gtk_box_set_homogeneous(GTK_BOX(hbox), FALSE);
       label = gtk_label_new("X Channel");
       gtk_box_pack_start(GTK_BOX(hbox), label, FALSE, FALSE, 20);
       gtk_widget_show(label);
@@ -1861,7 +1949,8 @@ void graph_detail_create(struct qp_qp *qp)
                       gtk_adjustment_new(0,0,0,0,0,0));
       {
         GtkWidget *box;
-        gd->selecter_hbox = box = gtk_hbox_new(FALSE, 2);
+        gd->selecter_hbox = box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
+        gtk_box_set_homogeneous(GTK_BOX(box), FALSE);
         plot_selecter_make(qp);
         gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollwin), box);
         gtk_widget_show(box);
@@ -1885,11 +1974,13 @@ void graph_detail_create(struct qp_qp *qp)
 
       GtkWidget *vbox, *tab_label, *scrollwin;
 
-      vbox = gtk_vbox_new(FALSE, 0);
+      vbox = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
+      gtk_box_set_homogeneous(GTK_BOX(vbox), FALSE);
 
       {
         GtkWidget *combo_box, *hbox;
-        hbox = gtk_hbox_new(TRUE, 0);
+        hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+        gtk_box_set_homogeneous(GTK_BOX(hbox), TRUE);
         gtk_box_pack_start(GTK_BOX(vbox), hbox, FALSE, FALSE, 10);
 
         gd->plot_list_combo_box = combo_box = gtk_combo_box_text_new();
@@ -1909,7 +2000,8 @@ void graph_detail_create(struct qp_qp *qp)
                       gtk_adjustment_new(0,0,0,0,0,0));
       {
         GtkWidget *box;
-        gd->plot_list_hbox = box = gtk_hbox_new(FALSE, 0);
+        gd->plot_list_hbox = box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+        gtk_box_set_homogeneous(GTK_BOX(box), FALSE);
         plot_list_make(qp);
         gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollwin), box);
         gtk_widget_show(box);
@@ -1927,7 +2019,9 @@ void graph_detail_create(struct qp_qp *qp)
       gtk_widget_show(vbox);
     }
 
-  
+    g_signal_connect(G_OBJECT(notebook), "switch-page",
+        G_CALLBACK(cb_graph_detail_switch_page), qp);
+
     gtk_container_add(GTK_CONTAINER(qp->graph_detail->window), notebook);
     gtk_widget_show(notebook);
   }

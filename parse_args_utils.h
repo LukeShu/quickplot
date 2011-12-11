@@ -453,6 +453,7 @@ gboolean startup_idle_callback(gpointer data)
       startup_idle_callback(NULL);
     }
 
+    qp = NULL;
     return FALSE; /* remove this idle callback */
   }
 

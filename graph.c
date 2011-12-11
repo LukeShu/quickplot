@@ -47,9 +47,10 @@ const gint EDGE_BUF_MIN = 10;
 
 
 
-/* returns a molloc() allocated string */
+/* returns a molloc() allocated string
+ * Return a unique name for the qp */
 static inline
-char *unique_name(const char *name)
+char *unique_name(struct qp_qp *qp, const char *name)
 {
   char buf[32];
   char *test_name = NULL;
@@ -68,25 +69,15 @@ char *unique_name(const char *name)
 
   while(1)
   {
-    struct qp_qp *qp;
-    struct qp_graph *g = NULL;
-
-    /* We compare with the name of all graphs in all
-     * qp main windows. */
-    for(qp=(struct qp_qp*)qp_sllist_begin(app->qps);
-        qp; qp=(struct qp_qp*)qp_sllist_next(app->qps))
-    {
-      struct qp_sllist *graphs;
-      graphs = qp->graphs;
-      for(g=(struct qp_graph*)qp_sllist_begin(graphs); g;
-        g=(struct qp_graph*)qp_sllist_next(graphs))
-        if(strcmp(test_name, g->name) == 0)
-          break;
-      if(g)
+    struct qp_graph *gr;
+    /* We compare with the name of all graphs
+     * in the qp main window. */
+    for(gr=qp_sllist_begin(qp->graphs); gr;
+      gr=qp_sllist_next(qp->graphs))
+      if(strcmp(test_name, gr->name) == 0)
         break;
-    }
 
-    if(g)
+    if(gr)
     {
       if(test_name == name)
         test_name = (char*) qp_malloc(len = (strlen(name)+16));
@@ -125,6 +116,71 @@ void add_graph_close_button(struct qp_graph *gr)
   gtk_widget_show(close_button);
 }
 
+/* the gr is assumed to be a gr that was just created and 
+ * has not been drawn yet. */
+void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr)
+{
+  struct qp_plot *p;
+  ASSERT(gr->name);
+  free(gr->name);
+  gr->name = qp_strdup(old_gr->name);
+  gtk_label_set_text(GTK_LABEL(gr->tab_label), gr->name);
+
+  if(!old_gr->x11 && gr->x11)
+  {
+    free(gr->x11);
+    gr->x11 = NULL;
+  }
+  else if(old_gr->x11 && !gr->x11)
+  {
+    gr->x11 = qp_malloc(sizeof(*(gr->x11)));
+    gr->x11->gc = 0;
+    gr->x11->pixmap = 0;
+    gr->x11->dsp = 0;
+    gr->x11->background = 0;
+    gr->x11->background_set = 0;
+  }
+ 
+  for(p=qp_sllist_begin(old_gr->plots);p;p=qp_sllist_next(old_gr->plots))
+    qp_plot_copy_create(gr, p);
+      
+  memcpy(gr->color_gen, old_gr->color_gen, sizeof(*(gr->color_gen)));
+  memcpy(&gr->background_color, &old_gr->background_color, sizeof(gr->background_color));
+  memcpy(&gr->grid_line_color, &old_gr->grid_line_color, sizeof(gr->grid_line_color));
+  memcpy(&gr->grid_text_color, &old_gr->grid_text_color, sizeof(gr->grid_text_color));
+
+  gr->same_x_limits = old_gr->same_x_limits;
+  gr->same_y_limits = old_gr->same_y_limits;
+  gr->grid_line_width = old_gr->grid_line_width;
+  gr->grid_on_top = old_gr->grid_on_top;
+
+  gr->grid_x_space = old_gr->grid_x_space;
+  gr->grid_y_space = old_gr->grid_y_space;
+
+
+  gr->grab_x = old_gr->grab_x;
+  gr->grab_y = old_gr->grab_y;
+  gr->pixbuf_x = old_gr->pixbuf_x;
+  gr->pixbuf_y = old_gr->pixbuf_y;
+  gr->value_mode = old_gr->value_mode;
+  qp_zoom_copy(gr->z, old_gr->z);
+  gr->zoom_level = old_gr->zoom_level;
+  gr->value_pick_x = old_gr->value_pick_x;
+  gr->value_pick_y = old_gr->value_pick_y;
+
+  if(old_gr->grid_font)
+  {
+    if(gr->grid_font)
+      free(gr->grid_font);
+    gr->grid_font = qp_strdup(old_gr->grid_font);
+  }
+
+  /* TODO: copy pangolayout??  May save memory by adding another
+   * reference to it.  Also copying the pangolayout maybe
+   * better incase the old_gr->grid_font is not a valid font. */
+
+  /* does not copy the X11 shape mode */
+}
 
 qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
 {
@@ -138,7 +194,7 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
     return NULL;
 
   gr = (struct qp_graph *) qp_malloc(sizeof(*gr));
-  gr->name = unique_name(name);
+  gr->name = unique_name(qp, name);
   gr->color_gen = qp_color_gen_create();
   gr->zoom_level = 0;
   gr->plots = qp_sllist_create(NULL);
@@ -159,6 +215,11 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
   gr->value_mode = (2<<2) | 1;
   gr->draw_value_pick = 0;
 
+  /* the first configure event will fix the struct qp_graph 
+   * xscale, yscale, xshift, and yshift.  We initialize
+   * xscale to 0 so we can tell it is not initialized. */
+  gr->xscale = 0;
+  gr->yscale = 0;
 
   /* This is the initial zoom in normalized units */
   /* qp_zoom_create(xscale, xshift, yscale, yshift) */
@@ -243,7 +304,8 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
   }
 #endif
 
-  gr->tab_label_hbox = gtk_hbox_new(FALSE, 3);
+  gr->tab_label_hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
+  gtk_box_set_homogeneous(GTK_BOX(gr->tab_label_hbox), FALSE);
   g_object_set(G_OBJECT(gr->tab_label_hbox), "border-width", 0, NULL);
   
   {
@@ -309,7 +371,8 @@ qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
   gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook),
       gtk_notebook_page_num(GTK_NOTEBOOK(qp->notebook), gr->drawing_area));
 
-  gtk_widget_show(gr->tab_label_hbox);
+  if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_tabs)))
+    gtk_widget_show(gr->tab_label_hbox);
   gtk_widget_show(gr->drawing_area);
 
   /* GtkNotebook refuses to switch to a page unless the child
@@ -401,7 +464,6 @@ void qp_graph_destroy(qp_graph_t gr)
   ASSERT(qp);
   ASSERT(qp->window);
  
-
   {
     struct qp_plot *p;
     p = qp_sllist_begin(gr->plots);
@@ -416,12 +478,21 @@ void qp_graph_destroy(qp_graph_t gr)
 
   free(gr->name);
   qp_sllist_remove(gr->qp->graphs, gr, 0);
+  qp_zoom_destroy(gr->z);
  
   if(gr->pixbuf_surface)
     cairo_surface_destroy(gr->pixbuf_surface);
 
   if(gr->x11)
   {
+    /* TODO: Not sure how to free X11 colors that
+     * may be still in use by other graphs.  There
+     * is not likely much client side memory used
+     * and the X Server will likely free the colors
+     * when the program exits. Adding a list to manage
+     * the X colors may use more memory than it
+     * saves. ??? */
+
     if(gr->x11->gc)
       XFreeGC(gr->x11->dsp, gr->x11->gc);
     if(gr->x11->pixmap)
@@ -439,9 +510,10 @@ void qp_graph_destroy(qp_graph_t gr)
   free(gr);
   /* done with this graph */
 
-
   if(qp_sllist_length(qp->graphs) == 1)
   {
+    /* Reusing the gr pointer */
+    /* Remove the tab close button */
     gr = qp_sllist_first(qp->graphs);
     ASSERT(gr->close_button);
     gtk_widget_destroy(gr->close_button);

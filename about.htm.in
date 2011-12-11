@@ -140,15 +140,16 @@ that one can make pretty pictures with.
       <li>reads CSV files
     </ul>
   <li>Cairo drawing that provides translucent and transparent colors using RGBA
-  <li>makes graphs with the X11 shape extension that float plots
-  on your screen letting you see though them to your other windows
-  below
+  <li>makes graphs with the X11 shape extension that float graphs
+    on your screen letting you see though them to your other windows
+    below
   <li>has fullscreen draw mode for presentations
   <li>reads more sound file formats with newer libsndfile
   <li>reads sound files from standard input (pipe input) with newer libsndfile
   <li>better double buffer drawing with super quick re-expose redraws,
     fixes previous versions slow re-expose redraws
-  <li>Quickplot is no longer written in C++ so it installs faster with
+  <li>Quickplot is no longer written in C++ so it builds and
+    installs faster with
     less prerequisites
 </ul>
 

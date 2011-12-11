@@ -207,7 +207,10 @@ struct qp_graph
   /* The first zoom in the stack is the identity transformation.
    * Zooms are normalized to a 0,0 to 1,1 box */
   struct qp_zoom *z;
-
+ 
+  int zoom_level; /* starting at 0 */
+  
+  
   /* bool value == do all the plots have the same scale? */
   int same_x_scale, same_y_scale;
   /* do all the plots have the same min and max */
@@ -223,9 +226,6 @@ struct qp_graph
 
   char *grid_font;
   PangoLayout *pangolayout;
-
-
-  int zoom_level; /* starting at 0 */
 
   struct qp_colora background_color, grid_line_color, grid_text_color;
 
@@ -365,6 +365,7 @@ struct qp_graph_detail
   int plot_list_modes;
 
   GtkWidget *window,
+            *notebook,
             *config_label,
             *show_container,
             *background_color_picker,
@@ -379,7 +380,9 @@ struct qp_graph_detail
             *selecter_hbox,
             *plot_list_hbox,
             *plot_list_combo_box,
-            *plot_list_drawing_area;
+            *plot_list_drawing_area,
+            **plot_list_button_lines,
+            **plot_list_button_points;
 
   struct qp_slider *line_width_slider,
                    *point_size_slider,
@@ -408,6 +411,7 @@ struct qp_qp
             *view_x11_draw,
             *view_cairo_draw,
             *view_graph_detail,
+            *copy_window_menu_item,
             *delete_window_menu_item,
             *menubar,
             *file_menu,
@@ -469,10 +473,11 @@ void qp_getargs_2nd_pass(int argc, char **argv);
 
 extern
 void qp_graph_detail_set_value_mode(struct qp_graph *gr);
-
+extern
+void qp_graph_detail_destory(struct qp_qp *qp);
 
 extern
-void qp_qp_copy(struct qp_qp *old_qp, struct qp_qp *new_qp);
+struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp);
 
 extern
 int qp_find_doc_file(const char *fileName, char **fullpath_ret);
@@ -486,6 +491,9 @@ void qp_get_root_window_size(void);
 /* Setup the widget for a particular graph */
 extern
 void qp_qp_graph_detail_init(struct qp_qp *qp);
+
+extern
+void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr);
 
 extern
 void qp_qp_set_status(struct qp_qp *qp);
@@ -525,7 +533,11 @@ void qp_qp_graph_remove(qp_qp_t qp, qp_graph_t graph);
 
 /* plots belong to the creating graph */
 extern
-qp_plot_t qp_plot_create(qp_graph_t graph,
+struct qp_plot *qp_plot_copy_create(qp_graph_t gr,
+    struct qp_plot *old_p);
+
+extern
+qp_plot_t qp_plot_create(struct qp_graph *graph,
     qp_channel_t x, qp_channel_t y, const char *name,
     double xmin, double xmax, double ymin, double ymax);
 

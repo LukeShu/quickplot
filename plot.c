@@ -96,6 +96,52 @@ void qp_plot_set_x11_draw_mode(struct qp_plot *p, struct qp_graph *gr)
   make_x11_colors(p, gr);
 }
 
+struct qp_plot *qp_plot_copy_create(struct qp_graph *gr, struct qp_plot *old_p)
+{
+  struct qp_plot *p;
+  struct qp_graph_x11 *x11_save;
+
+  x11_save = gr->x11;
+  if(x11_save)
+    /* We cannot let the X11 colors be allocated since
+     * they may change after the plot is made. */
+    gr->x11 = NULL;
+
+  p = qp_plot_create(gr, old_p->x, old_p->y, old_p->name,
+    1.0, -1.0, 1.0, -1.0);
+
+   /* Here we may be changing the colors
+   * to match the plot we are copying */
+  memcpy(&p->p,&old_p->p, sizeof(p->p));
+  memcpy(&p->l,&old_p->l, sizeof(p->l));
+
+  /* now that we have the colors set we can
+   * allocate the X11 colors. */
+  gr->x11 = x11_save;
+  if(gr->x11)
+    make_x11_colors(p, gr);
+
+  p->lines = old_p->lines;
+  p->points = old_p->points;
+
+  p->xscale = old_p->xscale;
+  p->yscale = old_p->yscale;
+  p->xshift = old_p->xshift;
+  p->yshift = old_p->yshift;
+
+  p->xscale0 = old_p->xscale0;
+  p->yscale0 = old_p->yscale0;
+  p->xshift0 = old_p->xshift0;
+  p->yshift0 = old_p->yshift0;
+
+  p->line_width = old_p->line_width;
+  p->point_size = old_p->point_size;
+
+
+
+  return p;
+}
+
 qp_plot_t qp_plot_create(qp_graph_t gr,
       qp_channel_t x, qp_channel_t y, const char *name,
       double xmin, double xmax, double ymin, double ymax)

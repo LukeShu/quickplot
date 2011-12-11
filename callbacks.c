@@ -212,7 +212,8 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_C:
     case GDK_KEY_c:
-      cb_copy_window(NULL, qp);
+      if(gtk_widget_get_sensitive(qp->copy_window_menu_item))
+        cb_copy_window(NULL, qp);
       break;
     case GDK_KEY_D:
     case GDK_KEY_d:
@@ -366,9 +367,23 @@ void cb_view_graph_tabs(GtkWidget *w, gpointer data)
   qp = data;
 
   if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_tabs)))
+  {
+    struct qp_graph *gr;
+    /* GTK+ does not like having a showing widget in a
+     * hidden tab. */
+    for(gr = qp_sllist_begin(qp->graphs);gr;gr=qp_sllist_next(qp->graphs))
+      gtk_widget_show(gr->tab_label_hbox);
     gtk_notebook_set_show_tabs(GTK_NOTEBOOK(qp->notebook), TRUE);
+  }
   else
+  {
+    struct qp_graph *gr;
+    /* GTK+ does not like having a showing widget in a
+     * hidden tab. */
+    for(gr = qp_sllist_begin(qp->graphs);gr;gr=qp_sllist_next(qp->graphs))
+      gtk_widget_hide(gr->tab_label_hbox);
     gtk_notebook_set_show_tabs(GTK_NOTEBOOK(qp->notebook), FALSE);
+  }
 
   gdk_window_set_cursor(gtk_widget_get_window(qp->window), app->waitCursor);
 }
@@ -430,6 +445,23 @@ void cb_view_border(GtkWidget *w, gpointer data)
     }
   }
 }
+
+#ifdef NO_BIG_WIN_COPY
+gboolean ecb_window_state(GtkWidget *widget, GdkEventWindowState *e, struct qp_qp *qp)
+{
+  if((e->changed_mask & (
+     GDK_WINDOW_STATE_MAXIMIZED |GDK_WINDOW_STATE_FULLSCREEN)))
+  {
+    if((e->new_window_state & (
+        GDK_WINDOW_STATE_MAXIMIZED |GDK_WINDOW_STATE_FULLSCREEN)))
+      gtk_widget_set_sensitive(qp->copy_window_menu_item, FALSE);
+    else
+      gtk_widget_set_sensitive(qp->copy_window_menu_item, TRUE);
+  }
+
+  return TRUE;
+}
+#endif
 
 void cb_view_fullscreen(GtkWidget *w, gpointer data)
 {
@@ -719,14 +751,17 @@ gboolean ecb_graph_configure(GtkWidget *wdgt, GdkEvent *event, gpointer data)
   gr->xshift = 0;
   gr->yshift = allocation.height;
 
-  /* multiply out the new scale to the grab */
-  if(gr->grab_x)
+  /* multiply out the new scale to the grab. */
+  /* If this is the first configure event the
+   * old gr->scale will be zero, but the
+   * gr->grab_x (y) may not be 0 if this is a copied gr.
+   * So we have gr->scale start at 0 to catch this case. */
+  if(gr->grab_x && old_xscale)
     gr->grab_x *= ((double)gr->xscale)/((double)old_xscale);
-  if(gr->grab_y)
+  if(gr->grab_y && old_xscale)
     gr->grab_y *= ((double)gr->yscale)/((double)old_yscale);
 
   gr->waiting_to_resize_draw = 1;
-
 
 
   if(ABSVAL(gr->grab_x) > gr->pixbuf_x ||
@@ -1499,7 +1534,7 @@ void cb_new_window(GtkWidget *w, gpointer data)
 void cb_copy_window(GtkWidget *w, gpointer data)
 {
   ASSERT(data);
-  qp_qp_copy((struct qp_qp*) data, qp_qp_window(NULL, NULL));
+  qp_qp_copy_create((struct qp_qp*) data);
 }
 
 void cb_new_graph_tab(GtkWidget *w, gpointer data)

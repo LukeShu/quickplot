@@ -315,8 +315,6 @@ int read_ascii(qp_source_t source, struct qp_reader *rd)
 
 #define CHUNK 16
 
-  WARN("app->op_labels=%d\n", app->op_labels);
-
   if(app->op_labels)
   {
     char *s, *sep;

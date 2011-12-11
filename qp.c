@@ -244,21 +244,18 @@ void qp_qp_destroy(qp_qp_t qp)
   ASSERT(qp->window);
 
   {
-    struct qp_graph *g;
-    while((g=qp_sllist_first(qp->graphs)))
+    struct qp_graph *gr;
+    while((gr=qp_sllist_first(qp->graphs)))
       /* We do not iterate here because qp_graph_destroy()
        * modifies the list. */
-      qp_graph_destroy(g);
+      qp_graph_destroy(gr);
   }
 
   qp_sllist_destroy(qp->graphs, 0);
   qp_sllist_remove(app->qps, qp, 0);
 
   if(qp->graph_detail)
-  {
-    gtk_widget_destroy(qp->graph_detail->window);
-    free(qp->graph_detail);
-  }
+    qp_graph_detail_destory(qp);
 
   if(qp->window)
   {
