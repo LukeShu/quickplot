@@ -33,6 +33,31 @@
 <p>For example the command
 </p>
 
+<pre>quickplot file0.txt file1.wav file2.csv file3.dat</pre>
+
+<p>
+will make four graphs in four tabs in one main window.
+</p>
+
+<p>The command</p>
+
+<pre>quickplot file0.txt file1.wav file2.csv --new-window file3.dat --no-new-window</pre>
+
+<p>
+will make two graphs in two windows.&nbsp; You see: file1.wav will be
+forced to be graphed when the parser hits the argument file2.csv, and
+file2.csv will be forced to be graphed when the parser hits the
+file3.dat argument, at which time the <span class=code>--new-window</span>
+is in effect which causes a new window to be used for file2.csv.&nbsp;
+file3.dat will be graphed in the same window as file2.csv because the
+<span class=code>--new-window</span> option is not longer in effect
+when file3.dat is forced to be graphed at the end of the command line.
+</p>
+
+
+
+<p>The command</p>
+
 <pre>quickplot load1.txt --no-grid --no-lines load2.txt --lines=y --line-width=9 -F</pre>
 
 <p>
