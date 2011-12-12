@@ -32,6 +32,7 @@
 #include <errno.h>
 #include <dlfcn.h>
 
+
 #include <sndfile.h>
 #include <gtk/gtk.h>
 
@@ -48,10 +49,13 @@
 
 
 
-#define BUF_LEN  (64)
+#define BUF_LEN  (4096)
 
 static __thread ssize_t (*sys_read)(int fd,
       void *buf, size_t count) = NULL;
+
+static __thread off_t (*sys_lseek)(int fd,
+    off_t offset, int whence) = NULL;
 
 static __thread struct qp_reader *qp_rd = NULL;
 
@@ -62,7 +66,7 @@ struct qp_reader
   /* We use this buffer to virtualize read()
    * We think that libsndfile will know that
    * the file good by reading just RD_LEN. */
-  uint8_t buf[BUF_LEN];
+  uint8_t *buf;
   size_t len, /* bytes read from system read() */
          rd;  /* bytes read by reader */
   int past; /* read past the buffer */
@@ -183,6 +187,46 @@ ssize_t read(int fd, void *buf, size_t count)
     return sys_read(fd, buf, count);
 }
 
+
+/* We virtualize lseek() to work around a bug in libsndfile 1.0.25:
+ * it calls lseek() when reading a pipe with Ogg file format data. */
+off_t lseek(int fd, off_t offset, int whence)
+{
+  if(!sys_lseek)
+  {
+    char *error;
+    dlerror();
+    sys_lseek = dlsym(RTLD_NEXT, "lseek");
+    if((error = dlerror()) != NULL)
+    {
+      EERROR("dlsym(RTLD_NEXT, \"lseek\") failed: %s\n", error);
+      QP_EERROR("Failed to virtualize lseek(): %s\n", error);
+      ASSERT(0);
+      exit(1);
+    }
+  }
+
+  if(qp_rd && qp_rd->fd == fd && !qp_rd->past && whence == SEEK_SET)
+  {
+    if(offset > BUF_LEN || offset > qp_rd->rd)
+    {
+      ERROR("Virtualized lseek(fd=%d, offset=%zu, SEEK_SET) failed\n",
+          fd, offset);
+      QP_ERROR("Failed to virtualize lseek(fd=%d, offset=%zu, SEEK_SET)"
+          " values where not expected.\n", fd, offset);
+      ASSERT(0);
+      exit(1);
+    }
+
+    DEBUG("Virtualizing lseek(fd=%d, offset=%zu, SEEK_SET)\n", fd, offset);
+
+    qp_rd->rd = offset;
+    return offset; /* success */
+  }
+
+  return sys_lseek(fd, offset, whence);
+}
+
 /* This starts by copying data from the qp_rd
  * read() buffer and then when that is empty it
  * finishes reading the file to complete a line,
@@ -193,7 +237,7 @@ ssize_t Getline(char **lineptr, size_t *n, FILE *file)
   ssize_t i;
   int c;
 
-  if(qp_rd->rd == qp_rd->len)
+  if(!qp_rd || qp_rd->rd == qp_rd->len)
     return getline(lineptr, n, file);
   
   i = qp_rd->rd;
@@ -630,11 +674,23 @@ int read_sndfile(struct qp_source *source, struct qp_reader *rd)
   return -1; /* fail no data in file, caller cleans up */
 }
 
+/* returns non-zero if fd is a pipe */
+static int is_pipe(struct qp_reader *rd)
+{
+  struct stat st;
+  if(fstat(rd->fd, &st) == -1)
+  {
+    QP_ERROR("fstat() failed to stat file \"%s\"\n", rd->filename);
+    exit(1);
+  }
+  return (st.st_mode & S_IFIFO);
+}
+
 
 qp_source_t qp_source_create(const char *filename, int value_type)
 {
   struct qp_source *source;
-  struct qp_reader rd; /* use stack memory  :) */
+  struct qp_reader rd;
   int r;
 
   source = make_source(filename, value_type);
@@ -644,6 +700,7 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   rd.len = 0;
   rd.past = 0;
   rd.file = NULL;
+  rd.buf = NULL;
   rd.filename = (char *) filename;
   qp_rd = &rd;
 
@@ -664,13 +721,31 @@ qp_source_t qp_source_create(const char *filename, int value_type)
     goto fail;
   }
 
+  if(!is_pipe(&rd))
+  {
+    /* don't buffer read() and lseek() */
+    qp_rd = NULL;
+  }
+#ifdef QP_DEBUG
+  else
+  {
+    /* this is a pipe */
+    DEBUG("Virturalizing a pipe%s%s\n",
+        (filename[0] == '-' && filename[1] == '\0')?
+        "":" with name ",
+        (filename[0] == '-' && filename[1] == '\0')?
+        "":filename);
+    rd.buf = qp_malloc(BUF_LEN);
+  }
+#endif
+
   if((r = read_sndfile(source, &rd)))
   {
     if(r == -1)
       goto fail;
 
 
-    if(rd.past)
+    if(rd.past && qp_rd)
     {
       VASSERT(0, "libsndfile read to much data "
           "to see that the file was not a sndfile\n");
@@ -680,9 +755,20 @@ qp_source_t qp_source_create(const char *filename, int value_type)
       goto fail;
     }
 
-
-    // ASSERT(rd.len > 0);
-
+    if(qp_rd)
+    {
+      /* Start reading the data from the qp_rd read() buffer */
+      rd.rd = 0;
+      /* no need to add more to the qp_rd read() buffer */
+      rd.fd = -1;
+    }
+    /* The above lseek() should work fine. */
+    else if(lseek(rd.fd, 0, SEEK_SET))
+    {
+      EWARN("lseek(fd=%d, 0, SEEK_SET) failed\n", rd.fd);
+      QP_EWARN("%sFailed to read file%s %s%s%s: lseek() failed\n",
+          bred, trm, btur, filename, trm);
+    }
 
     if(!rd.file)
     {
@@ -698,16 +784,17 @@ qp_source_t qp_source_create(const char *filename, int value_type)
       goto fail;
     }
 
-    /* Start reading the data from the qp_rd read() buffer */
-    rd.rd = 0;
-    /* no need to add more to the qp_rd read() buffer */
-    rd.fd = -1;
+    errno = 0;
 
     if(read_ascii(source, &rd))
       goto fail;
   }
 
-
+  if(rd.buf)
+  {
+    free(rd.buf);
+    rd.buf = NULL;
+  }
 
   {
     /* remove any channels that have very bad data */
@@ -876,6 +963,9 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   return source;
 
 fail:
+
+  if(rd.buf)
+    free(rd.buf);
 
   if(strcmp(filename,"-") != 0)
   {
