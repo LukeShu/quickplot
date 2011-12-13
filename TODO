@@ -1,14 +1,15 @@
 Most of this is done, but we need to leave it so we may check
 it out more carefully.
 
+  Fix the save the image bug.
 
   Refactor!!!
 
-
-  Disable the window copy when in Fullscreen mode.
-
   Make a release :) 
 
+  Make a command line dump option that prints out a
+  cammand line that would as close as it can reproduce
+  the current graphs and windows.
 
   Make 'N' put up the Select Channel to Plot tab in the Graph Details.
 
@@ -55,10 +56,6 @@ it out more carefully.
   Fix and use plot sig fig in status (may be done)
 
   add sub-grid
-
-  initialize app->op_geometry
-
-  alternate the colors of row in the key binding list in help??
 
   find/check all the GTK+ argument options
 

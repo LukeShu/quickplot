@@ -44,7 +44,7 @@ will make four graphs in four tabs in one main window.
 <pre>quickplot file0.txt file1.wav file2.csv --new-window file3.dat --no-new-window</pre>
 
 <p>
-will make two graphs in two windows.&nbsp; You see: file1.wav will be
+will make two windows with two graphs in each window.&nbsp; You see: file1.wav will be
 forced to be graphed when the parser hits the argument file2.csv, and
 file2.csv will be forced to be graphed when the parser hits the
 file3.dat argument, at which time the <span class=code>--new-window</span>
@@ -106,7 +106,7 @@ programming interfaces), which Quickplot uses.
 
 
 
-  <table
+  <table class="keys"
 summary="list of Quickplot gtk+ options. We got this list from running
 `galeon --help'. Where does GTK+ keep this info?">
 
@@ -139,7 +139,7 @@ summary="list of Quickplot gtk+ options. We got this list from running
 Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 </p>
 
-<table summary="list of Quickplot key short-cuts" style="margin-bottom:0px;">
+<table class="keys"  summary="list of Quickplot key short-cuts" style="margin-bottom:0px;">
 
 <tr class=c><td><b>a</b></td> <td>show information <b>a</b>bout Quickplot using a web browser</td</tr>
 <tr><td><b>b</b></td> <td>show/hide the <b>b</b>utton bar</td</tr>
@@ -166,7 +166,7 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 </table>
 
 
-<table summary="The Rest of Quickplot key short-cuts" style="margin-top:0px;">
+<table class="keys" summary="The Rest of Quickplot key short-cuts" style="margin-top:0px;">
   <tr><td style="white-space:nowrap;"><b>esc</b></td> <td>close the current focused 
       window.&nbsp; This will not close the last main window.&nbsp;
       If the current focused window is in full screen this will change

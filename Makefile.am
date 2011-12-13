@@ -21,6 +21,7 @@
 
 
 EXTRA_DIST =\
+ house.png\
  imgGrabCursor.png\
  imgGrabCursor.xpm\
  imgHoldCursor.png\
@@ -35,6 +36,7 @@ EXTRA_DIST =\
  imgSaveImage.xpm\
  quickplot_icon.png\
  quickplot_icon.xpm\
+ sample_plot.png\
  screenshot_small.png\
  favicon.ico\
  background_ft.png\
@@ -75,8 +77,10 @@ BUILT_SOURCES =\
 html_DATA =\
  about.html\
  help.html\
+ house.png\
  index.html\
  quickplot_icon.png\
+ sample_plot.png\
  screenshot_small.png\
  background_ft.png\
  background_h1.png\

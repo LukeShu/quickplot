@@ -434,6 +434,18 @@ void graph_draw(struct qp_graph *gr, cairo_t *cr,
   xshift = gr->xscale*gr->z->xshift + gr->xshift + x;
   yshift = gr->yscale*gr->z->yshift + gr->yshift + y;
 
+  if(gr->x11 && gr->background_color.a < 0.05)
+  {
+    /* For some reason when drawing with X11
+     * and having mostly-transparent background the
+     * drawing seems to fail to cover the old
+     * drawing.  Painting the whole area to
+     * start with seems to fix it. */
+    cairo_set_operator(cr, CAIRO_OPERATOR_SOURCE);
+    cairo_set_source_rgba(cr, 1,1,1,1.0);
+    cairo_paint(cr);
+  }
+
   cairo_set_operator(cr, CAIRO_OPERATOR_CLEAR);
   cairo_paint(cr);
   cairo_set_operator(cr, CAIRO_OPERATOR_OVER);

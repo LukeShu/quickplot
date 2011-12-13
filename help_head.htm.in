@@ -31,6 +31,12 @@
 /* inline the style sheet so it does not get lost */
 @STYLE_CSS@
 
+h4 {
+  margin-top:18px;
+  margin-bottom:0px;
+  padding-top:2px;
+  padding-bottom:2px;
+}
 table.options {
   background-color:#7B87D0;
   margin-left:6px;
@@ -52,7 +58,7 @@ a.opt {
     font-style: normal;
     text-decoration: none;
 }
-table {
+table.keys {
      margin-top:2px;
      margin-bottom:10px;
      margin-left:30px;
@@ -240,56 +246,128 @@ Zooming will change the number of significant digits displayed.
 Quickplot can read ASCII text and sound files:
 </p>
 
-<ul>
 
-<li>
+<h4>ASCII text</h4>
+<p>
+Quickplot can load ASCII text (plan
+text) files.&nbsp; The number of values on each line need not be the same,
+but any missing values will be filled with NAN.&nbsp; 
+Any number of non-number characters other than a new
+line character may used to separate numbers on a given line.&nbsp;
+NAN, INF, -NAN, -INF, +NAN, and +INF (lower case too) are numbers that
+can be read by quickplot.&nbsp;
+Any line starting with zero or more white space characters
+and then a any one of &nbsp;<span
+  style="background-color:#AABBCC;">&nbsp; ! " # $ % & ' ( ) /
+  &lt; = &gt; ? @ C c &nbsp;</span>&nbsp; is a comment line that
+is not read.&nbsp;
+Any lines with no numbers that can be read will be skipped.&nbsp;
+If you wish to have a break in a
+plot line put a NAN (stands for not-a-number) in the channel
+(column) at the point
+(or non-point) where you wish to put the break at.
+</p>
 
-<p><b>ASCII text</b>&nbsp;&nbsp; Quickplot can load ASCII text (plan
-text) files.&nbsp; The number of channels (numbers) on each line must be
-the same.&nbsp; Any number of non-number characters other than a new
-line character may used to separate numbers on a given line.
+
+<table class="keys" summary="graph example">
+<tr>
+  <td>
 
 <p>
 Example:
 </p>
-
 <table summary="example data">
-<tr><td class=num>-1 </td>  <td class=num> -1.3   </td>   <td class=num> -1</td></tr>
-<tr><td class=num> 0 </td>  <td class=num>  1.1e-2</td>   <td class=num>  0</td></tr>
-<tr><td class=num> 2 </td>  <td class=num>  NAN</td>   <td class=num>  1</td></tr>
-<tr><td class=num> 30</td>  <td class=num>  1.3e+2</td>   <td class=num>  3</td></tr>
+<tr><td class=num>1e2 </td>  <td class=num> 0 </td>   <td class=num> -1</td></tr>
+<tr><td class=num>2.1e2 </td>  <td class=num> 1</td>   <td class=num> 0 </td></tr>
+<tr><td class=num>3e2 </td>  <td class=num> NAN</td>   <td class=num> 1</td></tr>
+<tr><td class=num>4.01e2 </td>  <td class=num> 1</td>   <td class=num> 2</td></tr>
+<tr><td class=num>5e2 </td>  <td class=num> 0.87</td>   <td class=num> 3</td></tr>
+<tr><td class=num>6.1e2 </td>  <td class=num> -0.65</td>   <td class=num> 3.2</td></tr>
+<tr><td class=num>7e2</td>   <td class=num> 1 </td>  <td class=num> 3</td></tr>
+<tr><td class=num>5.4e2 </td>  <td class=num> 0.7</td>   <td class=num> 2</td></tr>
 </table>
 
-
+  </td>
+  <td style="position:relative;top:0px;left:0px;" rowspan="2">
+    <table summary="graph example">
+      <tr>
+        <td style="text-align:center;">
+    <img
+    alt="example plot" src="sample_plot.png">
+      </td>
+      </tr>
+      <tr>
+        <td>
+          Graph with two plots: column 1 versus column 0 and column 2 versus column
+          0.&nbsp;
+          Note that when Quickplot plots a point with a x or y value of NAN (or INF)
+          the point is skipped and there is not a connecting line to the
+          adjacent points.&nbsp; If you wish to add breaks in your plot lines
+          like in the above example use NAN.
+          </td>
+      </tr>
+    </table>
+ </td>
+</tr>
+<tr>
+  <td>
 
 <p>
 In Austria it may look like:
 </p>
-
 <table summary="example data">
-<tr><td class=num>-1 </td>  <td class=num> -1,3   </td>   <td class=num> -1</td></tr>
-<tr><td class=num> 0 </td>  <td class=num>  1,1e-2</td>   <td class=num>  0</td></tr>
-<tr><td class=num> 2 </td>  <td class=num>  NAN</td>   <td class=num>  1</td></tr>
-<tr><td class=num> 30</td>  <td class=num>  1,3e+2</td>   <td class=num>  3</td></tr>
+<tr><td class=num>1e2 </td>  <td class=num> 0 </td>   <td class=num> -1</td></tr>
+<tr><td class=num>2,1e2 </td>  <td class=num> 1</td>   <td class=num> 0 </td></tr>
+<tr><td class=num>3e2 </td>  <td class=num> NAN</td>   <td class=num> 1</td></tr>
+<tr><td class=num>4,01e2 </td>  <td class=num> 1</td>   <td class=num> 2</td></tr>
+<tr><td class=num>5e2 </td>  <td class=num> 0,87</td>   <td class=num> 3</td></tr>
+<tr><td class=num>6,1e2 </td>  <td class=num> -0,65</td>   <td class=num> 3,2</td></tr>
+<tr><td class=num>7e2</td>   <td class=num> 1 </td>  <td class=num> 3</td></tr>
+<tr><td class=num>5,4e2 </td>  <td class=num> 0,7</td>   <td class=num> 2</td></tr>
 </table>
 
 
+  </td>
+</tr>
+</table>
+
 
 <p>
-The above example has three channels and four samples (set of values) for each
+The above example has three channels and eight samples (set of values) for each
 channel.&nbsp; A file may have any counting number of channels, that's
-1,2,3,4 or more channels.&nbsp; If a file is loaded with a single channel
+1,2,3,4 or more channels.
+</p>
+
+<p>
+With the use of NAN, as a kind of plot line terminator,
+you can use Quickplot to draw general lined figures.&nbsp;
+Here's a silly example of how Quickplot can be used to do general drawing.&nbsp;
+Copy and paste the following command to draw this house:
+</p>
+
+<table summary="drawing example" style="width:100%;">
+  <tr>
+  <td style="text-align:center;vertical-align:middle;
+      margin:0px;padding:0px;">
+      <img alt="picture of house" src="house.png">
+    </td>
+    <td style="margin:0px;padding:0px;padding-left:16px;">
+<pre style="margin-top:0px;margin-bottom:0px;margin-right:0px;">
+echo -e "-10 8 -8 1 -1.5 -6\n-10 -6 -4 1 1.5 -6\n\
+10 -6 -4 5 1.5 3\n10 8 -8 5 -1.5 3\nNAN NAN -8 1 -1.5 -6\n\
+-13 8 NAN NAN\n13 8 4 1\n0 20 8 1\n-13 8 8 5\nNAN NAN 4 5\n\
+NAN NAN 4 1" | quickplot -P --line-width=2 --no-grid \
+--no-border --cairo-draw -C 'rgba(0,0,0,0)' --no-gui \
+--no-points --geometry 79x87 -g "0 1 2 3 4 5"
+</pre>
+    </td>
+      </tr>
+</table>
+
+<p>
+If a file is loaded with a single channel
 an additional channel, with the same number of values as the channel in
-the file, will be added before the channel from the file.&nbsp;
-Quickplot can also read the numbers NAN (not a number), INFINITY
-and numbers larger than the largest double as points that are skipped
-when plotting.&nbsp; Any non-number series of characters may be used
-to separate numbers, not just spaces and tabs.&nbsp; There must be a
-newline character between samples.&nbsp; Any missing numbers will
-be automatically read as NAN.&nbsp;
-The special values NAN and INFINITY may be read.&nbsp;
-When plotting if X and/or Y is NAN or INFINITY the point is just not
-plotted making a brake in the connecting line, when lines are drawn.
+the file, will be added before the channel from the file.
 </p>
 
 <p>
@@ -298,13 +376,10 @@ Quickplot can read
 files.
 </p>
 
-</li>
 
 
-
-<li>
+<h4>libsndfile sound file</h4>
 <p>
-<b>libsndfile sound file</b>&nbsp;&nbsp;
 Using the package libsndfile Quickplot can
 read many sound file formats.&nbsp; An incomplete list of readable
 sound file formats includes: Ogg/Vorbis,
@@ -319,12 +394,9 @@ the time sequence, then each sound channel will follow in separate
 channels.&nbsp;
 
 Quickplot may be a little slow with sound files larger than thirty
-seconds long.&nbsp; Thirty seconds of sound sampled at 44KHZ with one
-channel would load 1.32 million data points.
+seconds long.&nbsp; Thirty seconds of sound sampled at 44&nbsp;kHz
+with one channel would load 1.32 million data points.
 </p>
-</li>
-
-</ul>
 
 
 

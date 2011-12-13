@@ -374,7 +374,7 @@ struct qp_option options[] =
                                                   "options to make a floating graph on your display.  "
                                                   "The use of the X11 shape extension is a property of the "
                                                   "main window, not each graph tab.  This option may not "
-                                                  "work well with fullscreen view.  This is will slow down "
+                                                  "work well with fullscreen view.  This will slow down "
                                                   "graph drawing considerably.  You can toggle this on and "
                                                   "off with the ::x@@ key.  See option ::--no-shape@@.",      "0",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
@@ -402,11 +402,13 @@ struct qp_option options[] =
                                                   "but there will be no translucent colors and no "
                                                   "anti-aliasing in the drawing of the plot lines and "
                                                   "points. There will be translucent colors and "
-                                                  "anti-aliasing in the background and grid.  You can "
+                                                  "anti-aliasing in the background and grid.  Also saved "
+                                                  "images will not have translucent colors like you do with "
+                                                  "the Cairo draw mode.  You can "
                                                   "start drawing with X11 and switch to drawing with Cairo "
-                                                  "when you want to save an image, using the ::r@@ key or "
-                                                  "the View menu.  That will save "
-                                                  "you time.  See also ::--cairo-draw@@.",                    "1",        "int"       },
+                                                  "when you want to save an image.  Use the ::r@@ key or "
+                                                  "the View menu to switch back and forth between drawing "
+                                                  "with X11 and Cairo.  See also ::--cairo-draw@@.",          "1",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,0}, 0,                      0,    0,         0,                                                          0,          0           }
 };
