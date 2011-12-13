@@ -336,6 +336,7 @@ channel.&nbsp; A file may have any counting number of channels, that's
 </p>
 
 <p>
+<a name="house"></a>
 With the use of NAN, as a kind of plot line terminator,
 you can use Quickplot to draw general lined figures.&nbsp;
 Here's a silly example of how Quickplot can be used to do general drawing.&nbsp;

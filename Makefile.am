@@ -263,7 +263,7 @@ app_op_init.h: mk_options
 
 index.html: index.htm
 	sed $<\
- -e "s!@SCREENSHOT_URL@!$(SCREENSHOT_URL)!"\
+ -e "s!@SCREENSHOT_URL@!$(SCREENSHOT_URL)!g"\
  -e 's!@Top@!<span class=nav>\&nbsp;Top\&nbsp;</span>!'\
  -e 's!@About@!<a class=nav href="about.html">\&nbsp;About\&nbsp;</a>!'\
  -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\

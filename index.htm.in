@@ -69,7 +69,9 @@ ul {
   </td>
   <td>
 
-  <img alt="small screen shot" src="screenshot_small.png">
+  <a href="@SCREENSHOT_URL@">
+    <img alt="small screen shot" border=0 src="screenshot_small.png">
+  </a>
 
   </td>
 </tr>
