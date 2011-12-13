@@ -215,7 +215,8 @@ from PNG images in the Quickplot source.
 a fully-featured World Wide Web (WWW) client, or web browser, that can
 display inside of a tty terminal.&nbsp;  We use Lynx to generate ASCII text
 files from our html files, like for example the simple ASCII text
-version of this file you are reading now.
+version of this file you are reading now.&nbsp; The text version
+of the <em>help</em> page is used to make the man page.
 </li>
 
 </ul>

@@ -103,9 +103,7 @@ tr.c {
 
 <p>
 We need to distinguish between the two terms plot and graph.&nbsp;
-In Quickplot we say we put many plots on a graph.&nbsp;
-This process we call plotting.&nbsp;
-A graph displays one or more plots.&nbsp;
+In Quickplot a graph displays one or more plots.&nbsp;
 Quickplot displays each graph in a page tab, like pages in
 a web browser.&nbsp;
 The distinction between plot and graph is required in order
@@ -114,7 +112,7 @@ to understand Quickplot and Quickplot commands.
 
 <p>
 Quickplot can load data from: GUIs (graphical user interfaces), files listed
-on the command line, and from standard input (pipes).&nbsp; Data
+on the command line, and from standard input (pipes too).&nbsp; Data
 is loaded into channels.&nbsp; A channel represents a series of numbers,
 like for example the values for one variable, or a column of numbers in
 a spreadsheet.&nbsp; Other names for channel may be
@@ -260,8 +258,8 @@ Any line starting with zero or more white space characters
 and then a any one of &nbsp;<span
   style="background-color:#AABBCC;">&nbsp; ! " # $ % & ' ( ) /
   &lt; = &gt; ? @ C c &nbsp;</span>&nbsp; is a comment line that
-is not read.&nbsp;
-Any lines with no numbers that can be read will be skipped.&nbsp;
+is ignored.&nbsp;
+Any lines with no numbers that can be read will be ignored.&nbsp;
 If you wish to have a break in a
 plot line put a NAN (stands for not-a-number) in the channel
 (column) at the point
@@ -288,7 +286,7 @@ Example:
 </table>
 
   </td>
-  <td style="position:relative;top:0px;left:0px;" rowspan="2">
+  <td style="vertical-align:bottom;" rowspan="2">
     <table summary="graph example">
       <tr>
         <td style="text-align:center;">
@@ -302,8 +300,7 @@ Example:
           0.&nbsp;
           Note that when Quickplot plots a point with a x or y value of NAN (or INF)
           the point is skipped and there is not a connecting line to the
-          adjacent points.&nbsp; If you wish to add breaks in your plot lines
-          like in the above example use NAN.
+          adjacent points.
           </td>
       </tr>
     </table>
@@ -354,11 +351,11 @@ Copy and paste the following command to draw this house:
     <td style="margin:0px;padding:0px;padding-left:16px;">
 <pre style="margin-top:0px;margin-bottom:0px;margin-right:0px;">
 echo -e "-10 8 -8 1 -1.5 -6\n-10 -6 -4 1 1.5 -6\n\
-10 -6 -4 5 1.5 3\n10 8 -8 5 -1.5 3\nNAN NAN -8 1 -1.5 -6\n\
--13 8 NAN NAN\n13 8 4 1\n0 20 8 1\n-13 8 8 5\nNAN NAN 4 5\n\
-NAN NAN 4 1" | quickplot -P --line-width=2 --no-grid \
+10 -6 -4 5 1.5 3\n10 8 -8 5 -1.5 3\nnan nan -8 1 -1.5 -6\n\
+-13 8 nan nan\n13 8 4 1\n0 20 8 1\n-13 8 8 5\nnan nan 4 5\n\
+nan nan 4 1" | quickplot -P --line-width=2 --no-grid \
 --no-border --cairo-draw -C 'rgba(0,0,0,0)' --no-gui \
---no-points --geometry 79x87 -g "0 1 2 3 4 5"
+--no-points --geometry 79x87 -F -g "0 1 2 3 4 5"
 </pre>
     </td>
       </tr>
