@@ -159,7 +159,7 @@ void qp_getargs_2nd_pass(int argc, char **argv)
     qp = qp_sllist_first(app->qps);
     /* There should be at least one qp window */
     if(!qp || !qp->window)
-      qp_qp_window(NULL, NULL);
+      qp_qp_window(NULL);
   }
 
   /* Setup/draw the plots in the tabs */

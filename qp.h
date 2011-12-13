@@ -442,6 +442,10 @@ struct qp_qp
   /* boolean  draw graphs with X11 API */
   int x11_draw;
 
+  /* Each qp window that is made has a number
+   * assigned. The window title uses this. */
+  int window_num;
+
   int border;
   int shape; /* use X11 shape extention */
 
@@ -497,6 +501,11 @@ void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr);
 
 extern
 void qp_qp_set_status(struct qp_qp *qp);
+
+extern
+void qp_qp_set_window_title(struct qp_qp *qp);
+extern
+void qp_app_set_window_titles(void);
 
 extern
 void add_source_buffer_remove_menus(struct qp_source *source);

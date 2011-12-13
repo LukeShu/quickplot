@@ -135,7 +135,7 @@ that <a href="help.html#house">one can make pretty pictures</a> with.
       <li>better locale support
       <li>reads rows with missing number entries
       <li>more row comment formats
-      <li>reads infinity and nan
+      <li>reads infinity and nan, using nan as a line break
       <li>will read any text file and pick out the numbers
       <li>reads CSV files
     </ul>

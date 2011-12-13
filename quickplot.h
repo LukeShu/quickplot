@@ -123,7 +123,7 @@ int qp_qp_graph_default_source(qp_qp_t qp, qp_source_t s, const char *name);
 
 
 extern
-qp_qp_t qp_qp_window(qp_qp_t qp, const char *title);
+qp_qp_t qp_qp_window(qp_qp_t qp);
 
 
 static inline

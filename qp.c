@@ -287,6 +287,77 @@ void qp_qp_destroy(qp_qp_t qp)
     default_qp = qp_sllist_last(app->qps);
 }
 
+void qp_app_set_window_titles(void)
+{
+  struct qp_qp *qp;
+  ASSERT(app);
+  ASSERT(app->qps);
+  for(qp = qp_sllist_begin(app->qps); qp; qp = qp_sllist_next(app->qps))
+    qp_qp_set_window_title(qp);
+}
+
+/* We reset the window titles has files are
+ * loaded and unloaded. */
+void qp_qp_set_window_title(struct qp_qp *qp)
+{
+#define END_LEN  256
+#define BEG_LEN  24
+
+  char title_mem[BEG_LEN + END_LEN];
+  char *title;
+  title = &title_mem[BEG_LEN];
+
+  if(qp_sllist_length(app->sources))
+  {
+    size_t len = END_LEN, l;
+    struct qp_source *s;
+    char *str;
+    str = title;
+    s = qp_sllist_begin(app->sources);
+    ASSERT(s);
+    snprintf(str, len, "Quickplot: %s", s->name);
+    l = strlen(str);
+    str += l;
+    len -= l;
+    for(s= qp_sllist_next(app->sources);
+        s && len > 1;
+        s= qp_sllist_next(app->sources))
+    {
+      snprintf(str, len, " %s", s->name);
+      l = strlen(str);
+      str += l;
+      len -= l;
+    }
+    if(len == 1)
+      snprintf(str-5, 5, " ...");
+  }
+  else
+    sprintf(title, "Quickplot");
+
+  if(qp->window_num > 1)
+  {
+    char beg[BEG_LEN];
+    size_t len, l;
+    snprintf(beg, BEG_LEN, "[%d] ", qp->window_num);
+    l = len = strlen(beg);
+    ASSERT(len);
+    ASSERT(len<BEG_LEN);
+    do
+    {
+      --l;
+      title_mem[BEG_LEN-l-1] = beg[len-l-1];
+    } while(l);
+
+    title = &title_mem[BEG_LEN-len];
+  }
+    
+  gtk_window_set_title(GTK_WINDOW(qp->window), title);
+
+  DEBUG("Set main window title to: \"%s\"\n", title);
+
+#undef BEG_LEN
+#undef END_LEN
+}
 
 size_t qp_app_read(const char *filename)
 {
@@ -490,12 +561,12 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
 
   if(!qp->window)
   {
-    if(!qp_qp_window(qp, NULL))
+    if(!qp_qp_window(qp))
       return 1;
   }
   else if(op_new_window)
   {
-    if(!(qp = qp_qp_window(NULL, NULL)))
+    if(!(qp = qp_qp_window(NULL)))
       return 1;
   }
 

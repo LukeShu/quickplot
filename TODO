@@ -1,14 +1,22 @@
 Most of this is done, but we need to leave it so we may check
 it out more carefully.
 
-  Fix the save the image bug.
+  Announce on Freshmeat
+
+  Fix the save the image warning.  Don't see the warning now,
+  with Cairo or X11 draw modes.
+
+  Fix title on main windows as files are loaded and unloaded.
+
 
   Refactor!!!
+    * qp_qp --> qp_win
+
 
   Make a release :) 
 
   Make a command line dump option that prints out a
-  cammand line that would as close as it can reproduce
+  command line that would as close as it can reproduce
   the current graphs and windows.
 
   Make 'N' put up the Select Channel to Plot tab in the Graph Details.
@@ -109,38 +117,6 @@ it out more carefully.
   Add extern C to port API to C++.
 
 
-Document the changes of reading ASCII files
-  comment lines can start with:
-     zero or more white space
-     '!'-')' '/' '<'-'@' 'C' 'c'
-
-     any non-decimal character sequence can be a separator.
-     So -inf +99999 nan inf and decimal point before or after
-     an digit cannot be a separator.  A separator any be any
-     number of chars. Any combination of Space tab , (if it is
-     not a decimal point) * H can be a separator.  You can make
-     some pretty messy data files like
-
-        I love this
-        yyy0ginanoyt
-        ww1vb10yy
-        qq2wrtz
-        pp3ttinfxz
-        4 66.0
-        This is a comment
-        #So is this 353232
-
-     Is read the same as:
-
-     0 nan
-     1 10
-     2 nan
-     3 inf
-     4 66.0
-
-
-
-
-Add option to strip nan and/or inf from channels.  ??
+  Add option to strip nan and/or inf from channels.  ??
 
 

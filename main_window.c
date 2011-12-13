@@ -211,7 +211,7 @@ struct qp_qp_config
  * so that we may have this make a copy of a qp that exists
  * and may have a different state than the app->op_* stuff */
 static
-qp_qp_t _qp_qp_window(struct qp_qp *qp, const char *title,
+qp_qp_t _qp_qp_window(struct qp_qp *qp,
     const struct qp_qp_config *c)
 {
   GtkWidget *vbox;
@@ -255,53 +255,8 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp, const char *title,
   ++(app->main_window_count);
   ASSERT(app->main_window_count > 0);
 
-
-  {
-#define STR_LEN  128
-    char string[STR_LEN];
-
-    if(!title || !title[0])
-    {
-      if(qp_sllist_length(app->sources))
-      {
-        size_t len = STR_LEN, l;
-        struct qp_source *s;
-        char *str;
-        str = string;
-        s = qp_sllist_begin(app->sources);
-        snprintf(str, len, "Quickplot: %s", s->name);
-        l = strlen(str);
-        str += l;
-        len -= l;
-        for(s= qp_sllist_next(app->sources);
-            s && len;
-            s= qp_sllist_next(app->sources))
-        {
-          snprintf(str, len, " %s", s->name);
-          l = strlen(str);
-          str += l;
-          len -= l;
-        }
-        if(len == 0)
-          snprintf(str-5, 5, " ...");
-      }
-      else
-        sprintf(string, "Quickplot");
-      title = string;
-    }
-#undef STR_LEN
-
-    if(main_window_create_count > 1)
-    {
-      size_t len = strlen(title) + 10;
-      char *t = (char *) qp_malloc(len);
-      snprintf(t, len, "[%d] %s", main_window_create_count, title);
-      gtk_window_set_title(GTK_WINDOW(qp->window), t);
-      free(t);
-    }
-    else
-      gtk_window_set_title(GTK_WINDOW(qp->window), title);
-  }
+  qp->window_num = main_window_create_count;
+  qp_qp_set_window_title(qp);
 
   //gtk_widget_set_events(qp->window, gtk_widget_get_events(qp->window));
 
@@ -605,9 +560,9 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp, const char *title,
 }
 
 
-qp_qp_t qp_qp_window(struct qp_qp *qp, const char *title)
+qp_qp_t qp_qp_window(struct qp_qp *qp)
 {
-  return _qp_qp_window(qp, title, NULL);
+  return _qp_qp_window(qp, NULL);
 }
 
 /* We flip back the tab and wait for the drawing to
@@ -684,7 +639,7 @@ struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp)
   config.tabs = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_graph_tabs));
   config.statusbar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_statusbar));
 
-  qp = _qp_qp_window(NULL, NULL, &config);
+  qp = _qp_qp_window(NULL, &config);
 
   ASSERT(qp_sllist_length(old_qp->graphs) == 
       gtk_notebook_get_n_pages(GTK_NOTEBOOK(old_qp->notebook)));

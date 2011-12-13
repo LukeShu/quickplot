@@ -1528,7 +1528,7 @@ void cb_remove_source(GtkWidget *w, gpointer data)
 
 void cb_new_window(GtkWidget *w, gpointer data)
 {
-  qp_qp_window(NULL, NULL);
+  qp_qp_window(NULL);
 }
 
 void cb_copy_window(GtkWidget *w, gpointer data)
