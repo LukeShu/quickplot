@@ -47,6 +47,10 @@
 #include "channel.h"
 #include "channel_double.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 
 #define BUF_LEN  (4096)

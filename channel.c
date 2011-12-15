@@ -31,6 +31,10 @@
 #include "spew.h"
 #include "channel_double.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 static
 uint64_t channel_create_count = 0;

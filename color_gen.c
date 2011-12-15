@@ -30,6 +30,10 @@
 #include "config.h"
 #include "debug.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 #define DELTA_HUE  (6.0/4.6575324428)
 #define DELTA_SAT  (0.18255);

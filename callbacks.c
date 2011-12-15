@@ -47,6 +47,10 @@
 #include "plot.h"
 #include "zoom.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 int save_x, save_y, start_x, start_y;
 int mouse_num = 0, got_motion = 0;

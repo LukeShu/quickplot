@@ -41,6 +41,9 @@
 #endif
 
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
 
 static int spew_level = -1;
 static FILE *spew_file = NULL;

@@ -26,9 +26,6 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <math.h>
-#ifdef QP_DEBUG
-#  include <signal.h>
-#endif
 
 #include "quickplot.h"
 
@@ -41,6 +38,10 @@
 #include "channel_double.h"
 #include "term_color.h"
 #include "plot.h"
+
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
 
 
 #if !(GTK_CHECK_VERSION(3, 0, 0))
@@ -125,23 +126,11 @@ int qp_app_init(int *argc, char ***argv)
   return 0;
 }
 
-#ifdef QP_DEBUG
-#include <signal.h>
-static
-void segv_sighandler(int sig_num)
-{
-  VASSERT(0, "We got a sigmentation fault");
-}
-#endif
 
 struct qp_app *qp_app_create(void)
 {
   ASSERT(!app);
   if(app) return app;
-
-#ifdef QP_DEBUG
-  signal(SIGSEGV, segv_sighandler);
-#endif
 
   app = qp_malloc(sizeof(*app));
   app->argc = NULL;
@@ -194,6 +183,7 @@ struct qp_app *qp_app_create(void)
 
   app->is_gtk_init = 0;
   app->qps = qp_sllist_create(NULL);
+  app->main_window_count = 0;
 
   return app;
 }

@@ -30,6 +30,11 @@
 
 #include "config.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
+
 /* This is the stuff that will tell the compiler to make this library
  * one that can be executed. */
 #ifdef __i386__

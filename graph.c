@@ -37,6 +37,11 @@
 #include "zoom.h"
 #include "color_gen.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
+
 static
 size_t graph_create_count = 0;
 

@@ -36,6 +36,10 @@
 #include "qp.h"
 #include "plot.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 static
 inline

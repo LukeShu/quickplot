@@ -1,40 +1,39 @@
 Developer notes
 
 
+# For dmalloc
+CFLAGS="-DDMALLOC -DDMALLOC_FUNC_CHECK" \
+LDFLAGS="-ldmalloc" \
+./configure
+
+
 New Features (compared to version 0.8.*)
 
 
 - No more using GTKmm.  Just GTK+.  Just written in C and
-not in C++ any more.
+  not in C++ any more.
 
-   Gains:
-     * supports blank ascii values with NAN
-        -NAN is read as NAN because -NAN is used to
-        mark the ends of a channel of data
-     * supports inf infinity and over flow numbers
-     * reads under flow numbers as zero
+  The biggest problem with GTKmm is that we can't
+  really build Widgets via inheritance.  You always
+  have to add stuff from the C API, the GTKmm API is
+  not complete and it can't be given the for the most
+  part it's just a wrapper.
 
-   Gains from not using C++:
-     * compiles faster saving development time
-     * easier to make API with other language bindings
-     * maybe it will runs faster
-     * easier to port to Windows, Mac, and other OSes
-     * simpler code, assuming I'm getting smarter
-     
-     The biggest gain may be the ease of making other language
-     bindings for the quickplot API.
+
+  Gains from not using C++:
+   * compiles faster saving development time
+   * easier to make API with other language bindings
+   * maybe it will runs faster
+   * easier to port to Windows, Mac, and other OSes
+   * simpler code, assuming I'm getting smarter
+
+  The biggest gain may be the ease of making other language
+  bindings for the quickplot API.
 
 
 - Add a memory of state of the program for a given file and in
 general.  Like vim and other good programs do.
 
-
-- Grab and move the whole graph with left pointer.
-
-- Image save with transparent background.
-    do by making background transparent in GUI.
-
-- Added the -shape +shape command line option.  Like xeyes.
 
 - Tests show it plots faster than the old C++ version of
   Quickplot.
@@ -83,7 +82,7 @@ graph
 
   holds a list of plots that are displayed together, along
   with whatever properies that are needed.  A graph make have
-  one plot or more plots that are all drawn on the same graph.
+  one or more plots that are all drawn on the same graph.
   The plots on a graph may be plotted in the same scale or 
   different scales.
 

@@ -44,6 +44,10 @@
 #include "channel_double.h"
 #include "plot.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 static __thread int _cb_view_graph_detail_reenter = 0;
 

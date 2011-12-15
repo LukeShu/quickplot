@@ -32,6 +32,9 @@
 #include "spew.h"
 #include "channel_double.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
 
 
 size_t qp_channel_series_double_find_lt(qp_channel_t c, double *v)

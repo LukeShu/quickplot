@@ -34,10 +34,32 @@
 #include "list.h"
 #include "qp.h"
 
+#ifdef QP_DEBUG
+# include <signal.h>
+#endif
+
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
+
+#ifdef QP_DEBUG
+static
+void sighandler(int sig_num)
+{
+  VASSERT(0, "We caught signal %d", sig_num);
+}
+#endif
+
 
 int main (int argc, char **argv)
 {
   struct qp_gtk_options *gtk_opt;
+
+#ifdef QP_DEBUG
+  signal(SIGSEGV, sighandler);
+  signal(SIGABRT, sighandler);
+#endif
 
   qp_app_create();
 

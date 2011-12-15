@@ -27,6 +27,10 @@
 #include "debug.h"
 #include "list.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 
 struct qp_sllist *qp_sllist_create(struct qp_sllist *orig)

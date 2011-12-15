@@ -36,6 +36,10 @@
 #include "spew.h"
 #include "term_color.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 static int spew_level = -1;
 static FILE *spew_file = NULL;

@@ -48,6 +48,10 @@
 #include "imgCopyWindow.xpm"
 #include "imgSaveImage.xpm"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 static int main_window_create_count = 0;
 
 

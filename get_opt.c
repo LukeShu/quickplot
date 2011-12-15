@@ -24,6 +24,10 @@
 
 #include "get_opt.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 char *get_opt(const char * const shorT,
 		 const char * const lonG,

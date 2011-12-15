@@ -45,6 +45,10 @@
 #include "get_opt.h"
 #include "channel.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 union qp_parser
 {

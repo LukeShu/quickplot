@@ -33,6 +33,10 @@
 #include "qp.h"
 #include "get_opt.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 struct qp_gtk_options
 {

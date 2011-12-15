@@ -35,6 +35,10 @@
 #include "qp.h"
 #include "plot.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 
 #define SMALL_NUM         SMALL_DOUBLE

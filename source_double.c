@@ -39,6 +39,10 @@
 #include "channel.h"
 #include "channel_double.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 /* Gets doubles ignoring any chars that cannot
  * be part of a decimal number.

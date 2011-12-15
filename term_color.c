@@ -27,6 +27,10 @@
 
 #include "term_color.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 /* for quickplot developer spew colors */
 char *gry = "\033[030m";

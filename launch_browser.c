@@ -43,6 +43,10 @@
 #include "channel_double.h"
 #include "qp.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 
 static int LaunchBrowser(const char * const url)
 {

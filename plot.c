@@ -36,6 +36,10 @@
 #include "plot.h"
 #include "color_gen.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 static inline
 void free_x11_colors(struct qp_plot *p, struct qp_graph *gr)
 {

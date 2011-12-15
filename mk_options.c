@@ -45,6 +45,10 @@
 #include "config.h"
 #include "debug.h"
 
+#ifdef DMALLOC
+#  include "dmalloc.h"
+#endif
+
 struct qp_option
 {
   /* 0 = do not call function    1 or 2 = call function    2 = function will exit */
