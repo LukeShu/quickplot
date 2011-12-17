@@ -256,6 +256,8 @@ void qp_qp_destroy(qp_qp_t qp)
 
   free(qp);
 
+  if(default_qp == qp)
+    default_qp = qp_sllist_last(app->qps);
 
   if(app->main_window_count == 1)
   {
@@ -272,9 +274,6 @@ void qp_qp_destroy(qp_qp_t qp)
       }
     ASSERT(qp);
   }
-
-  if(default_qp == qp)
-    default_qp = qp_sllist_last(app->qps);
 }
 
 void qp_app_set_window_titles(void)

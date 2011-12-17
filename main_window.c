@@ -241,6 +241,8 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp,
   qp->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   ASSERT(qp->window);
 
+  qp->initializing = 0;
+
   qp->border = (c)?(c->border):(app->op_border);
   gtk_window_set_decorated(GTK_WINDOW(qp->window), qp->border);
   
@@ -580,7 +582,16 @@ gboolean qp_startup_idle_callback(gpointer data)
   static int front_page_num = -1;
 
   qp = (struct qp_qp *) data;
+  ASSERT(qp);
   ASSERT(qp->notebook);
+  ASSERT(qp->initializing);
+
+  if(qp->initializing == 2)
+  {
+    qp_qp_destroy(qp);
+    front_page_num = -1;
+    return FALSE;
+  }
 
 //DEBUG("front_page_num=%d  page=%d\n", front_page_num,
 //    gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook)));
@@ -592,6 +603,7 @@ gboolean qp_startup_idle_callback(gpointer data)
     if((n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook))) == 1)
     {
       front_page_num = -1;
+      qp->initializing = 0;
       return FALSE; /* remove this idle callback */
     }
 
@@ -620,6 +632,7 @@ gboolean qp_startup_idle_callback(gpointer data)
     {
       gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), front_page_num);
       front_page_num = -1;
+      qp->initializing = 0;
       return FALSE; /* remove this idle callback */
     }
     return TRUE;
@@ -670,6 +683,7 @@ struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp)
 
   
   /* Setup/draw the plots in the tabs */
+  qp->initializing = 1;
   g_idle_add_full(G_PRIORITY_LOW + 10, qp_startup_idle_callback, qp, NULL);
 
   return qp;

@@ -455,6 +455,15 @@ struct qp_qp
    * changes.  Otherwise we can end up with many
    * unnecessary redraw events. */
   cairo_region_t *last_shape_region;
+
+  /* initializing flag  0 = done calling qp_startup_idle_callback()
+   *                                     or startup_idle_callback()
+   *                    1 = is calling qp_startup_idle_callback()
+   *                                   or startup_idle_callback()
+   *                    2 = got a delete window while in
+   *                                   qp_startup_idle_callback()
+   *                                   or startup_idle_callback() */
+  int initializing;
 };
 
 

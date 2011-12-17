@@ -91,7 +91,12 @@ void cb_delete_window(GtkWidget *w, gpointer data)
       " there is just one main quickplot window");
   qp = data;
 
-  qp_qp_destroy(qp);
+  if(qp->initializing)
+    /* let the initializing callback
+     * function delete the window. */
+    qp->initializing = 2;
+  else
+    qp_qp_destroy(qp);
 }
 
 void cb_quit(GtkWidget *w, gpointer data)

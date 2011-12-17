@@ -428,10 +428,29 @@ gboolean startup_idle_callback(gpointer data)
   struct qp_graph *first_graph;
 
   if(!qp)
+  {
     qp = qp_sllist_first(app->qps);
-
-  ASSERT(qp);
-  ASSERT(qp->window);
+    ASSERT(qp);
+    ASSERT(qp->window);
+    ASSERT(qp->initializing);
+  }
+  else if(qp->initializing == 2)
+  {
+    /* A user wants to delete this window, maybe
+     * before we finished drawing all the tabs. */
+    struct qp_qp *q;
+    q = qp_sllist_begin(app->qps);
+    while(q && q != qp)
+      q = qp_sllist_next(app->qps);
+    q = qp_sllist_next(app->qps);
+    /* q == NULL or the next qp */
+    qp_qp_destroy(qp);
+    qp = q;
+    if(!qp)
+      return FALSE;
+    
+    ASSERT(qp->initializing);
+  }
 
   first_graph = qp_sllist_first(qp->graphs);
   ASSERT(first_graph);
@@ -445,15 +464,17 @@ gboolean startup_idle_callback(gpointer data)
     while(q && q != qp)
       q = qp_sllist_next(app->qps);
 
+    /* done initializing */
+    qp->initializing = 0;
+
     qp = qp_sllist_next(app->qps);
     if(qp)
     {
+      ASSERT(qp->initializing);
       /* now check that all the tabs have
        * been flipped in this qp */
-      startup_idle_callback(NULL);
+      return startup_idle_callback(NULL);
     }
-
-    qp = NULL;
     return FALSE; /* remove this idle callback */
   }
 

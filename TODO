@@ -1,16 +1,14 @@
 Most of this is done, but we need to leave it so we may check
-it out more carefully.
+it out more carefully.  This is just the authors junk notes.
+
 
   fix: quickplot -h ==> "failed to create drawable"
   Looks like GTK+-3.0 is printing this after I call exit.
   So I guess it's not really a bug.
 
-
   Fix gnome plugdev
 
   Run with dmalloc
-
-  Add position memory for the Graph Details widget.
 
   Remove the New Graph Tab button.
 
@@ -29,20 +27,20 @@ it out more carefully.
   Fix the save the image warning.  Don't see the warning now,
   with Cairo or X11 draw modes.
 
-  Fix title on main windows as files are loaded and unloaded.
 
-
-  Grid and plot lier positions, i.e. grid on top, grid on bottom, grid between
+  Grid and plot layer positions, i.e. grid on top, grid on bottom, grid between
   plots.  Plot layering comes from plot order in the -g option.  Should
   -g "0 1 grid 3 4" put the grid between plot 0 1 and plot 3 4?
   how about -g "0 1 grid-x 3 4 grid-numbers 0 6" to order the different 
   parts of the grid?  It's just drawing layer...
 
+
   Refactor!!!
     * qp_qp --> qp_win
+      make qp_qp_create() be qp_win_create() and remove
+      the non-window object.
 
 
-  Make a release :) 
 
   Make a command line dump option that prints out a
   command line that would as close as it can reproduce

@@ -164,9 +164,15 @@ void qp_getargs_2nd_pass(int argc, char **argv)
     /* There should be at least one qp window */
     if(!qp || !qp->window)
       qp_qp_window(NULL);
+
+    for(; qp; qp = qp_sllist_next(app->qps))
+      /* set a flag the tells delete window callback that
+       * we have a idle callback trying to draw all 
+       * the tabs in this qp window. */
+      qp->initializing = 1;
   }
 
-  /* Setup/draw the plots in the tabs */
+  /* Setup/draw all the graphs in the tabs in all windows */
   g_idle_add_full(G_PRIORITY_LOW + 10, startup_idle_callback, NULL, NULL);
 }
 
