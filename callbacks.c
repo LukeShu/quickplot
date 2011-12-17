@@ -104,7 +104,6 @@ void cb_quit(GtkWidget *w, gpointer data)
   struct qp_qp *qp;
   ASSERT(app && app->is_gtk_init);
 
-
   while((qp = qp_sllist_last(app->qps)))
     qp_qp_destroy(qp);
 

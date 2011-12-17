@@ -195,10 +195,9 @@ qp_qp_t qp_qp_create(void)
 
   qp_app_check();
 
-  qp = qp_malloc(sizeof(struct qp_qp));
+  qp = qp_malloc(sizeof(*qp));
+  memset(qp,0,sizeof(*qp));
   qp->graphs = qp_sllist_create(NULL);
-  qp->window = NULL;
-  qp->graph_detail = NULL;
   qp_sllist_append(app->qps, qp);
   default_qp = qp;
 
@@ -264,11 +263,11 @@ void qp_qp_destroy(qp_qp_t qp)
     /* We must make the other qp->delete_window_menu_item
      * have the correct sensitive state. */
     ASSERT(qp_sllist_length(app->qps) > 0);
-    for(qp=(struct qp_qp *)qp_sllist_begin(app->qps);
-        qp; qp=(struct qp_qp *)qp_sllist_next(app->qps))
+    for(qp=qp_sllist_begin(app->qps);qp; qp=qp_sllist_next(app->qps))
       /* They do not all have windows */
       if(qp->window)
       {
+        ASSERT(qp->delete_window_menu_item);
         gtk_widget_set_sensitive(qp->delete_window_menu_item, FALSE);
         break;
       }

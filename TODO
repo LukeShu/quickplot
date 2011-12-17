@@ -14,19 +14,6 @@ it out more carefully.  This is just the authors junk notes.
 
   Announce on Freshmeat
 
-  BUG: compile with dmalloc 
-  export `dmalloc -l dlogfile -i 100 low | grep -v export`
-  run with no data and no arguments
-  hide/show the button bar about 3 times with the 'b' key
-  keep doing it until the program aborts, gdb connect...
-  The stack is about 84 calls tall mostly GTK functions.  This
-  is the only reproducable bug that we know.  Writing
-  a smaller GTK program quickplot_tests/gtk/show_hide_test.c
-  failed to do the same.
-
-  Fix the save the image warning.  Don't see the warning now,
-  with Cairo or X11 draw modes.
-
 
   Grid and plot layer positions, i.e. grid on top, grid on bottom, grid between
   plots.  Plot layering comes from plot order in the -g option.  Should
