@@ -105,9 +105,7 @@ tr.c {
 We need to distinguish between the two terms plot and graph.&nbsp;
 In Quickplot a graph displays one or more plots.&nbsp;
 Quickplot displays each graph in a page tab, like pages in
-a web browser.&nbsp;
-The distinction between plot and graph is required in order
-to understand Quickplot and Quickplot commands.
+a web browser.
 </p>
 
 <p>

@@ -837,6 +837,13 @@ qp_source_t qp_source_create(const char *filename, int value_type)
     }
     ASSERT(source->num_channels == i);
   }
+  
+  
+  if(source->num_channels == 0)
+    goto fail;
+
+
+  if(source->num_channels > 1)
   {
     /****** Check that there is at least one point in all the channels */
     ssize_t i, num;
@@ -848,11 +855,14 @@ qp_source_t qp_source_create(const char *filename, int value_type)
 
     while(num)
     {
+      int found = 0;
       for(i=0;i<source->num_channels;++i)
-        if(!is_good_double(x[i]))
-          break;
+        if(is_good_double(x[i]))
+          ++found;
 
-      if(i == source->num_channels)
+      if(found >= 2)
+        /* that means there is at least one x/y point
+         * in all the channels. */
         break;
 
       --num;
@@ -968,6 +978,9 @@ qp_source_t qp_source_create(const char *filename, int value_type)
   return source;
 
 fail:
+
+  QP_WARN("No data loaded from file \"%s\"\n",
+      filename);
 
   if(rd.buf)
     free(rd.buf);

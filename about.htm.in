@@ -101,7 +101,8 @@ rescale, zoom in and out any number of times, grab and move graphs,
 examine plotted numbers, and so on.&nbsp;
 Quickplot is excellent presenting 2D plots to groups of people
 if you would like an interactive and flexible presentation format.&nbsp;
-Quickplot can also make png images with translucent colors.
+Quickplot can also make png images with translucent colors
+(version 0.9.*).
 </p>
 
 <p>

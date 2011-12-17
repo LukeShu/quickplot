@@ -345,7 +345,8 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp,
           GDK_KEY_W, TRUE, cb_new_window, NULL, TRUE);
       qp->copy_window_menu_item =
       create_menu_item(menu, "_Copy Window", imgCopyWindow, NULL,
-          GDK_KEY_C, TRUE, cb_copy_window, qp, (app->op_maximize)?FALSE:TRUE);
+          GDK_KEY_C, TRUE, cb_copy_window, qp,
+          (app->op_maximize && !c)?FALSE:TRUE);
       qp->delete_window_menu_item =
       create_menu_item(menu, "_Delete Window", imgDeleteWindow, NULL,
           GDK_KEY_D, TRUE, cb_delete_window, qp, app->main_window_count != 1);

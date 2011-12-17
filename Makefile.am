@@ -290,6 +290,7 @@ help.html: help_head.htm mk_options help_tail.htm
 if HAVE_LOCAL_SCREENSHOTS
 
 install-exec-hook:
+	mkdir -p $(htmldir)
 	cp ScreenShot_* _ScreenShot_* $(htmldir)
 
 thumbs.htm: mk_thumbs.htm.bash

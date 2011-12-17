@@ -1,9 +1,18 @@
 Most of this is done, but we need to leave it so we may check
 it out more carefully.
 
+  fix: quickplot -h ==> "failed to create drawable"
+  Looks like GTK+-3.0 is printing this after I call exit.
+  So I guess it's not really a bug.
+
+
+  Fix gnome plugdev
+
   Run with dmalloc
 
   Add position memory for the Graph Details widget.
+
+  Remove the New Graph Tab button.
 
   Announce on Freshmeat
 

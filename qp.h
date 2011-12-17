@@ -114,8 +114,8 @@ struct qp_plot
   /* point and line colors */
   struct qp_color p, l;
 
-  /* boolean to show lines and points */
-  int lines, points;
+  /* boolean to show lines, points and gaps */
+  int lines, points, gaps;
 
   /* these are changed at the begining of each reading/plotting loop
    * They change with the current zoom that is passed in from the

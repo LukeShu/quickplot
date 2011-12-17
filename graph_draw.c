@@ -123,9 +123,7 @@ void cairo_DrawLine(struct qp_graph *gr,
 }
 
 
-/* force this to be inline with extern inline
- * for non DEBUG builds
- *
+/*
  * This must be FAST!
  *
  * new_line   is a boolean that tells us if the last time this was
@@ -530,13 +528,33 @@ void graph_draw(struct qp_graph *gr, cairo_t *cr,
             INT(widthPlus), INT(heightPlus),
             &prev_x, &prev_y))
       {
+        /* We start with a good point in  prev_x, prev_y */
+        while((!is_good_double(prev_x) || !is_good_double(prev_y)) &&
+            qp_plot_next(p, &prev_x, &prev_y));
+
         while(qp_plot_next(p, &x_val, &y_val))
         {
           CullDrawLine(gr, &new_line,
               minusLineWidthPlus1, widthPlus, heightPlus,
               prev_x, prev_y, x_val, y_val);
-          prev_x = x_val;
-          prev_y = y_val;
+          if(p->gaps)
+          {
+            prev_x = x_val;
+            prev_y = y_val;
+          }
+          else /* no gaps */
+          {
+            /* do not lift up the pen if no gaps */
+            if(is_good_double(x_val) && is_good_double(y_val))
+            {
+              /* This may be any number of points from before
+               * if there where an NAN or something. */
+              prev_x = x_val;
+              prev_y = y_val;
+            }
+            if(new_line)
+              new_line = 0;
+          }
         }
 
         if(!gr->x11)
@@ -833,8 +851,6 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
   if(!gr->qp->shape)
   {
     /* Not using the shape X11 extension */
-
-    /* TODO: add shape support for the X11 draw mode */
 
     /* This is where we go from the back buffer to the drawing area */
     draw_from_pixbuf(gdk_cr, gr, allocation.width, allocation.height);

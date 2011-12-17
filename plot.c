@@ -127,6 +127,7 @@ struct qp_plot *qp_plot_copy_create(struct qp_graph *gr, struct qp_plot *old_p)
 
   p->lines = old_p->lines;
   p->points = old_p->points;
+  p->gaps = old_p->gaps;
 
   p->xscale = old_p->xscale;
   p->yscale = old_p->yscale;
@@ -161,6 +162,7 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   qp_sllist_append(gr->plots, p);
   p->name = qp_strdup(name);
   p->gr = gr;
+  p->gaps = app->op_gaps;
   p->x_entry = NULL;
   p->y_entry = NULL;
   p->x_picker = NULL;

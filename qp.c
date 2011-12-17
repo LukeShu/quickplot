@@ -283,7 +283,8 @@ void qp_app_set_window_titles(void)
   ASSERT(app);
   ASSERT(app->qps);
   for(qp = qp_sllist_begin(app->qps); qp; qp = qp_sllist_next(app->qps))
-    qp_qp_set_window_title(qp);
+    if(qp->window)
+      qp_qp_set_window_title(qp);
 }
 
 /* We reset the window titles has files are
@@ -292,9 +293,14 @@ void qp_qp_set_window_title(struct qp_qp *qp)
 {
 #define END_LEN  256
 #define BEG_LEN  24
-
   char title_mem[BEG_LEN + END_LEN];
   char *title;
+
+  ASSERT(qp);
+  ASSERT(qp->window);
+  if(!qp->window)
+    return;
+
   title = &title_mem[BEG_LEN];
 
   if(qp_sllist_length(app->sources))

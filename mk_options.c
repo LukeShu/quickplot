@@ -24,18 +24,20 @@
 /* Quickplot is turning out to have so many command
  * line options that we are automating the coding and
  * documenting of them using this C code.
+ * This code is not compiled into Quickplot.  The
+ * executable from this code is used to generate code
+ * that goes into Quickplot.
  * We will try to make this the only place with these
- * argument option strings so that we can change them
- * in one place.  Or better yet not change them.  
+ * argument option strings are listed, so that we can
+ * change them in one place, or better yet, not change
+ * them.  
  *
- * One negative to this method is that when this file
- * is edited many other source files depend on
- * it so they have to be recompiled.  Reminds me of
- * using the QT moc preprocessor and why I do not like
- * QT.  The QT mess was much worse.  There was almost
- * no point in using make given any time you edited
- * a file all files would need recompiling.  Maybe
- * it just seemed that way. */
+ * One negative to this method is that many other source
+ * files depend on this one file and so when you edit
+ * this one file many other files will need to be
+ * recompiled.  Reminds me of using the QT moc
+ * preprocessor and why I do not like QT.  This is not
+ * that bad. */
 
 #include <stdio.h>
 #include <errno.h>
@@ -136,6 +138,12 @@ struct qp_option options[] =
 { {0,1}, "--fullscreen",         "-F", 0,         "make the main window fullscreen.  See also "
                                                   "::--no-fullscreen@@ and ::--maximize@@.",                  0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
+{ {0,1}, "--gaps",               0,    0,         "interpret NAN, -NAN, INF, -INF, and double overflow "
+                                                  "numbers as a gap in the plot, and don't draw a "
+                                                  "connecting line to adjacent non-gap points.  "
+                                                  "This is the default.  See also ::--no-gaps@@.",            "1",        "int"       },
+/*------------------------------------------------------------------------------------------------------------------------------------*/
+
 { {0,1}, "--geometry",           0,    "GEO",     "specify the position and size of the main window.  To "
                                                   "set the geometry back to the default just set GEO to "
                                                   "NONE.  Example ::--geometry=1000x300-0+30@@",              0,          "cairo_rec"
@@ -276,6 +284,11 @@ struct qp_option options[] =
 { {0,1}, "--no-fullscreen",      0,    0,         "don't make the main window fullscreen.  This is the "
                                                   "default.  See also ::--fullscreen@@.",                     0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
+{ {0,1}, "--no-gaps",            "-J", 0,         "draw a line across NAN (-NAN, INF, -INF and overflow "
+                                                  "double) values if there are finite values on both "
+                                                  "sides.  See also ::--gaps@@.",                             0,          0           },
+/*------------------------------------------------------------------------------------------------------------------------------------*/
+
 { {0,1}, "--no-grid",            "-H", 0,         "don't draw graph grid lines in the graph.  See also "
                                                   "::--grid@@.",                                              0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
@@ -1300,13 +1313,13 @@ void print_html_options_table(void)
     class[i%2]);
 
     printf(
-    "    <td class=opt style=\"white-space:nowarp;\">\n"
+    "    <td class=opt style=\"white-space:nowrap;\">\n"
     "      <a name=\"%s%s\">%s</a>\n"
     "    </td>\n", i?"":"FILE",
     get_func("op_", opt[i]->long_op), opt[i]->long_op);
 
     printf(
-    "    <td class=opt style=\"white-space:nowarp;\">\n"
+    "    <td class=opt style=\"white-space:nowrap;\">\n"
     "      %s\n"
     "    </td>\n",
     opt[i]->short_op?opt[i]->short_op:"");

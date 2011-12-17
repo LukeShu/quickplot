@@ -69,6 +69,12 @@ void parse_2nd_fullscreen(void)
 }
 
 static inline
+void parse_2nd_gaps(void)
+{
+  app->op_gaps = 1;
+}
+
+static inline
 void parse_2nd_grid(void)
 {
   app->op_grid = 1;
@@ -136,6 +142,12 @@ void parse_2nd_no_fullscreen(void)
 {
   if(app->op_maximize == 2)
     app->op_maximize = 0;
+}
+
+static inline
+void parse_2nd_no_gaps(void)
+{
+  app->op_gaps = 0;
 }
 
 static inline

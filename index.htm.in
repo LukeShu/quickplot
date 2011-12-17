@@ -99,14 +99,14 @@ href="https://sourceforge.net/projects/quickplot/">Sourceforge
   <td>
 
   <p style="padding-top:4px;padding-bottom:4px;">
-  <span style="font-size:large;font-weight:bold;">Quickplot is hosted by</span>
+  <span style="font-size:110%; font-weight:bold;">Quickplot is hosted by</span>
   </p>
 
   <p>
     <a href="http://sourceforge.net/projects/quickplot"><img
     style="padding-left:8px;padding-right:8px;padding-top:4px;padding-bottom:4px;"
     src="http://sourceforge.net/sflogo.php?group_id=82651&amp;type=7"
-    width="210" height="62" border="0"
+    border="0"
     alt="SourceForge.net Logo" /></a>
   </p>
 
@@ -133,7 +133,7 @@ This will create a directory named quickplot in the current directory.
 
 <p>
 
-<span style="font-size:%90;font-weight:bold">Dec 11
+<span style="font-size: 90%; font-weight:bold;">Dec 11
 2011</span>&nbsp;&nbsp;
 Quickplot is currently under active development.&nbsp;
 A complete re-write was done and there is a new release that
