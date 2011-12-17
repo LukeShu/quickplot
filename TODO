@@ -119,13 +119,8 @@ it out more carefully.  This is just the authors junk notes.
   add all --no-bla-bla and --bla-bla options that
   make things consistent
 
-  change all the window titles to the graph names just
-  before we call gtk_main().
-
   Test the startup of large data sets plotting more than
   one graph tab and more than one window.
-
-  Try setting the status text on long redraws to say "drawing"
 
 
   Add widget that shows and edits all app options.
@@ -136,9 +131,6 @@ it out more carefully.  This is just the authors junk notes.
 
 
   Add quick culling to the case when values are always decreasing.
-
-
-  Test having a channel in a source with all bad data.
 
 
   Add extern C to port API to C++.

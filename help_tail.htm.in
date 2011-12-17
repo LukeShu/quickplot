@@ -100,7 +100,7 @@ command.
 <p>
 The following GTK+ options are parsed by
 the <a href="http://www.gtk.org/">GTK+</a> APIs (application
-programming interfaces), which Quickplot uses.
+programming interfaces), which Quickplot uses:
 </p>
 
 

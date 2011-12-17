@@ -80,9 +80,10 @@ installed:
 
 
 
-Quickplot version 0.9.0 was tested with the following GTK+
-prerequisite packages and GTK+ packages
+Quickplot version 0.9.0 was tested with the following
+prerequisite package combinations:
 
+ sndfile-1.0.25
  libpng-1.5.5
  pixman-0.22.2
  cairo-1.10.2
@@ -91,6 +92,16 @@ prerequisite packages and GTK+ packages
  pango-1.29.5
  atk-2.2.0
  gtk+-3.3.4
+ 
+ sndfile-1.0.25
+ libpng-1.5.6
+ pixman-0.22.2
+ cairo-1.10.2
+ glib-2.28.8
+ gdk-pixbuf-2.24.0
+ pango-1.28.4
+ atk-1.32.0
+ gtk+-3.0.12
 
 
 

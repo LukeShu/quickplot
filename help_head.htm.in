@@ -337,8 +337,9 @@ channel.&nbsp; A file may have any counting number of channels, that's
 <a name="house"></a>
 <p>
 With the use of NAN, as a kind of plot line terminator,
-you can use Quickplot to draw general lined figures.&nbsp;
-Here's a silly example of how Quickplot can be used to do general drawing.&nbsp;
+you can use Quickplot to draw figures composed of
+straight line segments.&nbsp;
+Here's a silly example.&nbsp;
 Copy and paste the following command to draw this house:
 </p>
 
@@ -360,6 +361,17 @@ nan nan 4 1" | quickplot -P --line-width=2 --no-grid \
     </td>
       </tr>
 </table>
+
+
+<p>
+Using NAN as a line terminator can be very handy when drawing
+phase plots when you need to avoid connecting points that
+should not be connected and you don't want to make more
+channels (degrees of freedom).&nbsp;
+For phase space plots the NAN can be thought of as a place
+holder where you removed part of the series
+because it is not accessible in the current model sampling.
+</p>
 
 <p>
 If a file is loaded with a single channel
@@ -428,14 +440,14 @@ earlier ones.&nbsp;
 The options that cause actions like graph "something" must
 come after the option that says to read the file that has
 "something" in it.&nbsp;
-In general the order of argument options gives
+In general, the order of argument options gives
 the order in which things happen as Quickplot starts up.
 </p>
 
 
 <p>
-When using short options, like <em>-n20</em>,
-that require an argument may not be grouped with other short
+When using short options, like <em>-n20</em>
+that require an argument, may not be grouped with other short
 options in one argument.&nbsp; For example the argument
 <em>-on20</em>, is not valid, but -oN is a valid argument
 with two options <em>o</em> (<em>--no-points</em>) and
@@ -448,7 +460,7 @@ sets the default number of plots to 20.
 <p>
 All of the command line options set things that can
 be changed with the Quickplot graphical user interface (GUI).&nbsp;
-For example if you start with a graph with no lines and just points
+For example, if you start with a graph with no lines and just points
 showing, you can click a GUI to add the lines after the program
 starts.&nbsp;
 </p>

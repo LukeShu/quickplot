@@ -52,9 +52,6 @@ EXTRA_DIST =\
  help.txt\
  bootstrap\
  Repo_clean\
- README.devel\
- TODO\
- _header.c\
  repo_version.sh
 
 BUILT_SOURCES =\
