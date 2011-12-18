@@ -19,7 +19,10 @@ DEPEND="${RDEPEND}
 
 
 src_install () {
-	emake install || die "emake install failed."
+	emake
+		DESTDIR="${D}"\
+		htmldir=/usr/share/doc/${PF}/html\
+		install || die "emake install failed."
 	dodoc AUTHORS README ChangeLog
 	newicon quickplot.png ${PN}.png
 	make_desktop_entry 'quickplot --no-pipe' Quickplot quickplot Graphics
