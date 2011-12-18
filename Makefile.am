@@ -323,7 +323,7 @@ if HAVE_LYNX
 .html.txt:
 	echo > $@
 	dir=`pwd` && lynx -dump $< | \
-sed -e "s!//localhost$$dir!//$(htmldir)!g" >> $@
+sed -e "s!//localhost$$dir/!!g" >> $@
 endif
 
 
