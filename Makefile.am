@@ -51,6 +51,7 @@ EXTRA_DIST =\
  about.txt\
  help.txt\
  bootstrap\
+ quickplot.ebuild\
  Repo_clean\
  repo_version.sh
 
