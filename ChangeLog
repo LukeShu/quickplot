@@ -1,4 +1,4 @@
-This ChangeLog just keeps a summary see
+This ChangeLog just keeps a summary see:
 svn log https://quickplot.svn.sf.net/svnroot/quickplot/trunk
 for a more.
 
@@ -25,5 +25,9 @@ Tue 13 Dec 2011  Lance Arsenault <lanceman_at_users.sourceforge.net>
 
 Sat 17 Dec 2011  Lance Arsenault <lanceman_at_users.sourceforge.net>
     * Released version 0.9.3
-    * Then fixed nasty bug so then
+    * Then fixed memory corruption bug so then
     * Released version 0.9.4
+
+Sat 18 Dec 2011  Lance Arsenault <lanceman_at_users.sourceforge.net>
+    * Found and fixed pipe reading bug in non-debug builds
+    * Released version 0.9.5

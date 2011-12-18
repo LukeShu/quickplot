@@ -42,7 +42,7 @@
 
 #include "imgGrabCursor.xpm"
 #include "imgHoldCursor.xpm"
-#include "quickplot_icon.xpm"
+#include "quickplot.xpm"
 #include "imgNewWindow.xpm"
 #include "imgDeleteWindow.xpm"
 #include "imgCopyWindow.xpm"
@@ -309,7 +309,7 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp,
   }
 
   gtk_window_set_icon(GTK_WINDOW(qp->window),
-		      pixbuf = gdk_pixbuf_new_from_xpm_data(quickplot_icon));
+		      pixbuf = gdk_pixbuf_new_from_xpm_data(quickplot));
   
   g_object_unref(G_OBJECT(pixbuf));
 

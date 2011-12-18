@@ -156,6 +156,8 @@ void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr)
 
   gr->same_x_limits = old_gr->same_x_limits;
   gr->same_y_limits = old_gr->same_y_limits;
+  gr->show_grid = old_gr->show_grid;
+  gr->grid_numbers = old_gr->grid_numbers;
   gr->grid_line_width = old_gr->grid_line_width;
   gr->grid_on_top = old_gr->grid_on_top;
 

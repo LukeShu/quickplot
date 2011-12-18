@@ -34,8 +34,8 @@ EXTRA_DIST =\
  imgCopyWindow.xpm\
  imgSaveImage.png\
  imgSaveImage.xpm\
- quickplot_icon.png\
- quickplot_icon.xpm\
+ quickplot.png\
+ quickplot.xpm\
  sample_plot.png\
  screenshot_small.png\
  favicon.ico\
@@ -61,7 +61,7 @@ BUILT_SOURCES =\
  imgDeleteWindow.xpm\
  imgCopyWindow.xpm\
  imgSaveImage.xpm\
- quickplot_icon.xpm\
+ quickplot.xpm\
  paths.h\
  parse_args.h\
  app_op_declare.h\
@@ -76,7 +76,7 @@ html_DATA =\
  help.html\
  house.png\
  index.html\
- quickplot_icon.png\
+ quickplot.png\
  sample_plot.png\
  screenshot_small.png\
  background_ft.png\
@@ -153,7 +153,7 @@ libquickplot_la_SOURCES =\
  qp.c\
  qp.h\
  quickplot.h\
- quickplot_icon.xpm\
+ quickplot.xpm\
  source.c\
  source_double.c\
  spew.c\

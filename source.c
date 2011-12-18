@@ -730,7 +730,6 @@ qp_source_t qp_source_create(const char *filename, int value_type)
     /* don't buffer read() and lseek() */
     qp_rd = NULL;
   }
-#ifdef QP_DEBUG
   else
   {
     /* this is a pipe */
@@ -741,7 +740,6 @@ qp_source_t qp_source_create(const char *filename, int value_type)
         "":filename);
     rd.buf = qp_malloc(BUF_LEN);
   }
-#endif
 
   if((r = read_sndfile(source, &rd)))
   {
