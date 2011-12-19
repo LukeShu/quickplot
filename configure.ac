@@ -210,14 +210,14 @@ AM_CONDITIONAL([HAVE_GNU_LIB_NAMES_H],
 # AC_DEFINE*() go into config.h
 
 # replace @STYLE_CSS@ with the file style.css
-STYLE_CSS="style.css"
+STYLE_CSS="${srcdir}/style.css"
 AC_SUBST_FILE(STYLE_CSS)
 
 # replace @FOOTER_HTM@ with the file footer.htm
 FOOTER_HTM="footer.htm"
 AC_SUBST_FILE(FOOTER_HTM)
 
-RELEASE_DATE="`./release_date.sh`"
+RELEASE_DATE="`${srcdir}/release_date.sh ${srcdir}/RELEASE_DATE`"
 AC_SUBST(RELEASE_DATE)
 
 AC_SUBST(DEFAULT_GRID_FONT)
@@ -303,6 +303,8 @@ AC_MSG_RESULT([
        C Linker Flags (LDFLAGS): $LDFLAGS
 
    Installation prefix (prefix): $prefix
+
+                         srcdir: $srcdir
 ])
 
 

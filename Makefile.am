@@ -110,6 +110,11 @@ DISTCLEANFILES +=\
  screenshots.html
 endif
 
+if HAVE_LYNX
+DISTCLEANFILES +=\
+ about.txt\
+ help.txt
+endif
 
 
 
@@ -286,8 +291,8 @@ index.html: index.htm
 # dist and one for installing, and the values for
 # @release_date@ and @repo_version@ differ for those two cases
 about.html: $(ABOUT_HTML_DEP)
-	repo_version="`./repo_version.sh`";\
- rel_date="`./release_date.sh`"; sed $<\
+	repo_version="`${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION`";\
+ rel_date="`${top_srcdir}/release_date.sh ${top_srcdir}/RELEASE_DATE`"; sed $<\
  -e "s/@release_date@/$$rel_date/g"\
  -e "s/@repo_version@/$$repo_version/g"\
  -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
@@ -352,10 +357,10 @@ endif
 # Remove generated dist files that auto-tools is stupid about.
 # Remove the out-of-date hash files.
 dist-hook:
-	if test -f REPO_VERSION ; then mv REPO_VERSION REPO_VERSION.tmp ; fi
-	if test -f RELEASE_DATE ; then mv RELEASE_DATE RELEASE_DATE.tmp ; fi
-	./repo_version.sh > REPO_VERSION.save
-	mv REPO_VERSION.save REPO_VERSION
+	if test -f REPO_VERSION ; then mv REPO_VERSION REPO_VERSION.save ; fi
+	if test -f RELEASE_DATE ; then mv RELEASE_DATE RELEASE_DATE.save ; fi
+	${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION > REPO_VERSION.tmp
+	mv REPO_VERSION.tmp REPO_VERSION
 	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
 	echo $(VERSION) > last_release
 	cat RELEASE_DATE REPO_VERSION >> last_release
@@ -364,8 +369,8 @@ dist-hook:
 	mv REPO_VERSION RELEASE_DATE about.txt $(distdir)
 	rm -f about.html about.htm
 	$(MAKE) about.txt
-	if test -f REPO_VERSION.tmp ; then mv REPO_VERSION.tmp REPO_VERSION ; fi
-	if test -f RELEASE_DATE.tmp ; then mv RELEASE_DATE.tmp RELEASE_DATE ; fi
+	if test -f REPO_VERSION.save ; then mv REPO_VERSION.save REPO_VERSION ; fi
+	if test -f RELEASE_DATE.save ; then mv RELEASE_DATE.save RELEASE_DATE ; fi
 	cd $(distdir) && rm -f $(DISTCLEANFILES) config.h
 	rm -f $(gzfile).md5 $(gzfile).sha* $(bz2file).md5 $(bz2file).sha* $(xzfile).md5 $(xzfile).sha*
 

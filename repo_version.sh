@@ -1,5 +1,10 @@
 #!/bin/sh
 
+if test -z "$1" ; then
+  echo "bad script $0 usage"
+  exit 1
+fi
+
 ret="`(svnversion) 2>/dev/null`"
 err="$?"
 
@@ -10,8 +15,8 @@ elif test -z "$ret" ; then
 fi
 
 if test "X$ret" = "Xexported" ; then
-  if test -f REPO_VERSION ; then
-    out="`cat REPO_VERSION`"
+  if test -f "$1" ; then
+    out="`cat $1`"
     echo "$out"
   else
     echo "unknown"
