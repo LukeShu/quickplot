@@ -217,6 +217,9 @@ AC_SUBST_FILE(STYLE_CSS)
 FOOTER_HTM="footer.htm"
 AC_SUBST_FILE(FOOTER_HTM)
 
+RELEASE_DATE="`./release_date.sh`"
+AC_SUBST(RELEASE_DATE)
+
 AC_SUBST(DEFAULT_GRID_FONT)
 AC_DEFINE_UNQUOTED(DEFAULT_GRID_FONT, "$DEFAULT_GRID_FONT",
         [The default font used when drawing the numbers on the grid])
@@ -280,6 +283,8 @@ about.htm
 help_head.htm
 help_tail.htm
 index.htm
+quickplot.1.head
+quickplot.1.tail
 )
 
 AC_OUTPUT

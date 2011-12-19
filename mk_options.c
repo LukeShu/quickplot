@@ -43,6 +43,7 @@
 #include <errno.h>
 #include <stdlib.h>
 #include <stdarg.h>
+#include <ctype.h>
 
 #include "config.h"
 #include "debug.h"
@@ -153,7 +154,7 @@ struct qp_option options[] =
 { {0,1}, "--graph",              "-g", "LIST",    "make a graph with plots ::LIST@@.  "
                                                   "The ::LIST@@ is of the form ::\"x0 y0 x1 y1 x2 "
                                                   "y2 ...\"@@.  For example: ::--graph \"0 1 3 4\"@@ will "
-                                                  "make two plots in a graph, it will plot channel 1 vs "
+                                                  "make two plots in a graph.  It will plot channel 1 vs "
                                                   "channel 0 and channel 4 vs channel 3 in the same graph. "
                                                   " Data channels are numbered, starting at 0, in the "
                                                   "order that they are created as files are read.  A "
@@ -165,7 +166,7 @@ struct qp_option options[] =
 { {0,1}, "--graph-file",         "-G", "LIST",    "make a graph with plots ::LIST@@.  "
                                                   "The ::LIST@@ is of the form ::\"x0 y0 x1 y1 x2 "
                                                   "y2 ...\"@@.  Example: ::--graph-file \"0 1 3 4\"@@ will "
-                                                  "make two plots in a graph, it will plot channel 1 vs "
+                                                  "make two plots in a graph.  It will plot channel 1 vs "
                                                   "channel 0 and channel 4 vs channel 3 in the same graph. "
                                                   " A separate graph tab will be created for each "
                                                   "::--graph-file@@ option given.  This is like the "
@@ -241,7 +242,7 @@ struct qp_option options[] =
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,1}, "--linear-channel",     "-l", "[OPTS]",  "::OPTS@@ are ::START|[STEP]@@.  "
                                                   "This option prepends a linear series channel to the "
-                                                  "file being read ** ## ::START@@  "
+                                                  "file being read. ** ## ::START@@  "
                                                   "set the first value in the sequence to ::START@@.  The "
                                                   "default ::START@@ value is ::0@@. ## ::STEP@@  "
                                                   "set the sequence step size to ::STEP@@.  "
@@ -261,7 +262,7 @@ struct qp_option options[] =
                                                                                                                           "qp_channe"
                                                                                                                           "l *"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--lines",              "-j", "Y|N|A",   " ** ## Y  yes show lines ## ::N@@  no don't show lines. "
+{ {0,1}, "--lines",              "-j", "Y|N|A",   " ** ## ::Y@@  yes show lines ## ::N@@  no don't show lines. "
                                                   "Same as ::--no-lines@@. ## ::A@@  auto, be smart about "
                                                   "it.  This is the default. &&",                             "-1",       "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
@@ -1188,7 +1189,7 @@ void print_text2html(const char *str, size_t opt_i)
   t = s + 1;
   while(*s && *t)
   {
-    if(*s == '*' && *t == '*')
+    if(*s == '*' && *t == '*') // <ul>
     {
       if(w_count)
         putchar('\n');
@@ -1200,7 +1201,7 @@ void print_text2html(const char *str, size_t opt_i)
       w_count = 0;
       continue;
     }
-    if(*s == '#' && *t == '#')
+    if(*s == '#' && *t == '#') // <li>
     {
       if(w_count)
         putchar('\n');
@@ -1219,7 +1220,7 @@ void print_text2html(const char *str, size_t opt_i)
       t += 2;
       continue;
     }
-    if(*s == ':' && *t == ':')
+    if(*s == ':' && *t == ':') // <span>
     {
       int do_ancher;
 
@@ -1253,7 +1254,7 @@ void print_text2html(const char *str, size_t opt_i)
       t = s + 1;
       continue;
     }
-    if(*s == '&' && *t == '&')
+    if(*s == '&' && *t == '&') // </ul>
     {
       if(w_count)
         putchar('\n');
@@ -1283,6 +1284,168 @@ void print_text2html(const char *str, size_t opt_i)
   if(*s)
     putchar(*s);
   putchar('\n');
+}
+
+static inline
+void put_man_char(char c)
+{
+  if(c == '-')
+    putchar('\\');
+  putchar(c);
+}
+
+static inline
+int check_for_span_man(char **str, int *w_count, char *last_char)
+{
+  char *s = *str;
+
+  if(!(*s) || !(*(s+1)))
+    return 0;
+
+  if(*s == ':' && *(s+1) == ':') // <span>
+  {
+    s += 2;
+    if(*last_char != '\n')
+      /* This is what last_char was for:
+       * to see if we need a '\n' printed here. */
+      putchar('\n');
+    while(isspace(*s)) ++s;
+    *w_count = 0;
+    printf("\\fB");
+    while(*s && !(*s == '@' && *(s+1) == '@')) // </span>
+    {
+      put_man_char(*s);
+      *last_char = *s;
+      ++(*w_count);
+      ++s;
+    }
+    if(*s == '@' && *(s+1) == '@')
+      s +=2;
+    printf("\\fR");
+
+    *str = s;
+    return 1;
+  }
+  return 0;
+}
+
+
+static
+void print_text2man(char *str)
+{
+  char *s;
+  int w_count = 0;
+  char last_char = '\n';
+
+  if(!str || !(*str) || !*(str+1))
+  {
+    printf("%s\n", str);
+    return;
+  }
+
+  s = str;
+  while(*s && *(s+1))
+  {
+    if(check_for_span_man(&s, &w_count, &last_char)) // <span>
+      continue;
+    if(*s == '*' && *(s+1) == '*') // <ul>
+    {
+      s += 2;
+      while(isspace(*s)) ++s;
+      while(*s && !(*s == '&' && *(s+1) == '&')) // </ul>
+      {
+        if(*s == '#' && *(s+1) == '#') // <li>
+        {
+          if(last_char != '\n')
+            putchar('\n');
+          printf(".sp\n");
+          s += 2;
+          while(isspace(*s)) ++s;
+          last_char = '\n';
+        }
+        else if(check_for_span_man(&s, &w_count, &last_char)) // <span>
+          continue;
+        else
+        {
+          put_man_char(*s);
+          last_char = *s;
+          ++s;
+        }
+      }
+      if(*s == '&' && *(s+1) == '&')
+        s += 2;
+      if(last_char != '\n')
+        putchar('\n');
+      last_char = '\n';
+      w_count = 0;
+      continue;
+    }
+    if(w_count > 60 && isspace(*s))
+    {
+      putchar('\n');
+      while(isspace(*s)) ++s;
+      last_char = '\n';
+      w_count = 0;
+      continue;
+    }
+    if(w_count == 0 && isspace(*s))
+    {
+      while(isspace(*s)) ++s;
+      continue;
+    }
+
+    put_man_char(*s);
+    last_char = *s;
+    ++w_count;
+    ++s;
+  }
+
+  if(*s)
+  {
+    putchar(*s);
+    last_char = *s;
+  }
+
+  if(last_char != '\n')
+    putchar('\n');
+}
+
+static inline
+char *remove_dashes(char *str)
+{
+  char *s = str;
+
+  while(*s == '-') ++s;
+  return s;
+}
+
+static
+void print_man_page_options(void)
+{
+  int i;
+
+  printf(".SH OPTIONS\n.PP\n");
+
+  printf(".TP\n\\fBFILE\\fR\n");
+  print_text2man(opt[0]->description);
+
+  for(i=1; i<length; ++i)
+  {
+    char arg[128];
+    if(opt[i]->arg)
+      snprintf(arg, 128, " \\fB%s\\fR", opt[i]->arg);
+    else
+      arg[0] = '\0';
+
+    if(opt[i]->short_op && strlen(opt[i]->short_op) == 2)
+      printf(".TP\n\\fB\\-\\-%s\\fR%s or \\fB\\-%s\\fR%s\n",
+          remove_dashes(opt[i]->long_op), arg,
+          remove_dashes(opt[i]->short_op), arg);
+    else
+      printf(".TP\n\\fB\\-\\-%s\\fR%s\n",
+          remove_dashes(opt[i]->long_op), arg);
+    print_text2man(opt[i]->description);
+  }
 }
 
 static
@@ -1347,17 +1510,6 @@ void print_html_options_table(void)
 
 int main(int argc, char **argv)
 {
-  /* options: argc == 1 or argv[1] = "whatever" : help
-   *          argv[1] = "-t"  print html options table
-   *          argv[1] = "-l"  print html options list
-   *          argv[1] = "-h"  print C code for OPTIONS help text
-   *          argv[1] = "-a"  print argument parsing C code
-   *          argv[1] = "-1"  print 1st pass parsing C code template
-   *          argv[1] = "-2"  print 2nd pass parsing C code template
-   *          argv[1] = "-i"  print C code for app->op_ initialization
-   *          argv[1] = "-I"  print C code for declaring app
-   *          argv[1] = "-T"  print C code of the big struct "Tidy"
-   */
   {
     ssize_t n = 2;
     if(argc > 1)
@@ -1368,7 +1520,7 @@ int main(int argc, char **argv)
           (argv[1][1] != 't' && argv[1][1] != 'l' && argv[1][1] != 'h' &&
            argv[1][1] != 'a' && argv[1][1] != '1' && argv[1][1] != '2' &&
            argv[1][1] != 'i' && argv[1][1] != 'I' && argv[1][1] != 'T' &&
-           argv[1][1] != 'p' && argv[1][1] != 's')
+           argv[1][1] != 'p' && argv[1][1] != 's' && argv[1][1] != 'm')
           )
     {
       printf("Usage: %s [ -a | -h | -i | -I | -l | -p | -t | -1 | -2 ]\n"
@@ -1382,6 +1534,7 @@ int main(int argc, char **argv)
           "    -i  print C code for app->op_ initialization\n"
           "    -I  print C code for declaring app\n"
           "    -l  print html options list\n"
+          "    -m  print OPTIONS part of man page\n"
           "    -p  print the options\n"
           "    -s  print the short options sorted\n"
           "    -t  print html options table\n"
@@ -1467,7 +1620,7 @@ int main(int argc, char **argv)
   if(opt[0]->long_op[0])
   {
     printf("FILE is not the first option listed\n");
-    exit(1);
+    return 1;
   }
 
   if(argv[1][1] == 'p')
@@ -1475,7 +1628,15 @@ int main(int argc, char **argv)
     size_t i;
     for(i=0;i<length;++i)
       printf("%s %s %s\n", opt[i]->long_op, opt[i]->short_op, opt[i]->arg);
-    exit(0);
+    return 0;
+  }
+
+  if(argv[1][1] == 'm')
+  {
+    printf(".\\\" This OPTIONS part of this file was generated by running: "
+      "%s %s\n", argv[0], argv[1]);
+    print_man_page_options();
+    return 0;
   }
 
   if(argv[1][1] == 's')
@@ -1537,7 +1698,7 @@ int main(int argc, char **argv)
 
 
     printf("%s\n", shorts);
-    exit(0);
+    return 0;
   }
 
 
@@ -1545,7 +1706,7 @@ int main(int argc, char **argv)
   if(argv[1][1] == 'T')
   { 
     print_tidy_struct();
-    exit(0);
+    return 0;
   }
 
   if(argv[1][1] == 'I')
@@ -1553,7 +1714,7 @@ int main(int argc, char **argv)
     printf("/* This file was auto-generated by running: `%s %s' */\n",
         argv[0], argv[1]);
     print_app_ops_declare_code();
-    exit(0);
+    return 0;
   }
 
   if(argv[1][1] == 'i')
@@ -1561,7 +1722,7 @@ int main(int argc, char **argv)
     printf("/* This file was auto-generated by running: `%s %s' */\n",
         argv[0], argv[1]);
     print_app_ops_init_code();
-    exit(0);
+    return 0;
   }
 
 
@@ -1570,19 +1731,19 @@ int main(int argc, char **argv)
     printf("/* This file was auto-generated by running: `%s %s' */\n",
         argv[0], argv[1]);
     print_argument_parsing_code();
-    exit(0);
+    return 0;
   }
 
   if(argv[1][1] == 'h')
   {
     print_help_text();
-    exit(0);
+    return 0;
   }
 
   if(argv[1][1] == 'l')
   {
     print_html_options_list();
-    exit(0);
+    return 0;
   }
 
   if(argv[1][1] == 't')
@@ -1590,7 +1751,7 @@ int main(int argc, char **argv)
     printf("<!-- This table was auto-generated by running: `%s %s' -->\n",
         argv[0], argv[1]);
     print_html_options_table();
-    exit(0);
+    return 0;
   }
 
   if(argv[1][1] == '1')
@@ -1598,7 +1759,7 @@ int main(int argc, char **argv)
     printf("/* This file was auto-generated by running: `%s %s' */\n",
         argv[0], argv[1]);
     print_1st_pass_functions();
-    exit(0);
+    return 0;
   }
 
   if(argv[1][1] == '2')
@@ -1606,7 +1767,7 @@ int main(int argc, char **argv)
     printf("/* This file was auto-generated by running: `%s %s' */\n",
         argv[0], argv[1]);
     print_2nd_pass_functions();
-    exit(0);
+    return 0;
   }
 
   return 0;

@@ -79,7 +79,8 @@ rm -f config.h* stamp-h* compile\
  quickplot *.xpm *.txt REPO_VERSION paths.h\
  *.htm _ScreenShot_*_thumb.png _ScreenShot_*_thumb-*.png\
  about.html help.html index.html screenshots.html\
- config.h.in config.h mk_options quickplot.pc
+ config.h.in config.h mk_options quickplot.pc\
+ quickplot.1.head quickplot.1.tail quickplot.1
 
 # generated source files
 rm -f parse_args.h app_op_declare.h app_op_init.h

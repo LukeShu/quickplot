@@ -2,9 +2,13 @@ Most of this is done, but we need to leave it so we may check
 it out more carefully.  This is just the authors junk notes.
 
 
+  Test installing man page on Gentoo with ebuild.
+  
+  
   fix: quickplot -h ==> "failed to create drawable"
   Looks like GTK+-3.0 is printing this after I call exit.
   So I guess it's not really a bug.
+
 
   Fix gnome plugdev
 
@@ -12,14 +16,14 @@ it out more carefully.  This is just the authors junk notes.
 
   Remove the New Graph Tab button.
 
-  Announce on Freshmeat
+  Announce on Freshmeat  freecode.com.
 
 
   Grid and plot layer positions, i.e. grid on top, grid on bottom, grid between
   plots.  Plot layering comes from plot order in the -g option.  Should
   -g "0 1 grid 3 4" put the grid between plot 0 1 and plot 3 4?
   how about -g "0 1 grid-x 3 4 grid-numbers 0 6" to order the different 
-  parts of the grid?  It's just drawing layer...
+  parts of the grid?  It's just drawing layers...
 
 
   Refactor!!!
@@ -27,6 +31,7 @@ it out more carefully.  This is just the authors junk notes.
       make qp_qp_create() be qp_win_create() and remove
       the non-window object.
 
+  Document environment variables in html and man
 
 
   Make a command line dump option that prints out a

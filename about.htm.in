@@ -44,7 +44,7 @@ a fast interactive 2D plotter
 </p>
 
 <p style="text-align:center">
-Version @VERSION@&nbsp;&nbsp; repo version @REPO_VERSION@
+Version @VERSION@&nbsp;&nbsp; repo version @REPO_VERSION@&nbsp;&nbsp; @RELEASE_DATE@
 </p>
 
 
