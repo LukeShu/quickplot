@@ -5,4 +5,3 @@ if test -f RELEASE_DATE ; then
 else
   echo "not released yet"
 fi
-

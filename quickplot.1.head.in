@@ -20,7 +20,7 @@ can read standard input as a pipe or regular file.
 The full documentation for
 .I Quickplot
 is maintained as a HTML document in a file named help.html.
-The options part in this man page are auto-generated from the
-same source as the options part of the HTML document, so it
-should be up to date.
+You can get the latest version at <@PACKAGE_URL@help.html>.
+The options part in this man page is generated from the
+same source as the options part of the HTML document.
 

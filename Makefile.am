@@ -48,7 +48,6 @@ EXTRA_DIST =\
  help_head.htm.in\
  help_tail.htm.in\
  index.htm.in\
- about.txt\
  help.txt\
  bootstrap\
  quickplot.ebuild\
@@ -71,7 +70,7 @@ BUILT_SOURCES =\
  app_op_declare.h\
  app_op_init.h
 
-dist_man_MANS = quickplot.1
+man_MANS = quickplot.1
 
 # The .xpm files are built but come in a tarball
 # .xpm files are not checked into the repository
@@ -99,7 +98,8 @@ DISTCLEANFILES =\
  help.html\
  index.html\
  parse_args.h\
- paths.h
+ paths.h\
+ quickplot.1
 
 
 if HAVE_LOCAL_SCREENSHOTS
@@ -280,9 +280,16 @@ index.html: index.htm
  -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\
  > $@
 
+
+# We cannot have configure replace @release_date@ and @repo_version@
+# because we need to generate about.html for two cases, one for
+# dist and one for installing, and the values for
+# @release_date@ and @repo_version@ differ for those two cases
 about.html: $(ABOUT_HTML_DEP)
-	reves="`./repo_version.sh`"; sed $<\
- -e "s/@REPO_VERSION@/$$reves/"\
+	repo_version="`./repo_version.sh`";\
+ rel_date="`./release_date.sh`"; sed $<\
+ -e "s/@release_date@/$$rel_date/g"\
+ -e "s/@repo_version@/$$repo_version/g"\
  -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
  -e 's!@About@!<span class=nav>\&nbsp;About\&nbsp;</span>!'\
  -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\
@@ -341,11 +348,24 @@ endif
 
 
 # Add the repository revision number to the dist.
-# Remove generated files that auto-tools is stupid about.
+# Fix any dist files that have RELEASE_DATE in them, like help.txt
+# Remove generated dist files that auto-tools is stupid about.
 # Remove the out-of-date hash files.
 dist-hook:
-	./repo_version.sh > $(distdir)/REPO_VERSION
-	date -u +"%d %b %G" > $(distdir)/RELEASE_DATE
+	if test -f REPO_VERSION ; then mv REPO_VERSION REPO_VERSION.tmp ; fi
+	if test -f RELEASE_DATE ; then mv RELEASE_DATE RELEASE_DATE.tmp ; fi
+	./repo_version.sh > REPO_VERSION.save
+	mv REPO_VERSION.save REPO_VERSION
+	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
+	echo $(VERSION) > last_release
+	cat RELEASE_DATE REPO_VERSION >> last_release
+	rm -f about.html about.htm about.txt
+	$(MAKE) about.txt
+	mv REPO_VERSION RELEASE_DATE about.txt $(distdir)
+	rm -f about.html about.htm
+	$(MAKE) about.txt
+	if test -f REPO_VERSION.tmp ; then mv REPO_VERSION.tmp REPO_VERSION ; fi
+	if test -f RELEASE_DATE.tmp ; then mv RELEASE_DATE.tmp RELEASE_DATE ; fi
 	cd $(distdir) && rm -f $(DISTCLEANFILES) config.h
 	rm -f $(gzfile).md5 $(gzfile).sha* $(bz2file).md5 $(bz2file).sha* $(xzfile).md5 $(xzfile).sha*
 
