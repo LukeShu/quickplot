@@ -165,7 +165,7 @@ int qp_find_doc_file(const char *filename, char **fullpath_ret)
 
     QP_WARN("Can't open Quickplot documentation file \"%s\"\n"
         "Try setting environment variable QUICKPLOT_%s to\n"
-        "the directory where this file was installed to.",
+        "the directory where this file was installed to.\n",
         filename, is_txt?"DOCDIR":"HTMLDIR");
   }
   return -1; /* failed */ 

@@ -18,10 +18,15 @@ DEPEND="${RDEPEND}
 	dev-util/pkgconfig"
 
 
+src_compile() {
+	# quickplot needs to know where installed html docs are
+	econf --htmldir=/usr/share/doc/${PF}/html || die "econf failed."
+	emake || die "emake failed."
+}
+
 src_install () {
-	emake
+	emake\
 		DESTDIR="${D}"\
-		htmldir=/usr/share/doc/${PF}/html\
 		install || die "emake install failed."
 	dodoc AUTHORS README ChangeLog
 	newicon quickplot.png ${PN}.png

@@ -611,13 +611,13 @@ void cb_about(GtkWidget *w, gpointer data)
   if(data)
   {
     printf("Quickplot version " VERSION "\n"
-      "The Quickplot home-page is at " PACKAGE_URL "\n"
+      "The Quickplot home-page is at <" PACKAGE_URL ">\n"
       "This was compiled on: " __DATE__ " at the time: " __TIME__ "\n"
       "Quickplot is free software, distributed under the terms of the\n"
       "GNU General Public License (version 3 or higher).\n"
 #ifdef QP_DEBUG
       "This Quickplot installation was built with extra debuging code.\n"
-      "You do not want that unless you are writing Quickplot code.\n"
+      "You do not want that unless you are writing/debuging Quickplot code.\n"
 #endif
       );
     exit(0);
@@ -632,15 +632,18 @@ void cb_help(GtkWidget *w, gpointer data)
   {
     printf("Quickplot is a fast interactive 2D plotter.\n"
         "\n"
-        "Quickplot uses html and man pages files for its reference\n"
-        "documentation.  If you're not seeing a browser now with the\n"
+        "Quickplot uses html files for its reference documentation.\n"
+        "Quickplot also has a man page.\n"
+        "If you're not seeing a browser now with the\n"
         "Quickplot Help document loaded than you may not be using a\n"
         "windowing system or something else went wrong.\n"
         "\n"
         "The Quickplot text help document can be printed to standard\n"
         "output by running `quickplot --print-help'.\n"
         "\n"
-        "The Quickplot home-page is at http://quickplot.sourceforge.net\n");
+        "The lastest copy of the Quickplot reference documentation can be\n"
+        "found at <" PACKAGE_URL "help.html>.\n"
+        "The Quickplot home-page is at <" PACKAGE_URL ">.\n");
     exit(1);
   }
 }

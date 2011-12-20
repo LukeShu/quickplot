@@ -303,7 +303,6 @@ AC_MSG_RESULT([
        C Linker Flags (LDFLAGS): $LDFLAGS
 
    Installation prefix (prefix): $prefix
-
                          srcdir: $srcdir
 ])
 
