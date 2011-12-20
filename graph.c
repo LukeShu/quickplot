@@ -55,7 +55,7 @@ const gint EDGE_BUF_MIN = 10;
 /* returns a molloc() allocated string
  * Return a unique name for the qp */
 static inline
-char *unique_name(struct qp_qp *qp, const char *name)
+char *unique_name(struct qp_win *qp, const char *name)
 {
   char buf[32];
   char *test_name = NULL;
@@ -189,14 +189,14 @@ void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr)
   /* does not copy the X11 shape mode */
 }
 
-qp_graph_t qp_graph_create(qp_qp_t qp, const char *name)
+qp_graph_t qp_graph_create(qp_win_t qp, const char *name)
 {
   struct qp_graph *gr;
   ASSERT(qp);
   ASSERT(qp->graphs);
   ASSERT(qp->window);
   /* graphs do not exist unless they are
-   * in a qp_qp with a gtk window. */
+   * in a qp_win with a gtk window. */
   if(!qp || !qp->window)
     return NULL;
 
@@ -459,7 +459,7 @@ void qp_graph_switch_draw_mode(struct qp_graph *gr)
 
 void qp_graph_destroy(qp_graph_t gr)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(gr);
   ASSERT(gr->qp);
   ASSERT(gr->qp->graphs);
@@ -556,7 +556,7 @@ void qp_graph_zoom_out(struct qp_graph *gr, int all)
     gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window), app->waitCursor);
   }
 
-  qp_qp_set_status(gr->qp);
+  qp_win_set_status(gr->qp);
   gtk_widget_queue_draw(gr->drawing_area);
 }
 

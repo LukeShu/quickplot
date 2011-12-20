@@ -52,7 +52,7 @@
 static __thread int _cb_view_graph_detail_reenter = 0;
 
 static
-gboolean graph_detail_hide(struct qp_qp *qp)
+gboolean graph_detail_hide(struct qp_win *qp)
 {
   ASSERT(qp);
   ASSERT(qp->graph_detail);
@@ -97,7 +97,7 @@ void cb_same_y_scale(GtkComboBox *w, gpointer data)
 {
   struct qp_graph *gr;
 
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
   if(!gr)
     return;
   
@@ -334,7 +334,7 @@ void set_slider_entry(struct qp_slider *slider, int val)
 }
 
 static
-gboolean cb_plot_list_draw(GtkWidget *w, cairo_t *cr, struct qp_qp *qp)
+gboolean cb_plot_list_draw(GtkWidget *w, cairo_t *cr, struct qp_win *qp)
 {
   struct qp_graph *gr;
   GtkAllocation da_a;
@@ -524,7 +524,7 @@ void set_plot_points(GtkToggleButton *button, struct qp_plot *p)
 
 /* make plot list for a particular graph */
 static
-void plot_list_make(struct qp_qp *qp)
+void plot_list_make(struct qp_win *qp)
 {
   GtkWidget *grid, *w;
   const GdkRGBA rgba = QP_DA_BG_RGBA;
@@ -684,7 +684,7 @@ void plot_list_make(struct qp_qp *qp)
   } while(0)
 
 /* called this when the main window is destroyed */
-void qp_graph_detail_destory(struct qp_qp *qp)
+void qp_graph_detail_destory(struct qp_win *qp)
 {
   struct qp_graph_detail *gd;
   ASSERT(qp);
@@ -711,7 +711,7 @@ void qp_graph_detail_destory(struct qp_qp *qp)
 }
 
 static
-void plot_list_remake(struct qp_qp *qp)
+void plot_list_remake(struct qp_win *qp)
 {
   GList *l, *list;
 
@@ -780,7 +780,7 @@ void plot_list_combo_box_init(struct qp_graph *gr, struct qp_graph_detail *gd)
 }
 
 static inline
-void configure_graph_init(struct qp_qp *qp)
+void configure_graph_init(struct qp_win *qp)
 {
   struct qp_graph *gr;
   struct qp_graph_detail *gd;
@@ -867,7 +867,7 @@ void configure_graph_init(struct qp_qp *qp)
 }
 
 /* Setup the widget for a particular graph */
-void qp_qp_graph_detail_init(struct qp_qp *qp)
+void qp_win_graph_detail_init(struct qp_win *qp)
 {
   struct qp_graph *gr;
   struct qp_graph_detail *gd;
@@ -907,7 +907,7 @@ void qp_qp_graph_detail_init(struct qp_qp *qp)
 }
 
 static
-void cb_plot_list_mode(GtkComboBox *w, struct qp_qp *qp)
+void cb_plot_list_mode(GtkComboBox *w, struct qp_win *qp)
 {
   int mode;
   mode = gtk_combo_box_get_active(w);
@@ -927,7 +927,7 @@ static
 void cb_show_grid(GtkWidget *w, void *data)
 {
   struct qp_graph *gr;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
 
   if(!gr)
     return;
@@ -939,7 +939,7 @@ static
 void cb_show_grid_numbers(GtkWidget *w, void *data)
 {
   struct qp_graph *gr;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
 
   if(!gr)
     return;
@@ -953,7 +953,7 @@ void cb_show_lines(GtkWidget *w, void *data)
   struct qp_graph *gr;
   struct qp_plot *p;
   int on;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
 
   if(!gr)
     return;
@@ -969,7 +969,7 @@ void cb_show_points(GtkWidget *w, void *data)
   struct qp_graph *gr;
   struct qp_plot *p;
   int on;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
 
   if(!gr)
     return;
@@ -983,7 +983,7 @@ static
 void cb_background_color(GtkColorButton *w, gpointer data)
 {
   struct qp_graph *gr;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
   if(!gr)
     return;
   set_rgba(w, &(gr->background_color));
@@ -993,7 +993,7 @@ static
 void cb_grid_color(GtkColorButton *w, gpointer data)
 {
   struct qp_graph *gr;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
   if(!gr)
     return;
   set_rgba(w, &(gr->grid_line_color));
@@ -1003,7 +1003,7 @@ static
 void cb_grid_numbers_color(GtkColorButton *w, gpointer data)
 {
   struct qp_graph *gr;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
   if(!gr)
     return;
   set_rgba(w, &(gr->grid_text_color));
@@ -1013,7 +1013,7 @@ static
 void cb_grid_font(GtkFontButton *w, gpointer data)
 {
   struct qp_graph *gr;
-  gr = ((struct qp_qp *)data)->current_graph;
+  gr = ((struct qp_win *)data)->current_graph;
   if(!gr)
     return;
 
@@ -1029,7 +1029,7 @@ void cb_grid_font(GtkFontButton *w, gpointer data)
 
 static
 void create_show_check_button(const char *label,
-    void (*callback)(GtkWidget*, void*), struct qp_qp *qp,
+    void (*callback)(GtkWidget*, void*), struct qp_win *qp,
     GtkWidget *vbox, gboolean checked)
 {
   GtkWidget *b;
@@ -1051,7 +1051,7 @@ gboolean ecb_close_graph_detail(
 }
 
 static
-void cb_same_x_scale(GtkComboBox *w, struct qp_qp *qp)
+void cb_same_x_scale(GtkComboBox *w, struct qp_win *qp)
 {
   struct qp_graph *gr;
   struct qp_plot *p;
@@ -1095,7 +1095,7 @@ void cb_same_x_scale(GtkComboBox *w, struct qp_qp *qp)
 
 
 static
-void cb_redraw(GtkButton *button, struct qp_qp *qp)
+void cb_redraw(GtkButton *button, struct qp_win *qp)
 {
   if(qp->graph_detail->plot_list_drawing_area)
     gtk_widget_queue_draw(qp->graph_detail->plot_list_drawing_area);
@@ -1132,7 +1132,7 @@ void add_grid_label(GtkWidget *grid, const char *text,
 
 struct qp_plotter
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   GtkWidget *radio;
   ssize_t channel_num;
   struct qp_source *source;
@@ -1352,7 +1352,7 @@ void cb_plotter(GtkButton *w, struct qp_plotter *pr)
   gr->draw_value_pick = 0;
 
 
-  //qp_qp_graph_detail_init(gr->qp);
+  //qp_win_graph_detail_init(gr->qp);
 
   qp_graph_detail_set_value_mode(gr);
   plot_list_remake(gr->qp);
@@ -1365,7 +1365,7 @@ void cb_plotter(GtkButton *w, struct qp_plotter *pr)
 }
 
 static
-GtkWidget *make_channel_selecter_column(GtkWidget *hbox, struct qp_qp *qp, int is_y)
+GtkWidget *make_channel_selecter_column(GtkWidget *hbox, struct qp_win *qp, int is_y)
 {
   GtkWidget *radio, *vbox;
   struct qp_source *s;
@@ -1421,7 +1421,7 @@ GtkWidget *make_channel_selecter_column(GtkWidget *hbox, struct qp_qp *qp, int i
 }
 
 static
-gboolean cb_selecter_draw(GtkWidget *w, cairo_t *cr, struct qp_qp *qp)
+gboolean cb_selecter_draw(GtkWidget *w, cairo_t *cr, struct qp_win *qp)
 {
   struct qp_graph *gr;
   GtkAllocation da_a;
@@ -1547,7 +1547,7 @@ gboolean cb_selecter_draw(GtkWidget *w, cairo_t *cr, struct qp_qp *qp)
 }
 
 static
-void plot_selecter_make(struct qp_qp *qp)
+void plot_selecter_make(struct qp_win *qp)
 {
   GtkWidget *hbox, *da;
   const GdkRGBA rgba = QP_DA_BG_RGBA;
@@ -1569,7 +1569,7 @@ void plot_selecter_make(struct qp_qp *qp)
 /* Call this if there are sources added or removed
  * and qp->graph_detail is non NULL. */
 static
-void plot_selecter_remake(struct qp_qp *qp)
+void plot_selecter_remake(struct qp_win *qp)
 {
   GList *l, *list;
 
@@ -1627,7 +1627,7 @@ GtkWidget *make_pretty_header_label(const char *text, GtkBox *vbox)
 }
 
 static
-void make_redraw_button(GtkWidget *vbox, struct qp_qp *qp)
+void make_redraw_button(GtkWidget *vbox, struct qp_win *qp)
 {
   GtkWidget *button, *hbox;
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 14);
@@ -1643,7 +1643,7 @@ void make_redraw_button(GtkWidget *vbox, struct qp_qp *qp)
 /* Call this when a source is added or removed */
 void qp_app_graph_detail_source_remake(void)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(app);
   ASSERT(app->qps);
 
@@ -1656,7 +1656,7 @@ void qp_app_graph_detail_source_remake(void)
 }
 
 gboolean cb_graph_detail_switch_page(GtkNotebook *notebook,
-    GtkWidget *page, guint page_num, struct qp_qp *qp)
+    GtkWidget *page, guint page_num, struct qp_win *qp)
 {
   // page_num =  0 Configure Graph   1 Select Channels to Plot   2 Plots List
  
@@ -1709,7 +1709,7 @@ gboolean cb_graph_detail_switch_page(GtkNotebook *notebook,
 
 /* Make a graph detail main window widget */
 static
-void graph_detail_create(struct qp_qp *qp)
+void graph_detail_create(struct qp_win *qp)
 {
   struct qp_graph *gr;
   struct qp_graph_detail *gd;
@@ -2030,18 +2030,18 @@ void graph_detail_create(struct qp_qp *qp)
     gtk_widget_show(notebook);
   }
 
-  qp_qp_graph_detail_init(qp);
+  qp_win_graph_detail_init(qp);
 }
 
 static
-void graph_detail_show(struct qp_qp *qp)
+void graph_detail_show(struct qp_win *qp)
 {
   ASSERT(qp);
 
   if(!qp->graph_detail)
     graph_detail_create(qp);
 
-  qp_qp_graph_detail_init(qp);
+  qp_win_graph_detail_init(qp);
 
   gtk_widget_show(qp->graph_detail->window);
   gtk_window_present(GTK_WINDOW(qp->graph_detail->window));
@@ -2053,7 +2053,7 @@ void graph_detail_show(struct qp_qp *qp)
 void
 cb_view_graph_detail(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   qp = data;
 
   if(_cb_view_graph_detail_reenter)
@@ -2072,7 +2072,7 @@ cb_view_graph_detail(GtkWidget *w, gpointer data)
 void
 cb_graph_detail_show_hide(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   qp = data;
 
   if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_detail)))

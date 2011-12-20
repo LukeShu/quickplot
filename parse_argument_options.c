@@ -151,7 +151,7 @@ void qp_getargs_2nd_pass(int argc, char **argv)
     ASSERT(qp_sllist_last(app->sources));
 
     if(app->op_default_graph)
-      if(qp_qp_graph_default_source(NULL, (qp_source_t)
+      if(qp_win_graph_default_source(NULL, (qp_source_t)
           qp_sllist_last(app->sources), NULL))
         exit(1);
   }
@@ -159,20 +159,21 @@ void qp_getargs_2nd_pass(int argc, char **argv)
   free(parser);
 
   {
-    struct qp_qp *qp;
-    qp = qp_sllist_first(app->qps);
+    struct qp_win *qp;
     /* There should be at least one qp window */
-    if(!qp || !qp->window)
-      qp_qp_window(NULL);
+    if(!qp_sllist_first(app->qps))
+      qp_win_create();
 
-    for(; qp; qp = qp_sllist_next(app->qps))
-      /* set a flag the tells delete window callback that
-       * we have a idle callback trying to draw all 
-       * the tabs in this qp window. */
-      qp->initializing = 1;
+    for(qp = qp_sllist_begin(app->qps); qp; qp = qp_sllist_next(app->qps))
+    {
+      /* At startup we want the first graph
+       * showing to be the first one in each
+       * window.  By default the current
+       * graph is the last one created, which
+       * works when the user creates it while
+       * interacting with the window. */
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 0);
+    }
   }
-
-  /* Setup/draw all the graphs in the tabs in all windows */
-  g_idle_add_full(G_PRIORITY_LOW + 10, startup_idle_callback, NULL, NULL);
 }
 

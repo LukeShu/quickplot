@@ -48,7 +48,7 @@ void parse_2nd_default_graph(void)
   app->op_default_graph = 1;
 
   if(qp_sllist_last(app->sources) &&
-      qp_qp_graph_default_source(NULL, (qp_source_t)
+      qp_win_graph_default_source(NULL, (qp_source_t)
           qp_sllist_last(app->sources), NULL))
     exit(1);
 
@@ -413,7 +413,7 @@ static inline
 void graph_plots(ssize_t *x, ssize_t *y, size_t len)
 {
   ASSERT(len);
-  if(qp_qp_graph(NULL, x, y, len, NULL))
+  if(qp_win_graph(NULL, x, y, len, NULL))
     exit(1);
 
   free(x);

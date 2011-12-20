@@ -51,7 +51,7 @@ CB(view_border);
 #ifdef NO_BIG_WIN_COPY
 extern
 gboolean ecb_window_state(GtkWidget *widget, GdkEventWindowState *event,
-    struct qp_qp *qp);
+    struct qp_win *qp);
 #endif
 CB(view_fullscreen);
 CB(view_cairo_draw);

@@ -63,7 +63,7 @@
 
 /** \brief the object that holds all quickplot state data
  */
-typedef struct qp_qp *qp_qp_t;
+typedef struct qp_win *qp_win_t;
 
 /** \brief holds x,y channels to plot
  */
@@ -89,19 +89,12 @@ extern "C"
 {
 #endif
 
-  /* the qp_*_create() functions all have a factory
-   * (container) as the first argument, except for
-   * qp_qp_create() which makes a qp_qp_t that
-   * is a factory of all others or a factory of there
-   * factories that make sub-factories.  Other
-   * functions take an "object" of their class as
-   * their first argument. */
 
 extern
-qp_qp_t qp_qp_create(void);
+qp_win_t qp_win_create(void);
 
 extern
-void qp_qp_destroy(qp_qp_t qp);
+void qp_win_destroy(qp_win_t qp);
 
 /** /return the number of channels created from this */
 extern
@@ -112,25 +105,15 @@ size_t qp_app_read(const char *filename);
  * x and y are channel numbers starting at 0
  * \return 0 on success and 1 on failure */
 extern
-int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y,
+int qp_win_graph(qp_win_t qp, const ssize_t *x, const ssize_t *y,
     size_t num, const char *name);
 
 extern
-void qp_qp_graph_default(qp_qp_t qp);
+void qp_win_graph_default(qp_win_t qp);
 
 extern
-int qp_qp_graph_default_source(qp_qp_t qp, qp_source_t s, const char *name);
+int qp_win_graph_default_source(qp_win_t qp, qp_source_t s, const char *name);
 
-
-extern
-qp_qp_t qp_qp_window(qp_qp_t qp);
-
-
-static inline
-void qp_qp_gui_main(void)
-{
-  gtk_main();
-}
 
 /** \return 0 on success, -1 if it was initialized already
  * and 1 on failure. */

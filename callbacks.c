@@ -84,28 +84,30 @@ gboolean ecb_close(GtkWidget *w, GdkEvent *event, gpointer data)
 
 void cb_delete_window(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(data);
   VASSERT(app->main_window_count > 1,
       "the delete window menu item should be deactivated if"
       " there is just one main quickplot window");
   qp = data;
 
+DEBUG("qp->initializing=%d\n", qp->initializing);
+
   if(qp->initializing)
     /* let the initializing callback
      * function delete the window. */
     qp->initializing = 2;
   else
-    qp_qp_destroy(qp);
+    qp_win_destroy(qp);
 }
 
 void cb_quit(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(app && app->is_gtk_init);
 
   while((qp = qp_sllist_last(app->qps)))
-    qp_qp_destroy(qp);
+    qp_win_destroy(qp);
 
   ASSERT(qp_sllist_length(app->qps) == 0);
 
@@ -133,7 +135,7 @@ gboolean ecb_key_release(GtkWidget *w, GdkEvent *event, gpointer data)
 }
 
 static inline
-void toggle_all_guis(struct qp_qp *qp)
+void toggle_all_guis(struct qp_win *qp)
 {
   int showing;
 
@@ -184,7 +186,7 @@ void toggle_all_guis(struct qp_qp *qp)
 
 gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(data);
   ASSERT(event->type == GDK_KEY_PRESS);
   qp = data;
@@ -342,21 +344,21 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
 
 void cb_zoom_out(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   qp = data;
   qp_graph_zoom_out(qp->current_graph, 0);
 }
 
 void cb_zoom_out_all(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   qp = data;
   qp_graph_zoom_out(qp->current_graph, 1);
 }
 
 void cb_view_menubar(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(data);
   qp = data;
 
@@ -370,7 +372,7 @@ void cb_view_menubar(GtkWidget *w, gpointer data)
 
 void cb_view_graph_tabs(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(data);
   qp = data;
 
@@ -398,7 +400,7 @@ void cb_view_graph_tabs(GtkWidget *w, gpointer data)
 
 void cb_view_buttonbar(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(data);
   qp = data;
 
@@ -412,7 +414,7 @@ void cb_view_buttonbar(GtkWidget *w, gpointer data)
 
 void cb_view_statusbar(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(data);
   qp = data;
 
@@ -427,7 +429,7 @@ void cb_view_statusbar(GtkWidget *w, gpointer data)
 
 void cb_view_border(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   gboolean i;
   ASSERT(data);
   qp = data;
@@ -455,7 +457,7 @@ void cb_view_border(GtkWidget *w, gpointer data)
 }
 
 #ifdef NO_BIG_WIN_COPY
-gboolean ecb_window_state(GtkWidget *widget, GdkEventWindowState *e, struct qp_qp *qp)
+gboolean ecb_window_state(GtkWidget *widget, GdkEventWindowState *e, struct qp_win *qp)
 {
   if((e->changed_mask & (
      GDK_WINDOW_STATE_MAXIMIZED |GDK_WINDOW_STATE_FULLSCREEN)))
@@ -473,7 +475,7 @@ gboolean ecb_window_state(GtkWidget *widget, GdkEventWindowState *e, struct qp_q
 
 void cb_view_fullscreen(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(data);
   qp = data;
 
@@ -503,7 +505,7 @@ static __thread int cairo_draw_ignore_event = 0;
 
 void cb_view_cairo_draw(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
 
   if(cairo_draw_ignore_event)
   {
@@ -529,7 +531,7 @@ void cb_view_cairo_draw(GtkWidget *w, gpointer data)
 
 void cb_view_shape(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   struct qp_graph *gr;
   ASSERT(data);
   qp = data;
@@ -822,7 +824,7 @@ gboolean cb_switch_page(GtkNotebook *notebook, GtkWidget *page,
 
   //WARN("page_num=%d graph named=\"%s\"\n", page_num, gr->name);
  
-  qp_qp_set_status(gr->qp);
+  qp_win_set_status(gr->qp);
 
   if((gtk_check_menu_item_get_active(
           GTK_CHECK_MENU_ITEM(gr->qp->view_cairo_draw)) &&
@@ -1216,7 +1218,7 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event, gpointer data)
   gr->qp->pointer_y = event->button.y;
   
   if(mouse_num != GRAB_BUTTON)
-    qp_qp_set_status(gr->qp);
+    qp_win_set_status(gr->qp);
 
   if(event->button.button != GRAB_BUTTON &&
     event->button.button != PICK_BUTTON &&
@@ -1258,7 +1260,7 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event, gpointer data)
       }
       else
         /* In case there is mouse motion */
-        qp_qp_set_status(gr->qp);
+        qp_win_set_status(gr->qp);
       break;
     case PICK_BUTTON:
       if(gr->qp->graph_detail)
@@ -1371,7 +1373,7 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event, gpointer data)
 
       if(queue_draw)
       {
-        qp_qp_set_status(gr->qp);
+        qp_win_set_status(gr->qp);
         gtk_widget_queue_draw(gr->drawing_area);
       }
 
@@ -1388,7 +1390,7 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event, gpointer data)
 
 gboolean ecb_graph_pointer_motion(GtkWidget *w, GdkEvent *event, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   struct qp_graph *gr;
   gr = data;
   ASSERT(data);
@@ -1403,7 +1405,7 @@ gboolean ecb_graph_pointer_motion(GtkWidget *w, GdkEvent *event, gpointer data)
   gr->qp->pointer_y = event->motion.y;
   
   if(mouse_num != GRAB_BUTTON)
-    qp_qp_set_status(gr->qp);
+    qp_win_set_status(gr->qp);
 
 
   if(!mouse_num) return FALSE;
@@ -1429,7 +1431,7 @@ gboolean ecb_graph_pointer_motion(GtkWidget *w, GdkEvent *event, gpointer data)
       gtk_widget_queue_draw(gr->drawing_area);
 
       if(!got_motion)
-        qp_qp_set_status(qp);
+        qp_win_set_status(qp);
      
       break;
     case PICK_BUTTON:
@@ -1486,7 +1488,7 @@ gboolean ecb_graph_pointer_motion(GtkWidget *w, GdkEvent *event, gpointer data)
 void cb_open_file(GtkWidget *w, gpointer data)
 {
   GtkWidget *dialog;
-  struct qp_qp *qp;
+  struct qp_win *qp;
   struct qp_source *s = NULL;
   ASSERT(data);
   qp = data;
@@ -1521,12 +1523,12 @@ void cb_open_file(GtkWidget *w, gpointer data)
   /* TODO: make defaults plots or open the plot builder gui */
 
   if(s && app->op_default_graph)
-    qp_qp_graph_default_source(qp, s, NULL);
+    qp_win_graph_default_source(qp, s, NULL);
     
 
 #if 0
   if(s)
-    qp_qp_make_default_plots(qp, s);
+    qp_win_make_default_plots(qp, s);
 #endif
 
 }
@@ -1539,24 +1541,24 @@ void cb_remove_source(GtkWidget *w, gpointer data)
 
 void cb_new_window(GtkWidget *w, gpointer data)
 {
-  qp_qp_window(NULL);
+  qp_win_create();
 }
 
 void cb_copy_window(GtkWidget *w, gpointer data)
 {
   ASSERT(data);
-  qp_qp_copy_create((struct qp_qp*) data);
+  qp_win_copy_create((struct qp_win*) data);
 }
 
 void cb_new_graph_tab(GtkWidget *w, gpointer data)
 {
   ASSERT(data);
-  qp_graph_create((struct qp_qp*)data, NULL);
+  qp_graph_create((struct qp_win*)data, NULL);
 }
 
 void cb_save_png_image_file(GtkWidget *w, gpointer data)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   struct qp_graph *gr;
   int page_num;
   char *filename = NULL;
@@ -1587,7 +1589,7 @@ void cb_save_png_image_file(GtkWidget *w, gpointer data)
 
   if(filename)
   {
-    qp_qp_save_png(qp, gr, filename);
+    qp_win_save_png(qp, gr, filename);
     g_free(filename);
   }
 }

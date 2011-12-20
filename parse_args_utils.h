@@ -276,7 +276,7 @@ void load_file(const char *filename)
   {
     ASSERT(qp_sllist_last(app->sources));
 
-    if(qp_qp_graph_default_source(NULL, (qp_source_t)
+    if(qp_win_graph_default_source(NULL, (qp_source_t)
           qp_sllist_last(app->sources), NULL))
       exit(1);
 
@@ -418,13 +418,19 @@ void get_color(struct qp_colora *c, const char *str)
   c->a = rgba.alpha;
 }
 
+#if 0
+/* This is being replaced by qp_startup_idle_callback()
+ * in win.c.  An idle callback is used for each qp_win in
+ * qp_startup_idle_callback().  It's setup in qp_win_create()
+ * and qp_win_copy_create() */
+
 /* We flip back the tab and wait for the drawing to
  * finish and then flip back to the next tab and
  * so on, until we are at the first tab. */
 static
 gboolean startup_idle_callback(gpointer data)
 {
-  static struct qp_qp *qp = NULL;
+  static struct qp_win *qp = NULL;
   struct qp_graph *first_graph;
 
   if(!qp)
@@ -438,13 +444,13 @@ gboolean startup_idle_callback(gpointer data)
   {
     /* A user wants to delete this window, maybe
      * before we finished drawing all the tabs. */
-    struct qp_qp *q;
+    struct qp_win *q;
     q = qp_sllist_begin(app->qps);
     while(q && q != qp)
       q = qp_sllist_next(app->qps);
     q = qp_sllist_next(app->qps);
     /* q == NULL or the next qp */
-    qp_qp_destroy(qp);
+    qp_win_destroy(qp);
     qp = q;
     if(!qp)
       return FALSE;
@@ -459,7 +465,7 @@ gboolean startup_idle_callback(gpointer data)
   {
     /* we are at the first tab */
     /* see if there are more main windows */
-    struct qp_qp *q;
+    struct qp_win *q;
     q = qp_sllist_begin(app->qps);
     while(q && q != qp)
       q = qp_sllist_next(app->qps);
@@ -485,6 +491,7 @@ gboolean startup_idle_callback(gpointer data)
    * after drawing the graph. */
   return TRUE;
 }
+#endif
 
 static inline
 int get_yes_no_auto_int(const char *arg, const char *option)

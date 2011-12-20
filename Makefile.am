@@ -150,7 +150,6 @@ libquickplot_la_SOURCES =\
  launch_browser.c\
  list.c\
  list.h\
- main_window.c\
  parse_1st_pass_funcs.h\
  parse_2nd_pass_funcs.h\
  parse_args.h\
@@ -170,6 +169,7 @@ libquickplot_la_SOURCES =\
  spew.h\
  term_color.c\
  term_color.h\
+ win.c\
  zoom.h
 
 libquickplot_la_SHORTNAME = lib

@@ -840,7 +840,7 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
     cairo_destroy(db_cr);
     // debuging
     //cairo_surface_write_to_png(gr->pixbuf_surface, "x.png");
-    qp_qp_set_status(gr->qp);
+    qp_win_set_status(gr->qp);
   }
 
   /* the GTK cairo_t *gdk_cr has no alpha bits so all the
@@ -992,12 +992,12 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
   {
     gr->qp->update_graph_detail = 0;
     /* make the graph configure window show stuff about this graph */
-    qp_qp_graph_detail_init(gr->qp);
+    qp_win_graph_detail_init(gr->qp);
   }
 }
 
 
-int qp_qp_save_png(struct qp_qp *qp,
+int qp_win_save_png(struct qp_win *qp,
     struct qp_graph *gr, const char *filename)
 {
   cairo_surface_t *surface;

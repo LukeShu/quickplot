@@ -83,13 +83,13 @@ struct qp_reader
  * pipe was not sound data then we can read
  * what was in the front of the pipe from 
  * the qp_rd buffer.  It turns out that stdio
- * streams do not use the read() function symbol
- * but instead find a lower level sys call thingy.
+ * streams are in the same library as the read()
+ * function and do not call my wrapper.
  * So we use our own Getline() that starts by
  * copying from the qp_rd buffer and than switches
  * to calling getline() after the buffer is all
  * copied.  This function does more than we
- * need, because we wrongly though that getline would
+ * need, because we wrongly thought that getline would
  * call it.  We are lucky that libsndfile does not
  * use stdio streams to read. */
 ssize_t read(int fd, void *buf, size_t count)
@@ -113,7 +113,7 @@ ssize_t read(int fd, void *buf, size_t count)
     ssize_t n;
     size_t rcount;
 
-    DEBUG("count=%zu  rd=%zu len=%zu\n", count, qp_rd->rd, qp_rd->len);
+    //DEBUG("count=%zu  rd=%zu len=%zu\n", count, qp_rd->rd, qp_rd->len);
 
     if(BUF_LEN == qp_rd->rd)
     {
@@ -173,8 +173,8 @@ ssize_t read(int fd, void *buf, size_t count)
     if(n == 0 && qp_rd->rd == qp_rd->len)
     {
       /* virtual and real end of file */
-      DEBUG("read(fd=%d, buf=%p, count=%zu)=0 end of file\n",
-          fd, &qp_rd->buf[qp_rd->rd], rcount);
+      //DEBUG("read(fd=%d, buf=%p, count=%zu)=0 end of file\n",
+      //    fd, &qp_rd->buf[qp_rd->rd], rcount);
       return n;
     }
    
@@ -1018,7 +1018,7 @@ qp_source_t qp_source_create_from_func(
 }
 
 static inline
-void remove_source_menu_item(struct qp_qp *qp,
+void remove_source_menu_item(struct qp_win *qp,
     struct qp_source *source)
 {
   GList *l, *l_alloc;
@@ -1080,7 +1080,7 @@ int remove_plots_from_graph(struct qp_graph *gr, struct qp_source *source)
 /* fix stuff when plots are removed from a graph
  * plots are removed because a source is removed. */
 static inline
-void fix_or_remove_changed_graph(struct qp_qp *qp, struct qp_graph *gr)
+void fix_or_remove_changed_graph(struct qp_win *qp, struct qp_graph *gr)
 {
   gint pnum;
   ASSERT(qp);
@@ -1123,7 +1123,7 @@ void qp_source_destroy(qp_source_t source)
 
   { /* remove this source from buffers list from file menu
      * in all main windows (qp) */
-    struct qp_qp *qp;
+    struct qp_win *qp;
   
     for(qp=qp_sllist_begin(app->qps);
       qp; qp=qp_sllist_next(app->qps))

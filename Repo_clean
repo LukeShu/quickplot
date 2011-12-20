@@ -64,7 +64,7 @@ fi
 
 set -x
 
-rm -f *~ *.o *.la *.so *.lo
+rm -f *.o *.la *.so *.lo
 
 rm -f\
  aclocal.m4 config.cache config.h install-sh config.log\

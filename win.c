@@ -142,7 +142,7 @@ GtkWidget *create_menu_item(GtkWidget *menu,
 }
 
 static inline
-void add_source_buffer_remove_menu(struct qp_qp *qp, struct qp_source *s)
+void add_source_buffer_remove_menu(struct qp_win *qp, struct qp_source *s)
 {
   GtkWidget *mi;
   const size_t MLEN = 64;
@@ -169,9 +169,9 @@ void add_source_buffer_remove_menu(struct qp_qp *qp, struct qp_source *s)
 
 void add_source_buffer_remove_menus(struct qp_source *s)
 {
-  struct qp_qp *qp;
-  for(qp=(struct qp_qp*)qp_sllist_begin(app->qps);
-      qp; qp=(struct qp_qp*)qp_sllist_next(app->qps))
+  struct qp_win *qp;
+  for(qp=(struct qp_win*)qp_sllist_begin(app->qps);
+      qp; qp=(struct qp_win*)qp_sllist_next(app->qps))
     if(qp->window)
       add_source_buffer_remove_menu(qp, s);
 }
@@ -205,43 +205,102 @@ void qp_get_root_window_size(void)
   ASSERT(app->root_window_height > 0);
 }
 
+/* We flip back the tab and wait for the drawing to
+ * finish and then flip back to the next tab and
+ * so on, until all tabs have been flipped. */
+static
+gboolean qp_startup_idle_callback(gpointer data)
+{
+  struct qp_win *qp = NULL;
+  qp = (struct qp_win *) data;
+  ASSERT(qp);
+  ASSERT(qp->notebook);
+  ASSERT(qp->initializing);
 
-struct qp_qp_config
+  if(qp->initializing == 2)
+  {
+    qp_win_destroy(qp);
+    return FALSE;
+  }
+
+//DEBUG("qp->init_front_page_num=%d  page=%d\n", qp->init_front_page_num,
+//    gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook)));
+  
+  if(qp->init_front_page_num == -1)
+  {
+    int n;
+
+    if((n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook))) == 1)
+    {
+      qp->init_front_page_num = -1;
+      qp->initializing = 0;
+      DEBUG("removing callback\n");
+      return FALSE; /* remove this idle callback */
+    }
+
+    qp->init_front_page_num =
+      gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
+
+    if(qp->init_front_page_num != 0)
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 0);
+    else
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 1);
+    return TRUE;
+  }
+  else
+  {
+    int n, c;
+    gtk_notebook_next_page(GTK_NOTEBOOK(qp->notebook));
+    n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook));
+    c = gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
+    if(c == qp->init_front_page_num)
+    {
+      gtk_notebook_next_page(GTK_NOTEBOOK(qp->notebook));
+      c = gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
+    }
+
+    if(c == n-1)
+    {
+      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), qp->init_front_page_num);
+      qp->init_front_page_num = -1;
+      qp->initializing = 0;
+      DEBUG("removing callback\n");
+      return FALSE; /* remove this idle callback */
+    }
+    return TRUE;
+  }
+}
+
+struct qp_win_config
 {
   int border, x11_draw, width, height, menubar, buttonbar, tabs, statusbar;
 };
 
-/* the qp_qp_config thing will over-ride the app->op_* stuff
+/* the qp_win_config thing will over-ride the app->op_* stuff
  * so that we may have this make a copy of a qp that exists
  * and may have a different state than the app->op_* stuff */
 static
-qp_qp_t _qp_qp_window(struct qp_qp *qp,
-    const struct qp_qp_config *c)
+qp_win_t _qp_win_create(const struct qp_win_config *c)
 {
+  struct qp_win *qp;
   GtkWidget *vbox;
   GtkAccelGroup *accelGroup;
   GdkPixbuf *pixbuf;
 
-  qp = qp_qp_check(qp);
-  if(qp->window)
-    /* if there is a main window already we make a
-     * another qp. */
-    qp = qp_qp_create();
+  if(qp_app_init_check())
+    return NULL;
 
-  {
-    int ret = 0;
-    if(!app->is_gtk_init)
-      ret = qp_app_init(NULL, NULL);
-    ASSERT(ret != -1);
-    if(ret == 1)
-      return NULL; /* failure */
-  }
-
+  qp = qp_malloc(sizeof(*qp));
+  memset(qp,0,sizeof(*qp));
+  qp->graphs = qp_sllist_create(NULL);
+  qp_sllist_append(app->qps, qp);
+  default_qp = qp;
 
   qp->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   ASSERT(qp->window);
 
-  qp->initializing = 0;
+  /* set this flag */
+  qp->initializing = 1;
 
   qp->border = (c)?(c->border):(app->op_border);
   gtk_window_set_decorated(GTK_WINDOW(qp->window), qp->border);
@@ -262,7 +321,7 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp,
   ASSERT(app->main_window_count > 0);
 
   qp->window_num = main_window_create_count;
-  qp_qp_set_window_title(qp);
+  qp_win_set_window_title(qp);
 
   //gtk_widget_set_events(qp->window, gtk_widget_get_events(qp->window));
 
@@ -356,7 +415,7 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp,
       {
         /* We must make the other qp->delete_window_menu_item
          * have the correct sensitive state. */
-        struct qp_qp *oqp;
+        struct qp_win *oqp;
         ASSERT(qp_sllist_length(app->qps) > 0);
         for(oqp=qp_sllist_begin(app->qps);
           oqp; oqp=qp_sllist_next(app->qps))
@@ -562,89 +621,26 @@ qp_qp_t _qp_qp_window(struct qp_qp *qp,
   gtk_widget_show(vbox);
   gtk_widget_show(qp->window);
 
+  /* Setup/draw the plots in the tabs */
+  qp->init_front_page_num = -1;
+  g_idle_add_full(G_PRIORITY_LOW + 10, qp_startup_idle_callback, qp, NULL);
 
   return qp; /* success */
 }
 
 
-qp_qp_t qp_qp_window(struct qp_qp *qp)
+qp_win_t qp_win_create()
 {
-  return _qp_qp_window(qp, NULL);
+  return _qp_win_create(NULL);
 }
 
-/* We flip back the tab and wait for the drawing to
- * finish and then flip back to the next tab and
- * so on, until all tabs have been flipped. */
-static
-gboolean qp_startup_idle_callback(gpointer data)
+
+struct qp_win *qp_win_copy_create(struct qp_win *old_qp)
 {
-  struct qp_qp *qp = NULL;
-  static int front_page_num = -1;
-
-  qp = (struct qp_qp *) data;
-  ASSERT(qp);
-  ASSERT(qp->notebook);
-  ASSERT(qp->initializing);
-
-  if(qp->initializing == 2)
-  {
-    qp_qp_destroy(qp);
-    front_page_num = -1;
-    return FALSE;
-  }
-
-//DEBUG("front_page_num=%d  page=%d\n", front_page_num,
-//    gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook)));
-  
-  if(front_page_num == -1)
-  {
-    int n;
-
-    if((n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook))) == 1)
-    {
-      front_page_num = -1;
-      qp->initializing = 0;
-      return FALSE; /* remove this idle callback */
-    }
-
-    front_page_num =
-      gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
-
-    if(front_page_num != 0)
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 0);
-    else
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 1);
-    return TRUE;
-  }
-  else
-  {
-    int n, c;
-    gtk_notebook_next_page(GTK_NOTEBOOK(qp->notebook));
-    n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook));
-    c = gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
-    if(c == front_page_num)
-    {
-      gtk_notebook_next_page(GTK_NOTEBOOK(qp->notebook));
-      c = gtk_notebook_get_current_page(GTK_NOTEBOOK(qp->notebook));
-    }
-
-    if(c == n-1)
-    {
-      gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), front_page_num);
-      front_page_num = -1;
-      qp->initializing = 0;
-      return FALSE; /* remove this idle callback */
-    }
-    return TRUE;
-  }
-}
-
-struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp)
-{
-  struct qp_qp *qp = NULL;
+  struct qp_win *qp = NULL;
   struct qp_graph *gr, *old_gr;
   int width, height;
-  struct qp_qp_config config;
+  struct qp_win_config config;
 
   gtk_window_get_size(GTK_WINDOW(old_qp->window), &width, &height);
 
@@ -657,7 +653,7 @@ struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp)
   config.tabs = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_graph_tabs));
   config.statusbar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_statusbar));
 
-  qp = _qp_qp_window(NULL, &config);
+  qp = _qp_win_create(&config);
 
   ASSERT(qp_sllist_length(old_qp->graphs) == 
       gtk_notebook_get_n_pages(GTK_NOTEBOOK(old_qp->notebook)));
@@ -682,9 +678,6 @@ struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp)
   qp->pointer_y = old_qp->pointer_y;
 
   
-  /* Setup/draw the plots in the tabs */
-  qp->initializing = 1;
-  g_idle_add_full(G_PRIORITY_LOW + 10, qp_startup_idle_callback, qp, NULL);
 
   return qp;
 }

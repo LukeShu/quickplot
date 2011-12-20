@@ -50,10 +50,10 @@
 
 
 
-/* The default qp is always the last one
+/* The default qp_win is always the last one
  * in the app qp list, which is the last one
  * created. */
-struct qp_qp *default_qp = NULL;
+struct qp_win *default_qp = NULL;
 
 struct qp_app *app = NULL;
 
@@ -61,9 +61,6 @@ struct qp_app *app = NULL;
  * and 1 on failure. */
 int qp_app_init(int *argc, char ***argv)
 {
-  qp_qp_check(default_qp);
-  ASSERT(qp_sllist_length(app->qps));
-
   if(argc == NULL || *argc == 0)
     argc = NULL;
   if(!argc || !argv || !*argv)
@@ -74,7 +71,9 @@ int qp_app_init(int *argc, char ***argv)
 
   if(!app->is_gtk_init && gtk_init_check(argc, argv) == FALSE)
   {
+    QP_ERROR("gtk_init_check() failed\n");
     WARN("gtk_init_check() failed\n");
+    VASSERT(0, "gtk_init_check() failed\n");
     return 1;
   }
   if(app->is_gtk_init)
@@ -188,25 +187,9 @@ struct qp_app *qp_app_create(void)
   return app;
 }
 
-
-qp_qp_t qp_qp_create(void)
+void qp_win_graph_remove(qp_win_t qp, qp_graph_t graph)
 {
-  struct qp_qp *qp;
-
-  qp_app_check();
-
-  qp = qp_malloc(sizeof(*qp));
-  memset(qp,0,sizeof(*qp));
-  qp->graphs = qp_sllist_create(NULL);
-  qp_sllist_append(app->qps, qp);
-  default_qp = qp;
-
-  return qp;
-}
-
-void qp_qp_graph_remove(qp_qp_t qp, qp_graph_t graph)
-{
-  qp = qp_qp_check(qp);
+  qp = qp_win_check(qp);
   ASSERT(qp->graphs);
 #ifdef QP_DEBUG
   ASSERT(qp_sllist_remove(qp->graphs, graph, 0) == 1);
@@ -226,8 +209,10 @@ void qp_app_source_remove(qp_source_t source)
 #endif
 }
 
-void qp_qp_destroy(qp_qp_t qp)
+void qp_win_destroy(qp_win_t qp)
 {
+  qp = qp_win_check(qp);
+
   ASSERT(app);
   ASSERT(qp);
   ASSERT(qp->window);
@@ -277,17 +262,17 @@ void qp_qp_destroy(qp_qp_t qp)
 
 void qp_app_set_window_titles(void)
 {
-  struct qp_qp *qp;
+  struct qp_win *qp;
   ASSERT(app);
   ASSERT(app->qps);
   for(qp = qp_sllist_begin(app->qps); qp; qp = qp_sllist_next(app->qps))
     if(qp->window)
-      qp_qp_set_window_title(qp);
+      qp_win_set_window_title(qp);
 }
 
 /* We reset the window titles has files are
  * loaded and unloaded. */
-void qp_qp_set_window_title(struct qp_qp *qp)
+void qp_win_set_window_title(struct qp_win *qp)
 {
 #define END_LEN  256
 #define BEG_LEN  24
@@ -431,19 +416,17 @@ void qp_append_channel_list(const char *xy, const ssize_t *a, size_t num)
   QP_APPEND("%zd}\n", a[i]);
 }
 
-void qp_qp_graph_default(qp_qp_t qp)
+void qp_win_graph_default(qp_win_t qp)
 {
   struct qp_source *s;
-  qp = qp_qp_check(qp);
-  qp_app_check();
 
   s = qp_sllist_begin(app->sources);
   for(;s; s = qp_sllist_next(app->sources))
-    qp_qp_graph_default_source(qp, s, NULL);
+    qp_win_graph_default_source(qp, s, NULL);
 }
 
 /* Returns 1 on error 0 on success */
-int qp_qp_graph_default_source(qp_qp_t qp,
+int qp_win_graph_default_source(qp_win_t qp,
     qp_source_t s, const char *name)
 {
   ssize_t *x,*y, i, i_offset = 0;
@@ -459,8 +442,6 @@ int qp_qp_graph_default_source(qp_qp_t qp,
   num_plots = app->op_number_of_plots;
   if(num_plots > s->num_channels - 1)
     num_plots = s->num_channels - 1;
-
-  qp_app_check();
 
   ss = qp_sllist_begin(app->sources);
   while(ss)
@@ -482,7 +463,7 @@ int qp_qp_graph_default_source(qp_qp_t qp,
 
   ASSERT(i >= 1);
 
-  ret = qp_qp_graph(qp, x, y, i, name);
+  ret = qp_win_graph(qp, x, y, i, name);
 
   free(x);
   free(y);
@@ -497,7 +478,7 @@ int qp_qp_graph_default_source(qp_qp_t qp,
  * channels numbers start at zero in the first channel in
  * the first source and from there number all channels in
  * all sources. */
-int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
+int qp_win_graph(qp_win_t qp, const ssize_t *x, const ssize_t *y, size_t num,
     const char *name)
 {
   size_t num_chan = 0, i;
@@ -509,6 +490,10 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
          xmin = INFINITY, xmax = -INFINITY,
          ymin = INFINITY, ymax = -INFINITY;
 
+  ASSERT(x);
+  ASSERT(y);
+  ASSERT(num);
+
   op_new_window = app->op_new_window;
 
   if(!num)
@@ -516,11 +501,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
     WARN("Number of plots=0\n"); 
     return 1;
   }
-  if(qp)
-    op_new_window = 0;
 
-  qp = qp_qp_check(qp);
-  qp_app_check();
   ASSERT(app->sources);
   ASSERT(x);
   ASSERT(y);
@@ -553,16 +534,15 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
   if(!name || !name[0])
     name = get_source(app->sources, y[0], 0)->name;
 
-  if(!qp->window)
+
+  if(app->op_new_window && !qp)
   {
-    if(!qp_qp_window(qp))
+    if(!(qp = qp_win_create()))
       return 1;
   }
-  else if(op_new_window)
-  {
-    if(!(qp = qp_qp_window(NULL)))
-      return 1;
-  }
+  else
+    qp = qp_win_check(qp);
+
 
   last_graph = qp_sllist_last(qp->graphs);
 
@@ -845,7 +825,7 @@ int qp_qp_graph(qp_qp_t qp, const ssize_t *x, const ssize_t *y, size_t num,
 #define IMIN(x,y) (((x)<(y))?(x):(y))
 
 /* if x == INT_MAX this will not use x,y */
-void qp_qp_set_status(struct qp_qp *qp)
+void qp_win_set_status(struct qp_win *qp)
 {
   char status[STR_LEN];
   struct qp_graph *gr;

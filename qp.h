@@ -182,7 +182,7 @@ struct qp_source
 
 
 /* graphs do not exist unless they are
- * in a qp_qp with a gtk window. */
+ * in a qp_win with a gtk window. */
 struct qp_graph
 {
   char *name;
@@ -190,7 +190,7 @@ struct qp_graph
   struct qp_color_gen *color_gen;
 
   struct qp_sllist *plots;
-  struct qp_qp *qp;
+  struct qp_win *qp;
 
   GtkWidget *drawing_area,
             *tab_label,
@@ -395,7 +395,7 @@ struct qp_graph_detail
 
 /* There is one of these per quickplot main window
  * The window does not have to be made. */
-struct qp_qp
+struct qp_win
 {
   struct qp_sllist *graphs;
   struct qp_graph *current_graph;
@@ -430,7 +430,7 @@ struct qp_qp
 
   /* this is the last known pointer position, in pixels,
    * in the drawing_area, all drawing areas being in the
-   * same position and size for a given qp_qp. */
+   * same position and size for a given qp_win. */
   int pointer_x, pointer_y;
 
   /* A flag to update the graph_detail after
@@ -456,14 +456,17 @@ struct qp_qp
    * unnecessary redraw events. */
   cairo_region_t *last_shape_region;
 
-  /* initializing flag  0 = done calling qp_startup_idle_callback()
-   *                                     or startup_idle_callback()
-   *                    1 = is calling qp_startup_idle_callback()
-   *                                   or startup_idle_callback()
-   *                    2 = got a delete window while in
-   *                                   qp_startup_idle_callback()
-   *                                   or startup_idle_callback() */
+
+  /* initializing flag
+   *   0 = done calling qp_startup_idle_callback()
+   *   1 = idle callback qp_startup_idle_callback()
+   *       is set
+   *   2 = got a delete window while idle callback
+   *       qp_startup_idle_callback() was set
+   */
   int initializing;
+  /* The front page after qp_startup_idle_callback() */
+  int init_front_page_num;
 };
 
 
@@ -487,10 +490,10 @@ void qp_getargs_2nd_pass(int argc, char **argv);
 extern
 void qp_graph_detail_set_value_mode(struct qp_graph *gr);
 extern
-void qp_graph_detail_destory(struct qp_qp *qp);
+void qp_graph_detail_destory(struct qp_win *qp);
 
 extern
-struct qp_qp *qp_qp_copy_create(struct qp_qp *old_qp);
+struct qp_win *qp_win_copy_create(struct qp_win *old_qp);
 
 extern
 int qp_find_doc_file(const char *fileName, char **fullpath_ret);
@@ -503,16 +506,16 @@ void qp_get_root_window_size(void);
 
 /* Setup the widget for a particular graph */
 extern
-void qp_qp_graph_detail_init(struct qp_qp *qp);
+void qp_win_graph_detail_init(struct qp_win *qp);
 
 extern
 void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr);
 
 extern
-void qp_qp_set_status(struct qp_qp *qp);
+void qp_win_set_status(struct qp_win *qp);
 
 extern
-void qp_qp_set_window_title(struct qp_qp *qp);
+void qp_win_set_window_title(struct qp_win *qp);
 extern
 void qp_app_set_window_titles(void);
 
@@ -547,7 +550,7 @@ extern
 void qp_graph_set_grid_font(struct qp_graph *gr);
 
 extern
-void qp_qp_graph_remove(qp_qp_t qp, qp_graph_t graph);
+void qp_win_graph_remove(qp_win_t qp, qp_graph_t graph);
 
 /* plots belong to the creating graph */
 extern
@@ -560,7 +563,7 @@ qp_plot_t qp_plot_create(struct qp_graph *graph,
     double xmin, double xmax, double ymin, double ymax);
 
 extern
-qp_graph_t qp_graph_create(qp_qp_t qp, const char *name);
+qp_graph_t qp_graph_create(qp_win_t qp, const char *name);
 
 extern
 void qp_graph_grid_draw(struct qp_graph *gr,
@@ -579,7 +582,7 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *cr);
 
 
 extern
-int qp_qp_save_png(struct qp_qp *qp,
+int qp_win_save_png(struct qp_win *qp,
     struct qp_graph *gr, const char *filename);
 
 /** 
@@ -609,16 +612,16 @@ int qp_gtk_init_check(struct qp_gtk_options *opt);
 
 /* default_qp is the last qp created */
 extern
-struct qp_qp *default_qp;
+struct qp_win *default_qp;
 
 static inline
-struct qp_qp *qp_qp_check(struct qp_qp *qp)
+struct qp_win *qp_win_check(struct qp_win *qp)
 {
   if(qp)
     return qp;
   if(default_qp)
     return default_qp;
-  return default_qp = qp_qp_create();
+  return default_qp = qp_win_create();
 }
 
 static inline
@@ -626,6 +629,17 @@ void qp_app_check(void)
 {
   if(!app)
     qp_app_create();
+}
+
+/* Checks for app and the gtk_init() was called. */
+static inline
+int qp_app_init_check(void)
+{
+  if(!app)
+    qp_app_create();
+  if(!app->is_gtk_init && qp_app_init(NULL, NULL))
+    return 1; /* failure */
+  return 0; /* success */
 }
 
 static inline
