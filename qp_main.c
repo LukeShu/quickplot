@@ -33,6 +33,7 @@
 #include "spew.h"
 #include "list.h"
 #include "qp.h"
+#include "shell.h"
 
 #ifdef QP_DEBUG
 # include <signal.h>
@@ -72,6 +73,9 @@ int main (int argc, char **argv)
   qp_getargs_2nd_pass(argc, argv);
 
   gtk_main();
+
+  if(app->op_shell)
+	qp_shell_destroy(app->op_shell);
 
   return 0;
 }

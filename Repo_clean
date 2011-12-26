@@ -64,6 +64,10 @@ fi
 
 set -x
 
+# generated directories
+rm -rf .deps .libs conftest.dir autom4te.cache m4
+
+
 rm -f *.o *.la *.so *.lo
 
 rm -f\
@@ -72,8 +76,6 @@ rm -f\
  config.sub config.guess configure\
  configure.scan autoscan-*x.log INSTALL\
  libtool config.status autoscan.log depcomp confdefs.h
-
-rm -rf .deps .libs conftest.dir autom4te.cache m4
 
 rm -f config.h* stamp-h* compile\
  quickplot *.xpm *.txt REPO_VERSION RELEASE_DATE paths.h\

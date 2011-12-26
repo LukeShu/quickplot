@@ -322,6 +322,12 @@ struct qp_option options[] =
 { {0,1}, "--no-points",          "-o", 0,         "plot without drawing points in the graph.  See also "
                                                   "--points.",                                                0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
+{ {1,0}, "--no-readline",        0,    0,         "don't use GNU readline with the Quickplot command "
+                                                  "shell if you run with the ::--shell@@ option.  This "
+                                                  "option has no effect if Quickplot is not built with "
+                                                  "GNU readline.",                                            "0",        "int"       },
+/*------------------------------------------------------------------------------------------------------------------------------------*/
+
 { {0,1}, "--no-shape",           0,    0,         "turn off the use of the X11 shape extension.  See also "
                                                   "::--shape@@.",                                             0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
@@ -334,7 +340,8 @@ struct qp_option options[] =
 { {0,1}, "--number-of-plots",    "-n", "NUM",     "set the default maximum number of plots for each graph "
                                                   "to NUM",                                                   0,          "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
-{ {1,1}, "--pipe",               "-P", 0,         "read data from standard input.  By default Quickplot "
+{ {1,1}, "--pipe",               "-P", 0,         "read graph data from standard input.  By default "
+                                                  "Quickplot "
                                                   "looks for data from standard input and stops looking if "
                                                   "no data is found in some short amount of time.  This "
                                                   "option will cause Quickplot to wait for standard input "
@@ -395,6 +402,19 @@ struct qp_option options[] =
                                                   "work well with fullscreen view.  This will slow down "
                                                   "graph drawing considerably.  You can toggle this on and "
                                                   "off with the ::x@@ key.  See option ::--no-shape@@.",      "0",        "int"       },
+/*------------------------------------------------------------------------------------------------------------------------------------*/
+{ {0,1}, "--shell",              "-e", 0,         "run a Quickplot command shell that reads commands from "
+                                                  "standard input and writes out to standard output.  The "
+                                                  "default is no shell and standard input will be read as "
+                                                  "graph data.  This option will override ::--pipe&& and "
+                                                  "like options.  If you want to have a Quickplot command "
+                                                  "shell and read graph data on a pipe you can prefix the "
+                                                  "graph data with the \"read\" command.  You can also "
+                                                  "connect a any number of Quickplot command shells to a "
+                                                  "running Quickplot program with the program "
+                                                  "::quickplot_shell&&.  THIS IS NOT FUNCTIONING YET.",       "NULL",     "struct "
+                                                                                                                          "qp_shell"
+                                                                                                                          " *"        },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,0}, "--silent",             0,    0,         "don't spew even on error.  The ::--silent@@ option will "
                                                   "override the effect of the ::--verbose@@ option.",         0,          0           },

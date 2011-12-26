@@ -13,7 +13,8 @@ KEYWORDS="amd64 ~ppc ~x86"
 
 RDEPEND="
 	>=x11-libs/gtk+-3:3
-	>=media-libs/libsndfile-1.0"
+	>=media-libs/libsndfile-1.0
+	>=sys-libs/readline-6.2"
 DEPEND="${RDEPEND}
 	dev-util/pkgconfig"
 

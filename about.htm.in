@@ -152,6 +152,7 @@ that <a href="help.html#house">one can make pretty pictures</a> with.
   <li>Quickplot is no longer written in C++ so it builds and
     installs faster with
     less prerequisites
+  <li>an interactive command line shell
 </ul>
 
 
@@ -177,11 +178,19 @@ installed:
    version @VERSION@.
 </li>
 
+<li><b><a href="http://tiswww.case.edu/php/chet/readline/rltop.html"
+    >GNU readline</a></b>&nbsp;&nbsp; allows users to edit command
+  lines as they are typed in.  Quickplot has an optional
+  command shell interface that uses readline, and lets you
+  interactively edit all aspects of Quickplot graphs.
+</li>
+
 <li><b><a href="http://www.mega-nerd.com/libsndfile/">libsndfile</a></b>
 &nbsp;&nbsp; is a C library for reading and writing files containing
 sampled sound, such as Ogg/Vorbis, microsoft WAV, and the Apple/SGI AIFF format,
 through one standard library interface.
 </li>
+
 </ul>
 
 

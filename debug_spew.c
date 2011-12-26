@@ -85,7 +85,7 @@ static void _qp_spew_init(void)
   char *env;
 
   spew_file = stdout; /* default value */
-  spew_level = 0; /* default value */
+  spew_level = 2; /* default value */
 
   env = getenv("SPEW_FILE");
   if(!env)

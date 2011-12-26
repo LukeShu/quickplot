@@ -44,6 +44,7 @@
 #include "callbacks.h"
 #include "get_opt.h"
 #include "channel.h"
+#include "shell.h"
 
 #ifdef DMALLOC
 #  include "dmalloc.h"

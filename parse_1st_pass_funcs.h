@@ -49,6 +49,12 @@ void parse_1st_no_pipe(void)
 }
 
 static inline
+void parse_1st_no_readline(void)
+{
+  app->op_no_readline = 1;
+}
+
+static inline
 void parse_1st_pipe(void)
 {
   if(app->op_pipe != 0)

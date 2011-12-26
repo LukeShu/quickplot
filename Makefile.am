@@ -48,6 +48,7 @@ EXTRA_DIST =\
  help_head.htm.in\
  help_tail.htm.in\
  index.htm.in\
+ about.txt\
  help.txt\
  bootstrap\
  quickplot.ebuild\
@@ -65,6 +66,8 @@ BUILT_SOURCES =\
  imgCopyWindow.xpm\
  imgSaveImage.xpm\
  quickplot.xpm\
+ about.txt\
+ help.txt\
  paths.h\
  parse_args.h\
  app_op_declare.h\
@@ -109,13 +112,6 @@ html_DATA +=\
 DISTCLEANFILES +=\
  screenshots.html
 endif
-
-if HAVE_LYNX
-DISTCLEANFILES +=\
- about.txt\
- help.txt
-endif
-
 
 
 noinst_PROGRAMS = mk_options
@@ -163,6 +159,8 @@ libquickplot_la_SOURCES =\
  qp.h\
  quickplot.h\
  quickplot.xpm\
+ shell.c\
+ shell.h\
  source.c\
  source_double.c\
  spew.c\
@@ -189,6 +187,11 @@ else
 EXTRA_DIST += exec_lib.c
 endif
 
+#if HAVE_READLINE
+libquickplot_la_LDFLAGS += $(readline_LIBS)
+#endif
+
+
 if QP_DEBUG
 libquickplot_la_SOURCES += debug_spew.c
 else
@@ -206,7 +209,7 @@ quickplotincludedir = $(includedir)
 
 
 
-bin_PROGRAMS = quickplot
+bin_PROGRAMS = quickplot quickplot_shell
 
 quickplot_SOURCES =\
  config.h\
@@ -218,8 +221,27 @@ quickplot_SHORTNAME = qp
 # LDADD to add linking to libraries not found by configure
 quickplot_LDADD = libquickplot.la 
 quickplot_CFLAGS = $(gtk_3_CFLAGS) $(sndfile_CFLAGS)
-quickplot_LDFLAGS = $(gtk_3_LIBS) $(sndfile_LIBS)
+quickplot_LDFLAGS = $(gtk_3_LIBS) $(sndfile_LIBS) $(readline_LIBS)
 
+
+
+quickplot_shell_SOURCES =\
+ list.c\
+ debug.h\
+ list.h\
+ qp_shell.c\
+ spew.c\
+ spew.h\
+ term_color.c\
+ term_color.h
+
+if QP_DEBUG
+quickplot_shell_SOURCES += debug_spew.c
+endif
+
+
+quickplot_shell_SHORTNAME = sh
+quickplot_shell_LDFLAGS = $(readline_LIBS)
 
 gzfile  = $(distdir).tar.gz
 bz2file = $(distdir).tar.bz2
@@ -357,18 +379,22 @@ endif
 # Remove generated dist files that auto-tools is stupid about.
 # Remove the out-of-date hash files.
 dist-hook:
-	if test -f REPO_VERSION ; then mv REPO_VERSION REPO_VERSION.save ; fi
 	if test -f RELEASE_DATE ; then mv RELEASE_DATE RELEASE_DATE.save ; fi
+	if test -f REPO_VERSION ; then mv REPO_VERSION REPO_VERSION.save ; fi
 	${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION > REPO_VERSION.tmp
 	mv REPO_VERSION.tmp REPO_VERSION
 	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
 	echo $(VERSION) > last_release
 	cat RELEASE_DATE REPO_VERSION >> last_release
+if HAVE_LYNX
 	rm -f about.html about.htm about.txt
 	$(MAKE) about.txt
 	mv REPO_VERSION RELEASE_DATE about.txt $(distdir)
 	rm -f about.html about.htm
 	$(MAKE) about.txt
+else
+	mv REPO_VERSION RELEASE_DATE $(distdir)
+endif
 	if test -f REPO_VERSION.save ; then mv REPO_VERSION.save REPO_VERSION ; fi
 	if test -f RELEASE_DATE.save ; then mv RELEASE_DATE.save RELEASE_DATE ; fi
 	cd $(distdir) && rm -f $(DISTCLEANFILES) config.h

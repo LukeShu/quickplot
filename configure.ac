@@ -82,7 +82,6 @@ AM_PROG_CC_C_O
 AC_PROG_LIBTOOL
 AC_LANG(C)
 
-
 #################################################################
 
 LIB_VERSION="${LIB_CURRENT}:${LIB_REVISION}:${LIB_AGE}"
@@ -109,6 +108,19 @@ vsnprintf \
 powl
 )
 
+m4_include([ax_lib_readline.m4])
+AX_LIB_READLINE
+if test "$ax_cv_lib_readline" != "no"; then
+  readline_LIBS="$ax_cv_lib_readline"
+  AC_SUBST(readline_LIBS)
+else
+  AC_MSG_WARN([
+        libreadline version >= 6.2 is required
+        homepage: http://tiswww.case.edu/php/chet/readline/rltop.html])
+  error=yes
+fi
+#AM_CONDITIONAL([HAVE_READLINE], [test "$ax_cv_lib_readline" != "no"])
+
 
 PKG_CHECK_MODULES([gtk_3], [gtk+-3.0 >= 3.0.12],
     [],
@@ -127,6 +139,7 @@ PKG_CHECK_MODULES([sndfile], [sndfile >= 1.0.5],
         homepage: http://www.mega-nerd.com/libsndfile/])
     ]
 )
+
 
 ################################################################
 #                 --enable-debug
@@ -258,6 +271,9 @@ AC_DEFINE_UNQUOTED(NUMBER_OF_PLOTS, $NUMBER_OF_PLOTS,
 AM_CONDITIONAL([IS_SVN_CO], [test -f .svn/all-wcprops])
 
 AM_CONDITIONAL([HAVE_LOCAL_SCREENSHOTS], [test -f screenshots.html.in])
+
+
+
 
 #################################################################
 # We show all warnings to the user before erroring out.  This

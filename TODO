@@ -2,7 +2,10 @@ Most of this is done, but we need to leave it so we may check
 it out more carefully.  This is just the authors junk notes.
 
 
-  Test installing man page on Gentoo with ebuild.
+  Test Gentoo ebuild with readline.
+
+  Add quickplot_shell --pid=PID program that connects to
+  a pipe to the running quickplot program.
   
   
   fix: quickplot -h ==> "failed to create drawable"

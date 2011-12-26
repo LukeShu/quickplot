@@ -268,6 +268,17 @@ void parse_2nd_shape(void)
 }
 
 static inline
+void parse_2nd_shell(void)
+{
+  if(!app->op_shell)
+  {
+    app->op_shell = qp_shell_create(stdin, stdout);
+    if(!app->op_shell)
+      exit(1);
+  }
+}
+
+static inline
 void parse_2nd_statusbar(void)
 {
   app->op_statusbar = 1;
