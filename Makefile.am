@@ -56,7 +56,8 @@ EXTRA_DIST =\
  quickplot.1.tail.in\
  Repo_clean\
  release_date.sh\
- repo_version.sh
+ repo_version.sh\
+ ax_lib_readline.m4
 
 BUILT_SOURCES =\
  imgGrabCursor.xpm\
