@@ -406,13 +406,13 @@ struct qp_option options[] =
 { {0,1}, "--shell",              "-e", 0,         "run a Quickplot command shell that reads commands from "
                                                   "standard input and writes out to standard output.  The "
                                                   "default is no shell and standard input will be read as "
-                                                  "graph data.  This option will override ::--pipe&& and "
+                                                  "graph data.  This option will override ::--pipe@@ and "
                                                   "like options.  If you want to have a Quickplot command "
                                                   "shell and read graph data on a pipe you can prefix the "
                                                   "graph data with the \"read\" command.  You can also "
                                                   "connect a any number of Quickplot command shells to a "
                                                   "running Quickplot program with the program "
-                                                  "::quickplot_shell&&.  THIS IS NOT FUNCTIONING YET.",       "NULL",     "struct "
+                                                  "::quickplot_shell@@.  THIS IS NOT FUNCTIONING YET.",       "NULL",     "struct "
                                                                                                                           "qp_shell"
                                                                                                                           " *"        },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
