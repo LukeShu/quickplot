@@ -119,6 +119,8 @@ noinst_PROGRAMS = mk_options
 mk_options_SOURCES = mk_options.c
 
 
+lib_LTLIBRARIES = libquickplot.la
+
 libquickplot_la_SOURCES =\
  app_op_declare.h\
  app_op_init.h\
@@ -173,11 +175,8 @@ libquickplot_la_SOURCES =\
  zoom.h
 
 libquickplot_la_SHORTNAME = lib
-
 libquickplot_la_CFLAGS = $(gtk_3_CFLAGS) $(sndfile_CFLAGS)
 libquickplot_la_LDFLAGS = -version-info $(LIB_VERSION)
-libquickplot_la_LIBADD = $(gtk_3_LIBS) $(sndfile_LIBS)
-
 # For making libquickplot.so executable if we are using GCC
 # and glibc which we tested in configure by compiling with the
 # gnu/lib-names.h file.
@@ -188,11 +187,10 @@ libquickplot_la_CFLAGS  += -fPIC
 else
 EXTRA_DIST += exec_lib.c
 endif
-
+libquickplot_la_LIBADD = $(gtk_3_LIBS) $(sndfile_LIBS)
 #if USE_READLINE
 libquickplot_la_LIBADD += $(readline_LIBS)
 #endif
-
 
 if QP_DEBUG
 libquickplot_la_SOURCES += debug_spew.c
@@ -201,7 +199,6 @@ EXTRA_DIST += debug_spew.c
 endif
 
 
-lib_LTLIBRARIES = libquickplot.la
 
 pkgconfigdir   = $(libdir)/pkgconfig
 pkgconfig_DATA = quickplot.pc
@@ -213,6 +210,7 @@ quickplotincludedir = $(includedir)
 
 bin_PROGRAMS = quickplot quickplot_shell
 
+
 quickplot_SOURCES =\
  config.h\
  qp_main.c\
@@ -220,8 +218,10 @@ quickplot_SOURCES =\
 
 quickplot_SHORTNAME = qp
 quickplot_CFLAGS = $(gtk_3_CFLAGS) $(sndfile_CFLAGS)
-quickplot_LDADD = libquickplot.la $(gtk_3_LIBS) $(sndfile_LIBS) $(readline_LIBS)
-
+quickplot_LDADD = libquickplot.la $(gtk_3_LIBS) $(sndfile_LIBS)
+#if USE_READLINE
+quickplot_LDADD += $(readline_LIBS)
+#endif
 
 
 quickplot_shell_SOURCES =\
@@ -238,10 +238,12 @@ quickplot_shell_SOURCES =\
 if QP_DEBUG
 quickplot_shell_SOURCES += debug_spew.c
 endif
-
-
 quickplot_shell_SHORTNAME = sh
+#if USE_READLINE
 quickplot_shell_LDADD = $(readline_LIBS)
+#endif
+
+
 
 gzfile  = $(distdir).tar.gz
 bz2file = $(distdir).tar.bz2

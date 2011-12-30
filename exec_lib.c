@@ -27,8 +27,17 @@
 
 #include <gtk/gtk.h>
 #include <sndfile.h>
-
 #include "config.h"
+
+#ifdef HAVE_LIBREADLINE
+#  if defined(HAVE_READLINE_READLINE_H)
+#    include <readline/readline.h>
+#  elif defined(HAVE_READLINE_H)
+#    include <readline.h>
+#  else /* !defined(HAVE_READLINE_H) */
+#    undef HAVE_LIBREADLINE
+#  endif
+#endif
 
 #ifdef DMALLOC
 #  include "dmalloc.h"
@@ -74,6 +83,9 @@ void qp_exec_lib(void)
          "  Was built with\n"
          "               GTK+ version: %d.%d.%d\n"
          "         libsndfile version: %s\n"
+#ifdef HAVE_LIBREADLINE
+         "        libreadline version: %d.%d\n"
+#endif
          " ------------------------------------------------\n"
 #ifdef QP_DEBUG
          "    QP_DEBUG was defined in this build.\n"
@@ -89,6 +101,9 @@ void qp_exec_lib(void)
          "  This is free software licensed under the GNU GPL (v3).\n",
           GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION,
           sndfile_version
+#ifdef HAVE_LIBREADLINE
+          , RL_VERSION_MAJOR, RL_VERSION_MINOR
+#endif
          );
 
   /* This needs to call exit and not return 0 since this is not main()
