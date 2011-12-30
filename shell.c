@@ -108,29 +108,10 @@
 #include "config.h"
 #include "qp.h"
 #include "debug.h"
+#include "list.h"
 #include "spew.h"
 #include "term_color.h"
-
-#ifdef HAVE_LIBREADLINE
-#  if defined(HAVE_READLINE_READLINE_H)
-#    include <readline/readline.h>
-#  elif defined(HAVE_READLINE_H)
-#    include <readline.h>
-#  else /* !defined(HAVE_READLINE_H) */
-#    undef HAVE_LIBREADLINE
-#  endif
-#endif
-
-#ifdef HAVE_READLINE_HISTORY
-#  if defined(HAVE_READLINE_HISTORY_H)
-#    include <readline/history.h>
-#  elif defined(HAVE_HISTORY_H)
-#    include <history.h>
-#  else /* !defined(HAVE_HISTORY_H) */
-#    undef HAVE_READLINE_HISTORY
-#  endif
-#endif /* HAVE_READLINE_HISTORY */
-
+#include "shell_common.h"
 
 #ifdef DMALLOC
 #  include "dmalloc.h"
@@ -142,39 +123,6 @@
 static
 struct qp_shell *rdln_shell = NULL;
 #endif
-
-
-/* returns 1 if there is data to read
- * returns 0 if not */
-static inline
-int check_file_in(FILE *file)
-{
-  fd_set rfds;
-  struct timeval tv = {0,0};
-  int ret;
-  FD_ZERO(&rfds);
-  FD_SET(fileno(file), &rfds);
-  if((ret = select(1, &rfds, NULL, NULL, &tv)) > 0)
-    return 1;
-
-  VASSERT(ret != -1, "select(fd=%d,,) failed\n", fileno(file));
-  if(ret == -1)
-    QP_EERROR("reading input failed\n");
-
-  return 0;
-}
-
-struct qp_shell
-{
-  /* C says that the order of a struct is the order of the types
-   * in it.  And there is no padding at the top. */
-  GSource gsource; /* We inherit GSource. */
-  GPollFD fd;
-  FILE *file_in, *file_out;
-  char *line;
-  size_t len;
-  char *prompt;
-};
 
 static
 gboolean prepare(GSource *source, gint *timeout)
@@ -196,7 +144,6 @@ gboolean check(GSource *source)
 
 void qp_shell_destroy(struct qp_shell *sh)
 {
-
   ASSERT(sh);
   ASSERT(&(sh->gsource));
 
@@ -204,7 +151,12 @@ void qp_shell_destroy(struct qp_shell *sh)
     return;
 
   if(sh->file_out)
+  {
+    errno = 0;
     fprintf(sh->file_out, "\nQuickplot Shell exiting\n");
+  }
+
+  NOTICE("Quickplot Shell exiting\n");
 
 #ifdef HAVE_LIBREADLINE
   if(sh == rdln_shell)
@@ -228,14 +180,41 @@ void qp_shell_destroy(struct qp_shell *sh)
   /* free the gsource object in memory */
   g_source_unref(&sh->gsource);
 
+  if(sh->close_on_exit)
+  {
+    if(sh->file_in)
+      fclose(sh->file_in);
+    if(sh->file_out)
+      fclose(sh->file_out);
+  }
+
   if(app->op_shell == sh)
     app->op_shell = NULL;
+
+  qp_sllist_remove(app->shells, sh, 0);
 }
 
 static inline
 void qp_shell_process_command(struct qp_shell *sh, char *line)
 {
-  printf("process_command(%zu): %s\n", strlen(line), line);
+  fprintf(sh->file_out, "process_command(length=%zu): %s\n", strlen(line), line);
+
+  if(sh->pid != app->pid)
+  {
+    /* The protocol is: the user writes a one line and then
+     * the server responds with any number of lines and ends
+     * with "\n" from the last response line plus "END\n"
+     * meaning this is the end of the returned data from
+     * the last command. */
+    fprintf(sh->file_out, "END\n");
+    DEBUG("END\n");
+  }
+  errno = 0;
+  if(fflush(sh->file_out))
+  {
+    QP_EWARN("fflush(fd=%d) failed\n", fileno(sh->file_out));
+    EWARN("fflush() failed\n");
+  }
 }
 
 /* returns 1 if the shell is done
@@ -247,6 +226,7 @@ int do_getline(struct qp_shell *sh)
 
   if(getline(&sh->line, &sh->len, sh->file_in) == -1)
   {
+    DEBUG("getline returned -1\n");
     qp_shell_destroy(sh);
     return 1;
   }
@@ -254,12 +234,15 @@ int do_getline(struct qp_shell *sh)
   len = strlen(sh->line);
   ASSERT(len > 0);
   /* remove newline '\n' */
-  sh->line[len-1] = '\0';
+  if(sh->line[len-1] == '\n')
+    sh->line[len-1] = '\0';
   qp_shell_process_command(sh, sh->line);
 
-  fprintf(sh->file_out, "%s", sh->prompt);
-  fflush(sh->file_out);
-
+  if(sh->out_isatty)
+  {
+    fprintf(sh->file_out, "%s", sh->prompt);
+    fflush(sh->file_out);
+  }
   return 0;
 }
 
@@ -270,10 +253,10 @@ void readline_handler(char *line)
   ASSERT(rdln_shell);
   if(line)
   {
-#ifdef HAVE_READLINE_HISTORY
+#  ifdef HAVE_READLINE_HISTORY
     if(*line)
       add_history(line);
-#endif
+#  endif
     qp_shell_process_command(rdln_shell, line);
     free(line);
   }
@@ -302,7 +285,7 @@ gboolean dispatch(GSource *source, GSourceFunc callback, gpointer data)
     if(do_getline(sh))
       break;
   }
-  while(check_file_in(sh->file_in));
+  while(check_file_in(sh->file_in, 0, 0));
 
   return TRUE;
 }
@@ -310,7 +293,9 @@ gboolean dispatch(GSource *source, GSourceFunc callback, gpointer data)
 static
 GSourceFuncs source_funcs = { prepare, check, dispatch, NULL, NULL, NULL };
 
-struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out)
+
+struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
+    int close_on_exit, pid_t pid)
 {
   struct qp_shell *sh;
   GSource *s;
@@ -323,6 +308,18 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out)
   if(file_out == NULL)
     file_out = stdout;
 
+  setlinebuf(file_in);
+
+#if 1
+  errno = 0;
+  if(fcntl(fileno(file_in), F_SETFL, FNDELAY))
+  {
+    VASSERT(0, "fcntl(fd=%d, F_SETFL, FNDELAY) failed\n", fileno(file_in));
+    QP_EWARN("fcntl(fd=%d, F_SETFL, FNDELAY) failed\n", fileno(file_in));
+    return NULL;
+  }
+#endif
+
   sh = (struct qp_shell *) g_source_new(&source_funcs, sizeof(*sh));
   sh->fd.fd = fileno(file_in);
   sh->fd.events = G_IO_IN;
@@ -331,6 +328,10 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out)
   sh->file_out = file_out;
   sh->line = NULL;
   sh->len = 0;
+  sh->close_on_exit = close_on_exit;
+  sh->pid = pid;
+  sh->out_isatty = isatty(fileno(sh->file_out));
+
 
   sh->prompt = getenv("QP_PROMPT");
   if(!sh->prompt)
@@ -347,16 +348,11 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out)
   gid = g_source_attach(s, NULL);
   VASSERT(gid > 0, "g_source_attach() failed\n");
   g_source_add_poll(s, &(sh->fd));
-  if(fcntl(fileno(file_in), F_SETFL, FNDELAY))
-  {
-    VASSERT(0, "fcntl(STDIN_FILENO, F_SETFL, FNDELAY) failed");
-    return NULL;
-  }
 
   fprintf(sh->file_out, "\nQuickplot version: %s\n", VERSION);
 
 #ifdef HAVE_LIBREADLINE
-  if(isatty(fileno(sh->file_in)) && !app->op_no_readline)
+  if(sh->out_isatty && !app->op_no_readline)
   {
     fprintf(sh->file_out, "Using readline version: %d.%d\n",
         RL_VERSION_MAJOR, RL_VERSION_MINOR);
@@ -367,13 +363,23 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out)
   else
   {
 #endif
-    fprintf(sh->file_out, "Using getline()\n");
-    fprintf(sh->file_out, "%s", sh->prompt);
-    fflush(sh->file_out);
+#ifndef QP_DEBUG
+    if(sh->out_isatty)
+      /* printing "Quickplot using getline()" may confuse
+       * a user into thinking that their terminal is not
+       * using readline when it may indeed be using readline. */
+#endif
+      fprintf(sh->file_out, "Quickplot using getline()\n");
+
+    if(sh->out_isatty)
+      fprintf(sh->file_out, "%s", sh->prompt);
 #ifdef HAVE_LIBREADLINE
   }
 #endif
 
+  fflush(sh->file_out);
+  qp_sllist_append(app->shells, sh);
+  DEBUG("\n");
   return sh;
 }
 

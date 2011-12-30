@@ -132,10 +132,14 @@ struct qp_app *qp_app_create(void)
   if(app) return app;
 
   app = qp_malloc(sizeof(*app));
+  memset(app, 0, sizeof(*app));
+
+  app->pid = getpid();
   app->argc = NULL;
   app->argv = NULL;
 
   app->sources = qp_sllist_create(NULL);
+  app->shells = qp_sllist_create(NULL);
 
   app->op_grid_on_top = 1;
   app->op_number_of_plots = NUMBER_OF_PLOTS;

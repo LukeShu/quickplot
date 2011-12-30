@@ -30,10 +30,11 @@
 
 #include "config.h"
 #include "debug.h"
-#include "spew.h"
 #include "list.h"
+#include "spew.h"
 #include "qp.h"
 #include "shell.h"
+#include "shell_common.h"
 
 #ifdef QP_DEBUG
 # include <signal.h>
@@ -44,9 +45,53 @@
 #endif
 
 
+static
+void usr1_sighandler(int sig_num, siginfo_t *info, void *ptr)
+{
+  char path_in[FIFO_PATH_LEN], path_out[FIFO_PATH_LEN];
+  FILE *in = NULL, *out = NULL;
+
+  NOTICE("Received signal %d from pid %d\n", sig_num, info->si_pid);
+
+  in = fopen(set_to_qp_fifo_path(path_in, getpid(), info->si_pid), "r");
+  if(!in)
+  {
+    QP_EERROR("Failed to open fifo %s\n", path_in);
+    return;
+  }
+
+  out = fopen(set_from_qp_fifo_path(path_out, getpid(), info->si_pid), "w");
+  if(!out)
+  {
+    fclose(in);
+    QP_EERROR("Failed to open fifo %s\n", path_out);
+    return;
+  }
+
+  qp_shell_create(in, out, 1, info->si_pid);
+}
+
+static
+void usr2_sighandler(int sig_num, siginfo_t *info, void *ptr)
+{
+  struct qp_shell *sh;
+  DEBUG("Caught signal %d from pid %d\n", sig_num, info->si_pid);
+  for(sh = qp_sllist_begin(app->shells); sh; sh = qp_sllist_next(app->shells))
+    if(info->si_pid == sh->pid)
+    {
+      qp_shell_destroy(sh);
+      break;
+    }
+  if(!sh)
+    QP_NOTICE("Caught signal %d from pid %d but "
+        "no shell connection was found\n", sig_num, info->si_pid);
+}
+
+
+
 #ifdef QP_DEBUG
 static
-void sighandler(int sig_num)
+void error_sighandler(int sig_num)
 {
   VASSERT(0, "We caught signal %d", sig_num);
 }
@@ -56,10 +101,11 @@ void sighandler(int sig_num)
 int main (int argc, char **argv)
 {
   struct qp_gtk_options *gtk_opt;
+  struct sigaction action;
 
 #ifdef QP_DEBUG
-  signal(SIGSEGV, sighandler);
-  signal(SIGABRT, sighandler);
+  signal(SIGSEGV, error_sighandler);
+  signal(SIGABRT, error_sighandler);
 #endif
 
   qp_app_create();
@@ -71,6 +117,18 @@ int main (int argc, char **argv)
   if(qp_gtk_init_check(gtk_opt)) return 1;
 
   qp_getargs_2nd_pass(argc, argv);
+
+  memset(&action, 0, sizeof(action));
+  action.sa_sigaction = usr1_sighandler;
+  action.sa_flags = SA_SIGINFO;
+  sigaction(SIGUSR1, &action, NULL);
+  
+  memset(&action, 0, sizeof(action));
+  action.sa_sigaction = usr2_sighandler;
+  action.sa_flags = SA_SIGINFO;
+  sigaction(SIGUSR2, &action, NULL);
+
+  DEBUG("Quickplot pid %d\n", getpid());
 
   gtk_main();
 

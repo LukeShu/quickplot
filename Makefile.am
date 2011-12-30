@@ -164,6 +164,7 @@ libquickplot_la_SOURCES =\
  shell.h\
  source.c\
  source_double.c\
+ shell_common.h\
  spew.c\
  spew.h\
  term_color.c\
@@ -174,8 +175,8 @@ libquickplot_la_SOURCES =\
 libquickplot_la_SHORTNAME = lib
 
 libquickplot_la_CFLAGS = $(gtk_3_CFLAGS) $(sndfile_CFLAGS)
-
-libquickplot_la_LDFLAGS = -version-info $(LIB_VERSION) $(gtk_3_LIBS) $(sndfile_LIBS)
+libquickplot_la_LDFLAGS = -version-info $(LIB_VERSION)
+libquickplot_la_LIBADD = $(gtk_3_LIBS) $(sndfile_LIBS)
 
 # For making libquickplot.so executable if we are using GCC
 # and glibc which we tested in configure by compiling with the
@@ -188,8 +189,8 @@ else
 EXTRA_DIST += exec_lib.c
 endif
 
-#if HAVE_READLINE
-libquickplot_la_LDFLAGS += $(readline_LIBS)
+#if USE_READLINE
+libquickplot_la_LIBADD += $(readline_LIBS)
 #endif
 
 
@@ -218,11 +219,8 @@ quickplot_SOURCES =\
  quickplot.h
 
 quickplot_SHORTNAME = qp
-
-# LDADD to add linking to libraries not found by configure
-quickplot_LDADD = libquickplot.la 
 quickplot_CFLAGS = $(gtk_3_CFLAGS) $(sndfile_CFLAGS)
-quickplot_LDFLAGS = $(gtk_3_LIBS) $(sndfile_LIBS) $(readline_LIBS)
+quickplot_LDADD = libquickplot.la $(gtk_3_LIBS) $(sndfile_LIBS) $(readline_LIBS)
 
 
 
@@ -231,6 +229,7 @@ quickplot_shell_SOURCES =\
  debug.h\
  list.h\
  qp_shell.c\
+ shell_common.h\
  spew.c\
  spew.h\
  term_color.c\
@@ -242,7 +241,7 @@ endif
 
 
 quickplot_shell_SHORTNAME = sh
-quickplot_shell_LDFLAGS = $(readline_LIBS)
+quickplot_shell_LDADD = $(readline_LIBS)
 
 gzfile  = $(distdir).tar.gz
 bz2file = $(distdir).tar.bz2
@@ -254,11 +253,11 @@ SUFFIXES = .html .bz2 .xz .gz \
 .bz2.md5 .bz2.sha1 .bz2.sha256 .bz2.sha512 \
 .xz.md5 .xz.sha1 .xz.sha256 .xz.sha512
 
-if HAVE_CONVERT
+if USE_CONVERT
 SUFFIXES += .png .xpm
 endif
 
-if HAVE_LYNX
+if USE_LYNX
 SUFFIXES += .txt
 endif
 
@@ -358,7 +357,7 @@ about.htm: style.css footer.htm
 
 
 
-if HAVE_CONVERT
+if USE_CONVERT
 .png.xpm:
 	convert $< $@
 	mv $@ $@.in
@@ -367,7 +366,7 @@ if HAVE_CONVERT
 endif
 
 
-if HAVE_LYNX
+if USE_LYNX
 .html.txt:
 	echo > $@
 	dir=`pwd` && lynx -dump $< | \
@@ -387,7 +386,7 @@ dist-hook:
 	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
 	echo $(VERSION) > last_release
 	cat RELEASE_DATE REPO_VERSION >> last_release
-if HAVE_LYNX
+if USE_LYNX
 	rm -f about.html about.htm about.txt
 	$(MAKE) about.txt
 	mv REPO_VERSION RELEASE_DATE about.txt $(distdir)

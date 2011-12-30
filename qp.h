@@ -311,9 +311,11 @@ struct qp_app
 
   int is_gtk_init;
   int main_window_count;
+  pid_t pid;
 
   struct qp_sllist *qps;
   struct qp_sllist *sources;
+  struct qp_sllist *shells;
 
 
 /* This include declares op_ variables which are long

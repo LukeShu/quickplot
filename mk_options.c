@@ -425,7 +425,7 @@ struct qp_option options[] =
                                                                /* TODO: make skip list not just n lines */    "0",        "size_t"    },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--statusbar",          0,    0,         "show the status bar below the graph.  This is the "
-                                                  "default.  See also ::--no-statusbar@@",                    "1",        "int"       },
+                                                  "default.  See also ::--no-statusbar@@.",                   "1",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--tabs",               0,    0,         "show the graph tabs.  This is the default.  See also "
                                                   "::--no-tabs@@.",                                           "1",        "int"       },

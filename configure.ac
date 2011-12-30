@@ -92,13 +92,41 @@ LIB_VERSION="${LIB_CURRENT}:${LIB_REVISION}:${LIB_AGE}"
 error=no
 
 
-AC_CHECK_PROG(HAVE_LYNX, lynx, [yes], [no])
-AM_CONDITIONAL([HAVE_LYNX],
-               [test x$HAVE_LYNX = xyes])
+AC_ARG_ENABLE([developer],
+    AS_HELP_STRING([--enable-developer],
+                   [if you wish to edit Quickplot source image files and\
+ Quickplot documentation files enabling this option will add addition\
+ make file targets which are built using the programs lynx and\
+ the ImageMagick program convert.\
+ (default is no developer targets).]),
+ [enable_developer="$enableval"],
+ [enable_developer=no])
 
-AC_CHECK_PROG(HAVE_CONVERT, convert, [yes], [no])
-AM_CONDITIONAL([HAVE_CONVERT],
-               [test x$HAVE_CONVERT = xyes])
+USE_LYNX=no
+USE_CONVERT=no
+
+if test "$enable_developer" != "no"; then
+  USE_LYNX=yes
+  USE_CONVERT=yes
+  AC_CHECK_PROG(HAVE_LYNX, lynx, [yes], [no])
+  AC_CHECK_PROG(HAVE_CONVERT, convert, [yes], [no])
+  
+  if test x$HAVE_LYNX != xyes; then
+    error=yes
+    AC_MSG_WARN([
+        lynx is required with --enable-developer
+        homepage: http://lynx.isc.org/])
+  fi
+  if test x$HAVE_CONVERT != xyes; then
+    error=yes
+    AC_MSG_WARN([
+        convert from ImageMagick is required with --enable-developer
+        homepage: http://www.imagemagick.org/])
+  fi
+fi
+
+AM_CONDITIONAL([USE_LYNX], [test x$USE_LYNX = xyes])
+AM_CONDITIONAL([USE_CONVERT], [test x$USE_CONVERT = xyes])
 
 
 AC_CHECK_HEADERS(math.h)
@@ -148,7 +176,7 @@ PKG_CHECK_MODULES([sndfile], [sndfile >= 1.0.5],
 AC_ARG_ENABLE([debug],
     AS_HELP_STRING([--enable-debug],
     [compile more debugging code into quickplot and libquickplot\
- (default is No debugging code).  You do not want this unless\
+ (default is no debugging code).  You do not want this unless\
  you are developing quickplot.  This is unrelated to debug compile\
  options.  Adding this option makes Quickplot become Slowplot.]),
  [enable_debug="$enableval"],
@@ -313,6 +341,7 @@ AC_MSG_RESULT([
   ------------------------------------------------------------
 
                extra debug code: $debug
+        extra developer targets: $enable_developer
 
                 C Compiler (CC): $CC
       C Compiler Flags (CFLAGS): $CFLAGS

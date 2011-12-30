@@ -272,7 +272,7 @@ void parse_2nd_shell(void)
 {
   if(!app->op_shell)
   {
-    app->op_shell = qp_shell_create(stdin, stdout);
+    app->op_shell = qp_shell_create(stdin, stdout, 0, getpid());
     if(!app->op_shell)
       exit(1);
   }

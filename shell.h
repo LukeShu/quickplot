@@ -21,10 +21,26 @@
 
 */
 
-struct qp_shell;
+
+struct qp_shell
+{
+  /* C says that the order of a struct is the order of the types
+   * in it.  And there is no padding at the top. */
+  GSource gsource; /* We inherit GSource. */
+  GPollFD fd;
+  FILE *file_in, *file_out;
+  char *line;
+  size_t len;
+  char *prompt;
+  int close_on_exit;
+  pid_t pid; /* process that is connected */
+  int out_isatty;
+};
+
 
 extern
-struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out);
+struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
+    int close_on_exit, pid_t pid);
 
 extern
 void qp_shell_destroy(struct qp_shell *sh);
