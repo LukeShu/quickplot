@@ -187,10 +187,9 @@ libquickplot_la_CFLAGS  += -fPIC
 else
 EXTRA_DIST += exec_lib.c
 endif
-libquickplot_la_LIBADD = $(gtk_3_LIBS) $(sndfile_LIBS)
-#if USE_READLINE
-libquickplot_la_LIBADD += $(readline_LIBS)
-#endif
+
+# We look at a sndfile symbol when libquickplot runs
+libquickplot_la_LIBADD = $(sndfile_LIBS)
 
 if QP_DEBUG
 libquickplot_la_SOURCES += debug_spew.c
