@@ -240,6 +240,7 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_G:
     case GDK_KEY_g:
+    case GDK_KEY_F9:
       gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_graph_detail));
       break;
     case GDK_KEY_H:
