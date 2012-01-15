@@ -393,7 +393,7 @@ struct qp_option options[] =
                                                   "scales ## ::A@@  auto, be smart about it.  This is the "
                                                   "default. && See also ::--same-x-scale@@. ",                "-1",       "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--shape",              0,    0,         "make graphs see through.  This is insanely cool.  It "
+{ {0,1}, "--shape",              0,    0,         "make graphs see through.  It "
                                                   "uses the X11 shape extension which was made famous by "
                                                   "xeyes.  The X11 shape extension may be a little flashy "
                                                   "on some systems.  Try using ::--shape@@ with the "
