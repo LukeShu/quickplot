@@ -664,8 +664,20 @@ gboolean idle_callback(gpointer data)
 {
   struct qp_graph *gr;
   gr = (struct qp_graph*) data;
+
+  --gr->ref_count;
+
+  if(gr->destroy_called)
+  {
+    qp_graph_destroy(gr);
+    return FALSE;
+  }
+
+  ASSERT(gr->ref_count > 0);
+
   gr->waiting_to_resize_draw = 0;
   gtk_widget_queue_draw(gr->drawing_area);
+  
   //WARN("QUEUED the draw\n");
   return FALSE;
 }
@@ -815,12 +827,16 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
 
   if(gr->waiting_to_resize_draw && !gr->qp->shape)
   {
+    //WARN("gr=%p gr->name=\"%s\" gr->ref_count=%d\n", gr, gr->name, gr->ref_count);
     cairo_set_source_rgba(gdk_cr, gr->background_color.r,
       gr->background_color.g, gr->background_color.b,
       gr->background_color.a);
 
     cairo_paint(gdk_cr);
+
     g_idle_add_full(G_PRIORITY_LOW, idle_callback, gr, NULL);
+    /* fight qp_graph_destroy() race condition with flag */
+    ++gr->ref_count;
     /* We draw after the other widgets are drawn, incase drawing
      * takes a long time.  This waiting also gives a chance
      * for the watch cursor to show.  But that seems to only
@@ -1025,7 +1041,6 @@ int qp_win_save_png(struct qp_win *qp,
   /* This is where we go from the back buffer to the image */
   draw_from_pixbuf(cr, gr, allocation.width, allocation.height);
 
-  
   errno = 0;
   if(CAIRO_STATUS_SUCCESS ==
       cairo_surface_write_to_png(surface, filename))

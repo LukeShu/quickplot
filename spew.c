@@ -45,6 +45,12 @@ static int spew_level = -1;
 static FILE *spew_file = NULL;
 static int last_spewed = 0; /* bool */
 
+int qp_set_spew_level(int level)
+{
+  int old_level = spew_level;
+  spew_level = level;
+  return old_level;
+}
 
 int qp_get_spew_level(void)
 {

@@ -21,7 +21,6 @@
 
 */
 
-
 struct qp_shell
 {
   /* C says that the order of a struct is the order of the types
@@ -34,7 +33,7 @@ struct qp_shell
   char *prompt;
   int close_on_exit;
   pid_t pid; /* process that is connected */
-  int out_isatty;
+  int file_in_isatty;
 };
 
 
@@ -44,4 +43,7 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
 
 extern
 void qp_shell_destroy(struct qp_shell *sh);
+
+extern
+int do_server_commands(size_t argc, char **argv, struct qp_shell *sh);
 

@@ -31,6 +31,7 @@
 #include <sys/time.h>
 #include <unistd.h>
 #include <math.h>
+#include <locale.h>
 
 #include <sndfile.h>
 
@@ -45,6 +46,7 @@
 #include "get_opt.h"
 #include "channel.h"
 #include "shell.h"
+#include "utils.h"
 
 #ifdef DMALLOC
 #  include "dmalloc.h"
@@ -172,9 +174,17 @@ void qp_getargs_2nd_pass(int argc, char **argv)
        * window.  By default the current
        * graph is the last one created, which
        * works when the user creates it while
-       * interacting with the window. */
+       * interacting with the window which is not
+       * the case at startup. */
       gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), 0);
     }
+  }
+  if(app->op_shell)
+  {
+    /* We must make the shell last of all so the shell is usable. */
+    app->op_shell = qp_shell_create(stdin, stdout, 0, getpid());
+    if(!app->op_shell)
+      exit(1);
   }
 }
 

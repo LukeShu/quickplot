@@ -74,7 +74,7 @@ BUILT_SOURCES =\
  app_op_declare.h\
  app_op_init.h
 
-man_MANS = quickplot.1
+man_MANS = quickplot.1 quickplot_shell.1
 
 # The .xpm files are built but come in a tarball
 # .xpm files are not checked into the repository
@@ -163,14 +163,18 @@ libquickplot_la_SOURCES =\
  quickplot.h\
  quickplot.xpm\
  shell.c\
+ shell_get_set_values.h\
  shell.h\
  source.c\
  source_double.c\
+ shell_common.c\
  shell_common.h\
+ shell_server_commands.c\
  spew.c\
  spew.h\
  term_color.c\
  term_color.h\
+ utils.h\
  win.c\
  zoom.h
 
@@ -228,6 +232,7 @@ quickplot_shell_SOURCES =\
  debug.h\
  list.h\
  qp_shell.c\
+ shell_common.c\
  shell_common.h\
  spew.c\
  spew.h\

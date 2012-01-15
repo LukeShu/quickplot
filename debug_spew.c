@@ -302,6 +302,13 @@ got_per_file_spew(const char *file, int level, int line)
   return ret;
 }
 
+int _qp_spew_level(void)
+{
+  if(spew_level == -1)
+    _qp_spew_init();
+  return spew_level;
+}
+
 void _qp_spew(const char *file, int line, const char *func,
     int level, int show_errno, const char *format, ...)
 {

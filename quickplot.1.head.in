@@ -10,7 +10,8 @@ is an interactive 2D plotter.  It's primary focus is to
 interactively display 2D plots.
 It can generate PNG image files.
 .I Quickplot
-has a graphical user interface and lots of command line options.
+has a graphical user interface, lots of command line options,
+and a command line shell interface as well.
 .I Quickplot
 can load ASCII text files and many sound file formats using the
 libsnfile library.

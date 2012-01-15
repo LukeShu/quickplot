@@ -56,6 +56,7 @@
 #define ASSERT(x)        /* empty macro */
 #define VASSERT(x, ...)  /* empty macro */
 #define APPEND_ON()        (0)
+#define SPEW_LEVEL()       (5) /* no debug spew */
 
 
 #else /* #ifndef QP_DEBUG */
@@ -118,10 +119,10 @@ void _qp_assert(const char *file, int line,
 
 extern int
 _qp_spew_debug_append_is_on(void);
-
 #define APPEND_ON() _qp_spew_debug_append_is_on()
 
-
+extern int _qp_spew_level(void);
+#define SPEW_LEVEL()   _qp_spew_level()    
 
 #endif /* #ifndef QP_DEBUG  #else */
 
@@ -225,6 +226,9 @@ char *_qp_strndup(const char *s, size_t n, const char *file, int line,
   }
   return p;
 }
+
+
+      
 
 
 

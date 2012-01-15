@@ -138,7 +138,7 @@ This will create a directory named quickplot in the current directory.
 Quickplot is currently under active development.&nbsp;
 A complete re-write was done and there is a new release that
 requires the use of GTK+ version 3, without GTKmm.&nbsp;
-We consider this rewrite, version 0.9.*, much better than
+We consider this rewrite, version 0.10.*, much better than
 version 0.8.15 in many ways.&nbsp; See the
 new features list at
 <a href="about.html#features">about.html#features</a>.

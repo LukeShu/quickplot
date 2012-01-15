@@ -125,6 +125,7 @@ a.nav:active {
     background-color:#B4BBF2;
 }
 pre {
+  white-space: pre-wrap;
   border:2px solid #7B87D0;
   margin-left:10px;
   margin-right:10px;

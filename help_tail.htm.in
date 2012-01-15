@@ -72,10 +72,7 @@ The two graphs will be in two different tab pages in the one main window.
 
 <p>The command</p>
 
-<pre>quickplot --fullscreen --no-gui load1.txt --default-graph --gui \
---no-buttons --no-fullscreen --geometry=400x400-0+0 --new-window \
---graph "0 1" --geometry=400x400+0-0 load2.txt \
---background-color='rgba(140,140,200,0.6)' --cairo-draw</pre>
+<pre>quickplot --fullscreen --no-gui load1.txt --default-graph --gui --no-buttons --no-fullscreen --geometry=400x400-0+0 --new-window --graph "0 1" --geometry=400x400+0-0 load2.txt --background-color='rgba(140,140,200,0.6)' --cairo-draw</pre>
 
 <p>
 will make main window with a graph in full screen without GUIs, another smaller main window
@@ -91,6 +88,35 @@ Notice all the graphs are made in a new main window.&nbsp;
 That's because the <span class=code>--new-window</span> flag
 was set and is not unset as it could be with the <span class=code>--no-new-window</span>
 command.
+</p>
+
+<p>The command</p>
+
+<pre>echo -e "graph zoom 2 1 -.5 0\ninput `tty`\n" | quickplot /usr/share/tuxpaint/sounds/areyousure.wav --shell --no-gui --no-pipe</pre>
+
+<p>
+will graph the tuxpaint areyousure.wav file with
+the view zoomed to the right half of the graph.&nbsp;
+If you ran this from a bash (or tcsh) shell with a tty,
+Quickplot program will connect a Quickplot shell
+to the tty and give you an interactive Quickplot
+shell after running the <span class=code>input tty</span>
+command.&nbsp;  The <span class=code>--no-pipe</span>
+option keeps Quickplot from reading the standard
+input as graph data so that it can be read by the Quickplot
+shell.&nbsp;  
+The Quickplot shell will be started after all the command
+line arguments are applied, so the shell command
+<span class=code>graph zoom 2 1 -.5 0</span> is applied
+to the graph that is showing after the all the
+command line arguments are processed.&nbsp;
+Type <span class=code>help</span> at the Quickplot shell
+prompt.&nbsp;
+If you would like Quickplot
+to save your Quickplot shell history between sessions
+just create a <span class=code>.quickplot_history</span>
+in your home directory with a command like
+<span class=code>`touch ~/.quickplot_history'</span>.
 </p>
 
 

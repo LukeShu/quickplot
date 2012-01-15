@@ -53,7 +53,7 @@ void version(void)
 }
 
 
-static
+static inline
 void print_arg_error(void)
 {
   QP_ERROR("Bad arguments:\n%s\n", parser->p1.err);
@@ -152,123 +152,6 @@ int check_stdin(void)
   return 0;
 }
 
-static inline
-void parse_linear_channel(int pass, const char *arg,
-    int argc, char **argv, int *i, double *start, double *step)
-{
-  char *s;
-  int err = 0, j = 0;
-  double val[2];
-
-  if(start)
-    *start = 0;
-  if(step)
-    *step = 1;
-
-  if(arg == NULL || arg[0] == '\0')
-    goto ret;
-
-  s = (char *) arg;
-
-  while(1)
-  {
-    char *endptr = NULL;
-    struct lconv *lc;
-
-    errno = 0;
-    val[j] = strtod(s, &endptr);
-    if(errno || s == endptr)
-    {
-      if(argv[*i - 1] != arg)
-      {
-        /* The argument is part of the option like:
-         * '--linear-channel=0 1' or -l'0 3'.
-         * arg is not part of another option so
-         * this is an error */
-        err = 1;
-        break;
-      }
-      else
-      {
-        /* The optional arg is not ours */
-        *i -= 1;
-        break;
-      }
-    }
-
-    if(j == 1)
-    {
-      if(start)
-        *start = val[0];
-      if(step)
-        *step = val[1];
-      break;
-    }
-
-    lc = localeconv();
-
-    s = endptr;
-    /* go to the next number */
-    while(*s && (*s < '0' || *s > '9')
-        && *s != '+' && *s != '-' && *s != 'e'
-        && *s != 'E' && strcmp(s, lc->decimal_point))
-      ++s;
-  
-    if(!(*s))
-    {
-      if(start)
-        *start = val[0];
-      break;
-    }
-
-    ++j;
-  }
-  
-
-  if(err && pass == 0)
-  {
-    add_error("bad option argument --linear-channel='%s'\n", arg);
-    return;
-  }
-
-  /* we should not get an error on the 2nd pass */
-  ASSERT(!err);
-
-  if(err)
-  {
-    QP_ERROR("bad option argument --linear-channel='%s'\n", arg);
-    exit(1);
-  }
-
-ret:
-
-  if(start && step)
-    DEBUG("got option --linear-channel with start=%.22g step=%.22g\n",
-        *start, *step);
-}
-
-static
-long get_plot_num(const char *s, char **endptr)
-{
-  while(*s && *s < '0' && *s > '9')
-    ++s;
-  if(!(*s))
-    return INT_MAX; /* got nothing more */
-
-  long val;
-  errno = 0;
-  val = strtol(s, endptr, 10);
-
-  if(*endptr == s)
-    return INT_MAX;
-
-  if((errno == ERANGE && (val == LONG_MAX || val == LONG_MIN))
-      || (errno != 0 && val == 0))
-    return INT_MAX; /* got error */
-
-  return val;
-}
-
 static
 void load_file(const char *filename)
 {
@@ -314,96 +197,14 @@ void check_load_stdin(int here)
   }
 }
 
-/* Returns 1 on success 0 on failure
- *
- * x and y must be freed
- *
- * parsing  --plot  '0 1 0 2 0 3'
- * or --plot-file '0 1 0 2 0 3'
- *
- * str="0 1 0 2 0 3" */
-static inline
-void get_plot_option(const char *str, ssize_t **x, ssize_t **y,
-    size_t *num_plots, const char *opt, ssize_t min_chan, ssize_t max_chan)
-{
-  char *endptr;
-  char *s;
-  long nx, ny;
-  int i = 1;
-
-  ASSERT(x);
-  ASSERT(y);
-  ASSERT(num_plots);
-  
-  check_load_stdin(0);
-
-  if(!qp_sllist_last(app->sources))
-  {
-    QP_ERROR("No files loaded yet, bad option %s='%s'\n",
-         opt, str);
-    exit(1);
-  }
-
-  s = (char *) str;
-
-  nx = get_plot_num(s, &endptr);
-  if(nx < min_chan || nx > max_chan) goto fail;
-  s = endptr;
-  ny = get_plot_num(s, &endptr);
-  if(ny < min_chan || ny > max_chan) goto fail;
-  s = endptr;
-
-  if(x && y)
-  {
-    *x = qp_malloc(sizeof(ssize_t)*(strlen(s)+1)/2);
-    *y = qp_malloc(sizeof(ssize_t)*(strlen(s)+1)/2);
-    (*x)[0] = nx;
-    (*y)[0] = ny;
-  }
-
-  while(*s)
-  {
-    nx = get_plot_num(s, &endptr);
-    if(nx < min_chan || nx > max_chan) goto fail;
-    (*x)[i] = nx;
-    s = endptr;
-    ny = get_plot_num(s, &endptr);
-    if(ny < min_chan || ny > max_chan) goto fail;
-    s = endptr;
-    (*y)[i++] = ny;
-  }
-
-  *num_plots = i;
-
-#ifdef QP_DEBUG
-  DEBUG("got %s='", opt);
-  if(*num_plots > 0)
-    APPEND("%zu %zu", (*x)[0], (*y)[0]);
-  for(i=1; i<(*num_plots); ++i)
-    APPEND(" %zu %zu", (*x)[i], (*y)[i]);
-  APPEND("\n");
-#endif
-
-  return;
-
-fail:
-
-  ERROR("got bad option %s='%s'\n", opt, str);
-  QP_ERROR("got bad option %s='%s'\n", opt, str);
-  exit(1);
-  
-  if(x && *x)
-    free(*x);
-  if(y && *y)
-    free(*y);
-}
-
 /* This should not fail given we checked colors in the 1st pass */
 static inline
 void get_color(struct qp_colora *c, const char *str)
 {
   GdkRGBA rgba;
   gboolean ret;
+  rgba.alpha = 1.0;
+
   ret = gdk_rgba_parse(&rgba, str);
   VASSERT(ret,"failed to parse color string\n");
   if(!ret)
@@ -528,5 +329,4 @@ long get_long(const char *s, long min, long max, const char *opt)
 
   return val;
 }
-
 

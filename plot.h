@@ -83,7 +83,7 @@ void qp_plot_get_sig_fig(struct qp_plot *p, int width, int height)
 {
   double a, b, k;
 
-  if(p->sig_fig_x) return;
+  if(p->sig_fig_x && p->sig_fig_y) return;
 
   a = qp_plot_get_xval(p, 0);
   b = qp_plot_get_xval(p, 1);
@@ -99,12 +99,14 @@ void qp_plot_get_sig_fig(struct qp_plot *p, int width, int height)
   if(p->sig_fig_x < 1)
     p->sig_fig_x = 1;
 
+
+
   a = qp_plot_get_yval(p, 1);
   b = qp_plot_get_yval(p, 0);
   ASSERT(b > a);
   k = 1.0/(b - a);
 
-  a = ABSVAL(qp_plot_get_xval(p, width));
+  a = ABSVAL(qp_plot_get_yval(p, height));
   b = ABSVAL(b);
   if(b < a)
     b = a;
@@ -113,7 +115,6 @@ void qp_plot_get_sig_fig(struct qp_plot *p, int width, int height)
   if(p->sig_fig_y < 1)
     p->sig_fig_y = 1;
 }
-
 
 static inline
 void qp_plot_scale(struct qp_plot *p,
@@ -125,47 +126,27 @@ void qp_plot_scale(struct qp_plot *p,
   p->yshift = INT(yscale*p->yshift0 + yshift);
 
   p->sig_fig_x = 0;
+  p->sig_fig_y = 0;
 }
-
 
 static inline
 void qp_plot_x_rescale(struct qp_plot *p, double xmin, double xmax)
 {
-  if(xmax > xmin)
-  {
-    p->xscale0 = 1.0/(xmax - xmin);
-    p->xshift0 = - xmin/(xmax - xmin);
-  }
-  else
-  {
-    struct qp_channel_series *cs;
-    ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
-    cs = &(p->x->series);
+  p->xscale0 = 1.0/(xmax - xmin);
+  p->xshift0 = - xmin/(xmax - xmin);
 
-    p->xscale0 = 1.0/(cs->max - cs->min);
-    p->xshift0 = - cs->min/(cs->max - cs->min);
-  }
-
+  p->xscale = 0;
   p->sig_fig_x = 0;
 }
 
 static inline
 void qp_plot_y_rescale(struct qp_plot *p, double ymin, double ymax)
 {
-  if(ymax > ymin)
-  {
-    p->yscale0 = 1.0/(ymax - ymin);
-    p->yshift0 = - ymin/(ymax - ymin);
-  }
-  else
-  {
-    struct qp_channel_series *cs;
-    ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
-    cs = &(p->y->series);
+  p->yscale0 = 1.0/(ymax - ymin);
+  p->yshift0 = - ymin/(ymax - ymin);
 
-    p->yscale0 = 1.0/(cs->max - cs->min);
-    p->yshift0 = - cs->min/(cs->max - cs->min);
-  }
+  p->yscale = 0;
+  p->sig_fig_y = 0;
 }
 
 

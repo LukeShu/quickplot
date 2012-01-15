@@ -36,17 +36,38 @@
 #include "debug.h"
 #include "spew.h"
 #include "list.h"
+#include "term_color.h"
 #include "shell_common.h"
 
 #ifdef DMALLOC
 #  include "dmalloc.h"
 #endif
 
-static char *prompt = "QP> ";
+static char *prompt = NULL;
+static FILE *file_to = NULL;
+static int stdin_isatty;
+
+static pid_t pid = -1; /* quickplot shell server pid */
 
 #ifdef HAVE_LIBREADLINE
 int use_readline = 0;
 #endif
+
+
+char *get_window_nums(int state)
+{
+  return NULL;
+}
+
+char *get_graph_nums(int state)
+{
+  return NULL;
+}
+
+char *get_plot_nums(int state)
+{
+  return NULL;
+}
 
 
 #ifdef QP_DEBUG
@@ -58,11 +79,18 @@ void debug_sighandler(int sig_num)
 #endif
 
 static
+void signal_exit(void)
+{
+  fprintf(file_to, "exit\n");
+}
+
+static
 void term_sighandler(int sig_num)
 {
-  printf(
-      "We caught signal %d\n"
-      "enter \"exit\" to exit\n", sig_num);
+  printf("We caught signal %d\n", sig_num);
+  signal_exit();
+  printf("exiting\n");
+  exit(1);
 }
 
 static inline
@@ -76,10 +104,7 @@ int Getline(char **line, size_t *len)
     *line = readline(prompt);
     if(*line)
     {
-#   ifdef HAVE_READLINE_HISTORY
-      if(**line)
-        add_history(*line);
-#   endif
+
       return 1;
     }
     else
@@ -102,6 +127,8 @@ int Getline(char **line, size_t *len)
     ASSERT(l > 0);
     /* remove newline '\n' */
     (*line)[l-1] = '\0';
+    if(!stdin_isatty)
+      printf("%s\n", *line);
     return 1;
 
 #ifdef HAVE_LIBREADLINE
@@ -112,14 +139,16 @@ int Getline(char **line, size_t *len)
 void usage(void)
 {
   printf(
-      "  Usage: quickplot_shell PID\n"
+      "  Usage: quickplot_shell [PID]|[-h|--help]|[QUICKPLOT_OPTIONS]\n"
       "\n"
-      "  [This is not funtional yet.  It just runs like a client to an echo server.]\n"
-      "  Connect to a running Quickplot program with process ID (pid) PID.\n"
-      "  This will setup two named pipes /tmp/quickplot_to_PID_num and\n"
-      "  /tmp/quickplot_from_PID_num, signal the running Quickplot program\n"
-      "  with pid PID, and write commands and read responses to and from the\n"
-      "  pipe.  The named pipes will be removed when this program cleanly exits.\n");
+      "  If PID is not given, this will launch quickplot as a new process and\n"
+      "  connect to that new process.  In this case Quickplot will be started\n"
+      "  with QUICKPLOT_OPTIONS if any are given.\n"
+      "\n" 
+      "  If PID is given, connect to a running Quickplot program with process ID\n"
+      "  (pid) PID.\n"
+      "\n");
+
   exit(1);
 }
 
@@ -130,24 +159,31 @@ int read_and_spew_until_end(char **reply, size_t *len, FILE *from, pid_t pid)
 {
   do
   {
+    size_t rlen;
+
     if(getline(reply, len, from) == -1)
     {
       printf("Quickplot pid %d: broke the connection.\n", pid);
       return 1;
     }
-    if(!strcmp(*reply, "END\n"))
+    rlen = strlen(*reply);
+    if(rlen == 2 && **reply == END_REPLY && *((*reply)+1) == '\n')
     {
       DEBUG("END\n");
       return 0;
     }
-    printf(": %s", *reply);
+    printf("%s", *reply);
   }
-  while(!feof(from) ||
-      check_file_in(from, 10 /* seconds */, 500000 /* micro seconds */));
-
-  EWARN("failed to recieve END reply after 10.5 seconds\n");
+  while(1);
 
   return 0;
+}
+
+static int got_usr1 = 0;
+
+void usr1_catcher(int sig_num)
+{
+  got_usr1 = 1;
 }
 
 int main (int argc, char **argv)
@@ -155,22 +191,76 @@ int main (int argc, char **argv)
   char *user_line = NULL, *qp_reply = NULL;
   size_t qp_reply_len = 0, user_len = 0;
   int ret = 0;
-  pid_t pid;
   /* reading to the from Quickplot */
-  FILE *file_to = NULL, *file_from = NULL;
+  FILE *file_from = NULL;
   char path_to[FIFO_PATH_LEN], path_from[FIFO_PATH_LEN];
   *path_to = '\0';
   *path_from = '\0';
 
-
-  if(argc != 2 || argv[1][0] > '9' || argv[1][0] < '0')
+  if(argc == 2 && (!strcmp(argv[1], "-h") || !strcmp(argv[1], "--help")))
     usage();
 
+  if(argc == 2 && argv[1][0] > '0' && argv[1][0] < '9')
   {
     char *end;
     pid = strtoul(argv[1], &end, 10);
     if(*end != '\0')
+    {
+      printf("Cannot parse PID from \"%s\"\n\n", argv[1]);
       usage();
+    }
+  }
+
+  if(pid == -1)
+  {
+    char *qp_path;
+    size_t len;
+    len = strlen(argv[0]);
+    /* remove the _shell part of stuff/path_to/quickplot_shell */
+    if(len >= 15)
+    {
+      qp_path = qp_strdup(argv[0]);
+      qp_path[len-6] = '\0';
+    }
+    else
+      qp_path = qp_strdup("quickplot");
+
+    signal(SIGUSR1, usr1_catcher);
+
+    errno = 0;
+    pid = fork();
+    if(pid == -1)
+    {
+      QP_EERROR("failed to fork()\n");
+      return 1;
+    }
+    if(pid != 0)
+    {
+      // parent runs quickplot
+      char **e_argv;
+      int i;
+      char last_arg[64];
+      e_argv = qp_malloc((argc+2)*sizeof(*e_argv));
+      e_argv[0] = qp_strdup("quickplot");
+      for(i=1;i<argc;++i)
+        e_argv[i] = argv[i];
+      snprintf(last_arg, 64, "--signal=%d", pid);
+      e_argv[i++] = last_arg;
+      e_argv[i] = NULL;
+      execv(qp_path, e_argv);
+      // we failed, kill my child.
+      kill(pid, SIGINT);
+      return 1; // failed
+    }
+    else
+    {
+      pid = getppid();
+      /* wait for sig SIGCONT */
+      DEBUG("pid=%d waiting for signal\n", getpid());
+      while(!got_usr1)
+        usleep(100000);
+      DEBUG("pid=%d got signal\n", getpid());
+    }
   }
 
   errno = 0;
@@ -225,6 +315,7 @@ int main (int argc, char **argv)
   }
   setlinebuf(file_from);
 
+  prompt = allocate_prompt();
 
 #ifdef QP_DEBUG
   signal(SIGSEGV, debug_sighandler);
@@ -235,8 +326,11 @@ int main (int argc, char **argv)
   signal(SIGQUIT, term_sighandler);
   signal(SIGINT, term_sighandler);
 
+stdin_isatty = isatty(fileno(stdin));
+qp_shell_initialize(1);
+
 #ifdef HAVE_LIBREADLINE
-  if(isatty(fileno(stdout)))
+  if(stdin_isatty)
   {
     use_readline = 1;
     printf("Using readline version: %d.%d\n",
@@ -253,7 +347,7 @@ int main (int argc, char **argv)
 
   /* Exercise the pipe so it does not block the Quickplot
    * service on fopen(,"r"). */
-  fprintf(file_to, "START\n");
+  fprintf(file_to, "start\n");
   fflush(file_to);
 
   if(read_and_spew_until_end(&qp_reply, &qp_reply_len, file_from, pid))
@@ -269,20 +363,71 @@ int main (int argc, char **argv)
 
   while((Getline(&user_line, &user_len)))
   {
-    printf("Read user line \"%s\"\n", user_line);
-    fwrite(user_line, strlen(user_line), 1, file_to);
-    putc('\n', file_to);
-    fflush(file_to);
+    char **argv;
+    int argc;
+    size_t len;
+    char *history_mem = NULL;
+    len = strlen(user_line) + 1;
+    argv = get_args(user_line, &argc);
 
-    if(read_and_spew_until_end(&qp_reply, &qp_reply_len, file_from, pid))
-      goto cleanup_with_signal;
+    if(argc > 0)
+    {
+      if(!strcmp("exit", *argv)) // exit
+        break;
+      if(!strcmp("quit", *argv)) // quit
+      {
+        fprintf(file_to, "quit\n");
+        fflush(file_to);
+        break;
+      }
+
+      if(process_client_side_commands(&argc, &argv,
+            stdin, stdout, len, &history_mem
+#ifdef HAVE_LIBREADLINE
+          , 0, &use_readline
+#endif
+          ))
+      {
+        if(!strcmp("input", *argv) && argc > 1)
+        {
+          stdin_isatty = isatty(fileno(stdin));
+        }
+      }
+      else // command to server
+      {
+        int i;
+#ifdef QP_DEBUG
+        if(SPEW_LEVEL() <= 1)
+        {
+          printf("Read user line: \"%s\"", argv[0]);
+          for(i=1; i<argc; ++i)
+            printf(" %s", argv[i]);
+          printf("\n");
+        }
+#endif
+        fprintf(file_to, "%s", argv[0]);
+        for(i=1; i<argc; ++i)
+          fprintf(file_to, " %s", argv[i]);
+        fprintf(file_to,"\n");
+        fflush(file_to);
+
+        // read and print reply
+        if(read_and_spew_until_end(&qp_reply, &qp_reply_len, file_from, pid))
+          goto cleanup_with_signal;
+      }
+    }
+    if(history_mem)
+      free(history_mem);
+    free(argv);
   }
+
+#ifdef HAVE_READLINE_HISTORY
+  Save_history();
+#endif
 
 cleanup_with_signal:
 
-  errno = 0;
-  if(kill(pid, SIGUSR2))
-    QP_EERROR("Failed to signal exit to pid %d\n", pid);
+  signal_exit();
 
 cleanup:
 
@@ -291,6 +436,6 @@ cleanup:
   if(*path_from)
     unlink(path_from);
 
-  printf("\nexiting\n");
+  printf("exiting\n");
   return ret;
 }

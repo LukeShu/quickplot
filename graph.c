@@ -43,7 +43,7 @@
 
 
 static
-size_t graph_create_count = 0;
+size_t gr_create_count = 0;
 
 
 /* drawing area minimal size restriction are
@@ -62,11 +62,11 @@ char *unique_name(struct qp_win *qp, const char *name)
   size_t len = 0;
   int i = 1;
 
-  ++graph_create_count;
+  ++gr_create_count;
 
   if(!name || !name[0])
   {
-    snprintf(buf, 32, "graph %zu", graph_create_count);
+    snprintf(buf, 32, "graph %zu", gr_create_count);
     name = buf;
   }
 
@@ -126,8 +126,11 @@ void add_graph_close_button(struct qp_graph *gr)
 void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr)
 {
   struct qp_plot *p;
+  ASSERT(gr->qp != old_gr->qp);
   ASSERT(gr->name);
   free(gr->name);
+
+
   gr->name = qp_strdup(old_gr->name);
   gtk_label_set_text(GTK_LABEL(gr->tab_label), gr->name);
 
@@ -147,8 +150,8 @@ void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr)
   }
  
   for(p=qp_sllist_begin(old_gr->plots);p;p=qp_sllist_next(old_gr->plots))
-    qp_plot_copy_create(gr, p);
-      
+    qp_plot_copy_create(gr, p)->plot_num = p->plot_num;
+
   memcpy(gr->color_gen, old_gr->color_gen, sizeof(*(gr->color_gen)));
   memcpy(&gr->background_color, &old_gr->background_color, sizeof(gr->background_color));
   memcpy(&gr->grid_line_color, &old_gr->grid_line_color, sizeof(gr->grid_line_color));
@@ -164,6 +167,11 @@ void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr)
   gr->grid_x_space = old_gr->grid_x_space;
   gr->grid_y_space = old_gr->grid_y_space;
 
+  gr->gaps = old_gr->gaps;
+  gr->lines = old_gr->lines;
+  gr->points = old_gr->points;
+  gr->line_width = old_gr->line_width;
+  gr->point_size = old_gr->point_size;
 
   gr->grab_x = old_gr->grab_x;
   gr->grab_y = old_gr->grab_y;
@@ -187,11 +195,20 @@ void qp_graph_copy(struct qp_graph *gr, struct qp_graph *old_gr)
    * better incase the old_gr->grid_font is not a valid font. */
 
   /* does not copy the X11 shape mode */
+
+  if(gr->qp != old_gr->qp)
+  {
+    if(gr->qp->graph_create_count < old_gr->qp->graph_create_count)
+      gr->qp->graph_create_count = old_gr->qp->graph_create_count;
+    gr->graph_num = old_gr->graph_num;
+  }
 }
 
 qp_graph_t qp_graph_create(qp_win_t qp, const char *name)
 {
   struct qp_graph *gr;
+  if(!qp) qp = default_qp;
+
   ASSERT(qp);
   ASSERT(qp->graphs);
   ASSERT(qp->window);
@@ -201,19 +218,34 @@ qp_graph_t qp_graph_create(qp_win_t qp, const char *name)
     return NULL;
 
   gr = (struct qp_graph *) qp_malloc(sizeof(*gr));
+  memset(gr, 0, sizeof(*gr));
+  gr->ref_count = 1;
+  gr->graph_num = ++qp->graph_create_count;
   gr->name = unique_name(qp, name);
   gr->color_gen = qp_color_gen_create();
   gr->zoom_level = 0;
   gr->plots = qp_sllist_create(NULL);
   qp_sllist_append(qp->graphs, gr);
+
+  gr->gaps = qp->gaps;
+  gr->lines = qp->lines;
+  gr->points = qp->points;
+  gr->line_width = qp->line_width;
+  gr->point_size = qp->point_size;
+
+  gr->show_grid = qp->grid;
+  gr->grid_numbers = qp->grid_numbers;
+  gr->grid_x_space = qp->grid_x_space;
+  gr->grid_y_space = qp->grid_y_space;
+  gr->grid_line_width = qp->grid_line_width;
+
   gr->qp = qp;
   gr->pangolayout = NULL;
-  gr->grid_font = qp_strdup(app->op_grid_font);
+  gr->grid_font = qp_strdup(qp->grid_font);
 
   gr->drawing_area = NULL;
   gr->close_button = NULL;
   gr->pixbuf_surface = NULL;
-
 
   gr->same_x_scale = 1;
   gr->same_y_scale = 1;
@@ -232,11 +264,11 @@ qp_graph_t qp_graph_create(qp_win_t qp, const char *name)
   /* qp_zoom_create(xscale, xshift, yscale, yshift) */
   gr->z = qp_zoom_create(0.95,0.025,0.92,0.04);
 
-  memcpy(&gr->background_color, &app->op_background_color,
+  memcpy(&gr->background_color, &qp->background_color,
       sizeof(gr->background_color));
-  memcpy(&gr->grid_line_color, &app->op_grid_line_color,
+  memcpy(&gr->grid_line_color, &qp->grid_line_color,
       sizeof(gr->grid_line_color));
-  memcpy(&gr->grid_text_color, &app->op_grid_text_color,
+  memcpy(&gr->grid_text_color, &qp->grid_text_color,
       sizeof(gr->grid_text_color));
 
   gr->bg_alpha_preshape = gr->background_color.a;
@@ -248,12 +280,7 @@ qp_graph_t qp_graph_create(qp_win_t qp, const char *name)
       gr->background_color.a = 0.4;
   }
 
-  gr->show_grid = app->op_grid;
-  gr->grid_numbers = app->op_grid_numbers;
-  gr->grid_x_space = app->op_grid_x_space;
-  gr->grid_y_space = app->op_grid_y_space;
-  gr->grid_line_width = app->op_grid_line_width;
-  gr->grid_on_top = app->op_grid_on_top;
+
   gr->grab_x = 0;
   gr->grab_y = 0;
 
@@ -467,6 +494,16 @@ void qp_graph_destroy(qp_graph_t gr)
   ASSERT(gr->plots);
   if(!gr) return;
 
+  if(gr->ref_count != 1)
+  {
+    ASSERT(gr->ref_count > 1);
+    /* We cannot use just a counter because there could be an
+     * arbitary number of button destroying clicks that
+     * we wish to delay acting on. */
+    gr->destroy_called = 1;
+    return;
+  }
+
   qp = gr->qp;
   ASSERT(qp);
   ASSERT(qp->window);
@@ -558,5 +595,320 @@ void qp_graph_zoom_out(struct qp_graph *gr, int all)
 
   qp_win_set_status(gr->qp);
   gtk_widget_queue_draw(gr->drawing_area);
+}
+
+static
+void _qp_graph_rescale_plots(struct qp_graph *gr)
+{
+  /* We must rescale all the plots */
+  /* TODO: make this code suck less */
+  double dx_min = INFINITY, xmin = INFINITY, xmax = -INFINITY,
+         dy_min = INFINITY, ymin = INFINITY, ymax = -INFINITY;
+  struct qp_channel_series *csx0, *csy0;
+  struct qp_plot *p;
+
+  p=qp_sllist_begin(gr->plots);
+  ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
+  ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
+  csx0 = &(p->x->series);
+  csy0 = &(p->y->series);
+  gr->same_x_limits = 1;
+  gr->same_y_limits = 1;
+
+  for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+  {
+    double dx, dy;
+    struct qp_channel_series *cs;
+    ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
+    ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
+    cs = &(p->x->series);
+    dx = cs->max - cs->min;
+    if(xmin > cs->min)
+      xmin = cs->min;
+    if(xmax < cs->max)
+      xmax = cs->max;
+    if(dx > SMALL_DOUBLE && dx_min > dx)
+      dx_min = dx;
+    if(csx0->max != cs->max || csx0->min != cs->min)
+      gr->same_x_limits = 0;
+
+    cs = &(p->y->series);
+    dy = cs->max - cs->min;
+    if(ymin > cs->min)
+      ymin = cs->min;
+    if(ymax < cs->max)
+      ymax = cs->max;
+    if(dy > SMALL_DOUBLE && dy_min > dy)
+      dy_min = dy;
+    if(csy0->max != cs->max || csy0->min != cs->min)
+      gr->same_y_limits = 0;
+  }
+
+  if(gr->same_x_limits)
+  {
+    gr->same_x_scale = 1;
+  }
+
+  if(gr->same_x_scale)
+  {
+    if(xmax == xmin)
+    {
+      /* It could be just one point so lets give it a
+       * decent scale, not like the 1e-14 crap. */
+      xmax += 1;
+      xmin -= 1;
+    }
+    else if(xmax - xmin < SMALL_DOUBLE)
+    {
+      xmax += SMALL_DOUBLE;
+      xmin -= SMALL_DOUBLE;
+    }
+  }
+  else if(xmax == xmin)
+  {
+    /* It could be just one point so lets give it a
+     * decent scale, not like the 1e-14 crap. */
+    xmax += 1;
+    xmin -= 1;
+  }
+  else if(xmax - xmin < SMALL_DOUBLE)
+  {
+    /* they requested different scales but the values
+     * are too close together, so we make it same scale */
+    xmax += SMALL_DOUBLE;
+    xmin -= SMALL_DOUBLE;
+  }
+  else
+  {
+    /* use different scales */
+    xmin = INFINITY;
+    xmax = -INFINITY;
+  }
+
+  if(gr->same_y_limits)
+    gr->same_y_scale = 1;
+
+  if(gr->same_y_scale)
+  {
+    if(ymax == ymin)
+    {
+      /* It could be just one point so lets give it a
+       * decent scale, not like the 1e-14 crap. */
+      ymax += 1;
+      ymin -= 1;
+    }
+    else if(ymax - ymin < SMALL_DOUBLE)
+    {
+      ymax += SMALL_DOUBLE;
+      ymin -= SMALL_DOUBLE;
+    }
+  }
+  else if(ymax == ymin)
+  {
+    /* It could be just one point so lets give it a
+     * decent scale, not like the 1e-14 crap. */
+    ymax += 1;
+    ymin -= 1;
+  }
+  else if(ymax - ymin < SMALL_DOUBLE)
+  {
+    /* they requested different scales but the values
+     * are too close together, so we make it same scale */
+    ymax += SMALL_DOUBLE;
+    ymin -= SMALL_DOUBLE;
+  }
+  else
+  {
+    /* use different scales */
+    ymin = INFINITY;
+    ymax = -INFINITY;
+  }
+
+  for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+  {
+    qp_plot_x_rescale(p, xmin, xmax);
+    qp_plot_y_rescale(p, ymin, ymax);
+  }
+}
+
+static 
+void _qp_graph_set_redraw(struct qp_graph *gr)
+{
+  gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window), app->waitCursor);
+  if(gr->qp->graph_detail)
+    gtk_widget_queue_draw(gr->qp->graph_detail->selecter_drawing_area);
+    /* We will queue the Graph draw in the selecter_drawing_area draw
+     * so that we see the selecter draw before the graph */
+  gr->pixbuf_needs_draw = 1;
+  gr->draw_value_pick = 0;
+
+  if(gr->qp->graph_detail && gr->qp->current_graph == gr)
+  {
+    qp_graph_detail_set_value_mode(gr);
+    qp_graph_detail_plot_list_remake(gr->qp);
+  }
+}
+
+void qp_graph_remove_plot(struct qp_graph *gr, struct qp_plot *p)
+{
+  ASSERT(gr);
+  ASSERT(p);
+
+  qp_sllist_remove(gr->plots, p, 0);
+  qp_plot_destroy(p, gr);
+
+  if(qp_sllist_length(gr->plots))
+    _qp_graph_rescale_plots(gr);
+
+  _qp_graph_set_redraw(gr);
+}
+
+void qp_graph_add_plot(struct qp_graph *gr,
+    struct qp_source *sx, struct qp_source *sy,
+    size_t x_channel_num, size_t y_channel_num)
+{
+  char pname[128];
+  struct qp_channel *x, *y;
+
+  ASSERT(gr);
+  ASSERT(sx);
+  ASSERT(sy);
+  ASSERT(sx->num_channels > x_channel_num);
+  ASSERT(sy->num_channels > y_channel_num);
+
+  x = sx->channels[x_channel_num];
+  y = sy->channels[y_channel_num];
+
+  ASSERT(x->form == QP_CHANNEL_FORM_SERIES);
+  ASSERT(y->form == QP_CHANNEL_FORM_SERIES);
+
+  qp_source_get_plot_name(pname, 128, sx, sy,
+      x_channel_num, y_channel_num);
+
+  qp_plot_create(gr, x, y, pname,
+        x->series.min, x->series.max,
+        y->series.min, y->series.max);
+
+  _qp_graph_rescale_plots(gr);
+  _qp_graph_set_redraw(gr);
+}
+
+void qp_graph_same_x_scale(struct qp_graph *gr, int same_x_scale /* 0 or 1 */)
+{
+  if(gr->same_x_scale == same_x_scale || gr->same_x_limits)
+    return;
+
+  gr->same_x_scale = same_x_scale;
+
+  if(same_x_scale)
+  {
+    double min=INFINITY, max=-INFINITY;
+    struct qp_plot *p;
+    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+    {
+      ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
+      if(max < p->x->series.max)
+        max = p->x->series.max;
+      if(min > p->x->series.min)
+        min = p->x->series.min;
+    }
+    ASSERT(max >= min);
+    if(max == min)
+    {
+      max += 1;
+      min -= 1;
+    }
+    else if(max - min < SMALL_DOUBLE)
+    {
+      max += SMALL_DOUBLE;
+      min -= SMALL_DOUBLE;
+    }
+
+    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+      qp_plot_x_rescale(p, min, max);
+  }
+ else
+  {
+    struct qp_plot *p;
+    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+    {
+      double min, max;
+      max = p->x->series.max;
+      min = p->x->series.min;
+      if(max == min)
+      {
+        max += 1;
+        min -= 1;
+      }
+      else if(max - min < SMALL_DOUBLE)
+      {
+        max += SMALL_DOUBLE;
+        min -= SMALL_DOUBLE;
+      }
+      qp_plot_x_rescale(p, min, max);
+    }
+  }
+
+  gr->pixbuf_needs_draw = 1;
+}
+
+void qp_graph_same_y_scale(struct qp_graph *gr, int same_y_scale /* 0 or 1 */)
+{
+  if(gr->same_y_scale == same_y_scale || (gr->same_y_limits && !same_y_scale))
+    return;
+
+  gr->same_y_scale = same_y_scale;
+
+  if(same_y_scale)
+  {
+    double min=INFINITY, max=-INFINITY;
+    struct qp_plot *p;
+    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+    {
+      ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
+      if(max < p->y->series.max)
+        max = p->y->series.max;
+      if(min > p->y->series.min)
+        min = p->y->series.min;
+    }
+    ASSERT(max >= min);
+    if(max == min)
+    {
+      max += 1;
+      min -= 1;
+    }
+    else if(max - min < SMALL_DOUBLE)
+    {
+      max += SMALL_DOUBLE;
+      min -= SMALL_DOUBLE;
+    }
+    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+      qp_plot_y_rescale(p, min, max);
+  }
+ else
+  {
+    /* different scales for each plot */
+
+    struct qp_plot *p;
+    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
+    {
+      double min, max;
+      max = p->y->series.max;
+      min = p->y->series.min;
+      if(max == min)
+      {
+        max += 1;
+        min -= 1;
+      }
+      else if(max - min < SMALL_DOUBLE)
+      {
+        max += SMALL_DOUBLE;
+        min -= SMALL_DOUBLE;
+      }
+      qp_plot_y_rescale(p, min, max);
+    }
+  }
+
+  gr->pixbuf_needs_draw = 1;
 }
 

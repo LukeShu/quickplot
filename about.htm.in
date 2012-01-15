@@ -124,7 +124,7 @@ that <a href="help.html#house">one can make pretty pictures</a> with.
 
 
 <a name="features"></a>
-<h3>New features in version 0.9.*</h3>
+<h3>New features in after version 0.8.*</h3>
 
 
 <ul>
@@ -152,7 +152,7 @@ that <a href="help.html#house">one can make pretty pictures</a> with.
   <li>Quickplot is no longer written in C++ so it builds and
     installs faster with
     less prerequisites
-  <li>an interactive command line shell
+  <li>a command line shell (added in version 0.10.*)
 </ul>
 
 
@@ -179,10 +179,13 @@ installed:
 </li>
 
 <li><b><a href="http://tiswww.case.edu/php/chet/readline/rltop.html"
-    >GNU readline</a></b>&nbsp;&nbsp; allows users to edit command
-  lines as they are typed in.  Quickplot has an optional
-  command shell interface that uses readline, and lets you
-  interactively edit all aspects of Quickplot graphs.
+  >GNU readline</a></b>&nbsp;&nbsp; allows users to edit command
+  lines as they are typed in.&nbsp;  In addition to standard graphical user
+  interfaces (GUIs) Quickplot has a
+  command shell interface that lets you edit all
+  aspects of Quickplot graphs.&nbsp;
+  The history and tab auto-completion of readline makes the interactive
+  version of the Quickplot shell easy to use.
 </li>
 
 <li><b><a href="http://www.mega-nerd.com/libsndfile/">libsndfile</a></b>

@@ -104,6 +104,7 @@ struct qp_plot *qp_plot_copy_create(struct qp_graph *gr, struct qp_plot *old_p)
 {
   struct qp_plot *p;
   struct qp_graph_x11 *x11_save;
+  ASSERT(gr != old_p->gr);
 
   x11_save = gr->x11;
   if(x11_save)
@@ -111,8 +112,7 @@ struct qp_plot *qp_plot_copy_create(struct qp_graph *gr, struct qp_plot *old_p)
      * they may change after the plot is made. */
     gr->x11 = NULL;
 
-  p = qp_plot_create(gr, old_p->x, old_p->y, old_p->name,
-    1.0, -1.0, 1.0, -1.0);
+  p = qp_plot_create(gr, old_p->x, old_p->y, old_p->name, 1.0, -1.0, 1.0, -1.0);
 
    /* Here we may be changing the colors
    * to match the plot we are copying */
@@ -159,10 +159,13 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   ASSERT(name);
 
   p = (struct qp_plot*) qp_malloc(sizeof(*p));
+  memset(p, 0, sizeof(*p));
+  p->plot_num = ++gr->plot_create_count;
   qp_sllist_append(gr->plots, p);
   p->name = qp_strdup(name);
   p->gr = gr;
-  p->gaps = app->op_gaps;
+  gr->current_plot = p;
+  p->gaps = gr->gaps;
   p->x_entry = NULL;
   p->y_entry = NULL;
   p->x_picker = NULL;
@@ -260,7 +263,7 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
       num_points = len;
   }
 
-  if(app->op_lines == -1)
+  if(gr->lines == -1)
   {
     if(num_points > 1000000)
       p->lines = 0;
@@ -268,14 +271,16 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
       p->lines = 1;
   }
   else
-    p->lines = app->op_lines;
+    p->lines = gr->lines;
 
 
-  p->points = app->op_points; 
+  p->points = gr->points;
 
 
-  if(app->op_line_width != -1)
-    p->line_width = app->op_line_width;
+  DEBUG("line_width=%d\n", gr->line_width);
+
+  if(gr->line_width != -1)
+    p->line_width = gr->line_width;
   else /* AUTO line_width */
   {
     if(num_points > 100000)
@@ -291,8 +296,8 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
       ++(p->line_width);
   }
 
-  if(app->op_point_size != -1)
-    p->point_size = app->op_point_size;
+  if(gr->point_size != -1)
+    p->point_size = gr->point_size;
   else
   {
     if(num_points > 1000000)
@@ -317,6 +322,7 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
   p->yscale0 = 1.0/(ymax - ymin);
   p->yshift0 = -ymin/(ymax - ymin);
 
+
   p->xscale = 0.0;
   p->xshift = 0.0;
 
@@ -337,6 +343,14 @@ void qp_plot_destroy(qp_plot_t plot, struct qp_graph *gr)
 
   if(plot)
   {
+    struct qp_plot *p;
+    struct qp_sllist *l;
+    l = qp_sllist_create(gr->plots);
+    for(p=qp_sllist_begin(l);p;p=qp_sllist_next(l))
+      if(p != plot)
+        gr->current_plot = p;
+    qp_sllist_destroy(l, 0);
+
     /* if the channels are series we must free
      * resources */
     if(plot->x->form == QP_CHANNEL_FORM_SERIES)

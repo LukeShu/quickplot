@@ -590,14 +590,12 @@ void qp_graph_grid_draw(struct qp_graph *gr, struct qp_plot *p,
   ASSERT(gr->qp);
   ASSERT(gr->qp->window);
 
+  if(!gr->show_grid) return;
+
   PreDrawGrid(gr, p,
 	  &xmin_mat, &xmax_mat, &xinc, &xpow_part,
 	  &ymin_mat, &ymax_mat, &yinc, &ypow_part,
           width, height);
-
-
-  if(!gr->show_grid) return;
-
 
   view_width = gtk_widget_get_allocated_width(gr->drawing_area);
   view_height = gtk_widget_get_allocated_height(gr->drawing_area);
@@ -605,7 +603,6 @@ void qp_graph_grid_draw(struct qp_graph *gr, struct qp_plot *p,
 
   if(gr->grid_numbers)
     pangolayout = get_pangolayout(gr, cr);
-
 
 
 
@@ -624,10 +621,8 @@ void qp_graph_grid_draw(struct qp_graph *gr, struct qp_plot *p,
   APPEND("delta_y pixels between lines=%d\n",
       qp_plot_get_ypixel(p, ypow_part*ymin_mat) -
       qp_plot_get_ypixel(p, ypow_part*(ymin_mat + yinc)));
-  APPEND("sig_fig_x=%d sig_fig_y=%d\n", gr->sig_fig_x, gr->sig_fig_y);
 #endif
 
- 
 
   if(gr->same_x_scale)
       DrawXGrid(cr, pangolayout, gr, p,

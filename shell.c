@@ -47,7 +47,7 @@
  *    channel
  *           Holds the loaded data.
  *
- *    win
+ *    window
  *           Window parameters settings.  Factory of graphs.
  *
  *    graph
@@ -96,8 +96,9 @@
 #include <fcntl.h>
 #include <stdint.h>
 #include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include <locale.h>
+
+
 #include <X11/Xlib.h>
 
 #include <gtk/gtk.h>
@@ -112,6 +113,9 @@
 #include "spew.h"
 #include "term_color.h"
 #include "shell_common.h"
+#include "callbacks.h"
+#include "channel.h"
+#include "utils.h"
 
 #ifdef DMALLOC
 #  include "dmalloc.h"
@@ -123,6 +127,60 @@
 static
 struct qp_shell *rdln_shell = NULL;
 #endif
+
+char *get_window_nums(int state)
+{
+  struct qp_win *qp;
+  if(state)
+    qp = qp_sllist_next(app->qps);
+  else if(!state)
+    qp = qp_sllist_begin(app->qps);
+  if(qp)
+  {
+    char *str;
+    str = qp_malloc(sizeof(char)*30);
+    snprintf(str, 30, "%d", qp->window_num);
+    return str;
+  }
+  return NULL;
+}
+
+char *get_graph_nums(int state)
+{
+  struct qp_graph *gr;
+  ASSERT(default_qp);
+  if(state)
+    gr = qp_sllist_next(default_qp->graphs);
+  else if(!state)
+    gr = qp_sllist_begin(default_qp->graphs);
+  if(gr)
+  {
+    char *str;
+    str = qp_malloc(sizeof(char)*30);
+    snprintf(str, 30, "%d", gr->graph_num);
+    return str;
+  }
+  return NULL;
+}
+
+char *get_plot_nums(int state)
+{
+  struct qp_plot *p;
+  ASSERT(default_qp);
+  ASSERT(default_qp->current_graph);
+  if(state)
+    p = qp_sllist_next(default_qp->current_graph->plots);
+  else if(!state)
+    p = qp_sllist_begin(default_qp->current_graph->plots);
+  if(p)
+  {
+    char *str;
+    str = qp_malloc(sizeof(char)*30);
+    snprintf(str, 30, "%d", p->plot_num);
+    return str;
+  }
+  return NULL;
+}
 
 static
 gboolean prepare(GSource *source, gint *timeout)
@@ -164,6 +222,9 @@ void qp_shell_destroy(struct qp_shell *sh)
     /* cleanup readline */
     rl_callback_handler_remove();
     rdln_shell = NULL;
+#ifdef HAVE_READLINE_HISTORY
+    Save_history();
+#endif
   }
 #endif
 
@@ -194,27 +255,102 @@ void qp_shell_destroy(struct qp_shell *sh)
   qp_sllist_remove(app->shells, sh, 0);
 }
 
-static inline
-void qp_shell_process_command(struct qp_shell *sh, char *line)
-{
-  fprintf(sh->file_out, "process_command(length=%zu): %s\n", strlen(line), line);
+static
+int qp_shell_process_command(struct qp_shell *sh, char *line);
 
-  if(sh->pid != app->pid)
+#ifdef HAVE_LIBREADLINE
+static
+void readline_handler(char *line)
+{
+  ASSERT(rdln_shell);
+  if(line)
   {
-    /* The protocol is: the user writes a one line and then
-     * the server responds with any number of lines and ends
-     * with "\n" from the last response line plus "END\n"
-     * meaning this is the end of the returned data from
-     * the last command. */
-    fprintf(sh->file_out, "END\n");
-    DEBUG("END\n");
+    qp_shell_process_command(rdln_shell, line);
+    free(line);
   }
-  errno = 0;
-  if(fflush(sh->file_out))
+  else
+    qp_shell_destroy(rdln_shell);
+}
+#endif
+
+/* returns 1 if it keeps running
+ * returns 0 if the qp_shell is destroyed */
+static
+int qp_shell_process_command(struct qp_shell *sh, char *line)
+{
+  char **argv;
+  int argc;
+  size_t len;
+  int ret = 1;
+  char *history_mem = NULL;
+  len = strlen(line) + 1;
+
+  argv = get_args(line, &argc);
+  //DEBUG(" command \"%s\"\n", line);
+  
+  if(sh->pid == app->pid && argc > 0)
   {
-    QP_EWARN("fflush(fd=%d) failed\n", fileno(sh->file_out));
-    EWARN("fflush() failed\n");
+#ifdef HAVE_LIBREADLINE
+    int use_readline;
+    use_readline = (rdln_shell)?1:0;
+#endif
+
+    /* This is the commands that are processed on the
+     * client side.  If sh->pid == app->pid then this
+     * is a client and a server.  If sh->pid != app->pid
+     * then this is not a client and we do not want to
+     * do this stuff. */
+    if(process_client_side_commands(&argc, &argv,
+          sh->file_in, sh->file_out, len, &history_mem
+#ifdef HAVE_LIBREADLINE
+          , app->op_no_readline, &use_readline    
+#endif
+          ))
+    {
+      if(argc > 1 && !strcmp(argv[0], "input"))
+      {
+#ifdef HAVE_LIBREADLINE
+        if(use_readline != ((rdln_shell)?1:0))
+        {
+          if(use_readline)
+          {
+            rl_callback_handler_install(sh->prompt, readline_handler);
+            rdln_shell = sh;
+          }
+          else
+          {
+            rl_callback_handler_remove();
+            rdln_shell = NULL;
+          }
+        }
+#endif
+        sh->file_in_isatty = isatty(fileno(sh->file_in));
+      }
+
+      fflush(sh->file_out);
+      free(argv);
+      if(history_mem)
+        free(history_mem);
+      return 1;
+    }
   }
+
+  if(argc >= 1)
+    ret = do_server_commands(argc, argv, sh);
+#if QP_DEBUG
+  else if(SPEW_LEVEL() <= 2)
+  {
+    fprintf(sh->file_out,
+        "Recieved no command data\n"
+        "%c\n", END_REPLY);
+    fflush(sh->file_out);
+  }
+#endif
+  if(history_mem)
+    free(history_mem);
+  free(argv);
+
+  return ret;
 }
 
 /* returns 1 if the shell is done
@@ -223,6 +359,7 @@ static inline
 int do_getline(struct qp_shell *sh)
 {
   size_t len;
+  int running;
 
   if(getline(&sh->line, &sh->len, sh->file_in) == -1)
   {
@@ -236,34 +373,23 @@ int do_getline(struct qp_shell *sh)
   /* remove newline '\n' */
   if(sh->line[len-1] == '\n')
     sh->line[len-1] = '\0';
-  qp_shell_process_command(sh, sh->line);
 
-  if(sh->out_isatty)
+
+  if(sh->pid == app->pid && !sh->file_in_isatty)
+    /* echo the command to the user */
+    fprintf(sh->file_out, "%s\n", sh->line);
+
+  if(*sh->line)
+    running = qp_shell_process_command(sh, sh->line);
+
+  if(sh->pid == app->pid && !rdln_shell && running)
   {
+    /* local shell prompt without readline */
     fprintf(sh->file_out, "%s", sh->prompt);
     fflush(sh->file_out);
   }
   return 0;
 }
-
-#ifdef HAVE_LIBREADLINE
-static
-void readline_handler(char *line)
-{
-  ASSERT(rdln_shell);
-  if(line)
-  {
-#  ifdef HAVE_READLINE_HISTORY
-    if(*line)
-      add_history(line);
-#  endif
-    qp_shell_process_command(rdln_shell, line);
-    free(line);
-  }
-  else
-    qp_shell_destroy(rdln_shell);
-}
-#endif
 
 static
 gboolean dispatch(GSource *source, GSourceFunc callback, gpointer data)
@@ -330,29 +456,35 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
   sh->len = 0;
   sh->close_on_exit = close_on_exit;
   sh->pid = pid;
-  sh->out_isatty = isatty(fileno(sh->file_out));
+  sh->file_in_isatty = isatty(fileno(sh->file_in));
 
-
-  sh->prompt = getenv("QP_PROMPT");
-  if(!sh->prompt)
-    sh->prompt = getenv("PS2");
-
-  if(sh->prompt)
-    sh->prompt = qp_strdup(sh->prompt);
-  else
-    sh->prompt = qp_strdup("QP> ");
+  sh->prompt = allocate_prompt();
 
   s = &(sh->gsource);
+  /* this g_source_set_priority() is very important:
+   * The priority of the shell needs to be the lowest thing
+   * so that we do not have stuff changing while is shell
+   * is changing something.  Having the wrong priority
+   * made a bug which happened
+   * when a open FILE was recieved while the graph was being
+   * exposed but was not drawn yet, then the graph was removed
+   * from the open FILE, and then it tried to draw the graph
+   * that had been removed and segfaulted. */
+
+  /* See the g_idle_add_full(qp_startup_idle_callback()) in win.c */
+  g_source_set_priority(s, G_PRIORITY_LOW + 11
+      /* larger number == lower priority */); 
   VASSERT(s, "g_source_new() failed\n");
   /* Adds source to a GMainContext */
   gid = g_source_attach(s, NULL);
   VASSERT(gid > 0, "g_source_attach() failed\n");
   g_source_add_poll(s, &(sh->fd));
+  qp_shell_initialize(!app->op_no_readline);
 
   fprintf(sh->file_out, "\nQuickplot version: %s\n", VERSION);
 
 #ifdef HAVE_LIBREADLINE
-  if(sh->out_isatty && !app->op_no_readline)
+  if(isatty(fileno(sh->file_in)) && !app->op_no_readline)
   {
     fprintf(sh->file_out, "Using readline version: %d.%d\n",
         RL_VERSION_MAJOR, RL_VERSION_MINOR);
@@ -363,15 +495,13 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
   else
   {
 #endif
-#ifndef QP_DEBUG
-    if(sh->out_isatty)
       /* printing "Quickplot using getline()" may confuse
        * a user into thinking that their terminal is not
        * using readline when it may indeed be using readline. */
-#endif
-      fprintf(sh->file_out, "Quickplot using getline()\n");
+      fprintf(sh->file_out, "Quickplot server using getline()\n");
 
-    if(sh->out_isatty)
+    if(sh->pid == app->pid)
+      /* local shell prompt */
       fprintf(sh->file_out, "%s", sh->prompt);
 #ifdef HAVE_LIBREADLINE
   }

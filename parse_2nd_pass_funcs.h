@@ -20,6 +20,11 @@ void parse_2nd_auto_scale(void)
 {
   app->op_same_x_scale = -1;
   app->op_same_y_scale = -1;
+  if(default_qp)
+  {
+    default_qp->same_x_scale = -1;
+    default_qp->same_y_scale = -1;
+  }
 }
 
 static inline
@@ -60,6 +65,11 @@ void parse_2nd_different_scale(void)
 {
   app->op_same_x_scale = 0;
   app->op_same_y_scale = 0;
+  if(default_qp)
+  {
+    default_qp->same_x_scale = 0;
+    default_qp->same_y_scale = 0;
+  }
 }
 
 static inline
@@ -72,18 +82,24 @@ static inline
 void parse_2nd_gaps(void)
 {
   app->op_gaps = 1;
+  if(default_qp)
+    default_qp->gaps = 1;
 }
 
 static inline
 void parse_2nd_grid(void)
 {
   app->op_grid = 1;
+  if(default_qp)
+    default_qp->grid = 1;
 }
 
 static inline
 void parse_2nd_grid_numbers(void)
 {
   app->op_grid_numbers = 1;
+  if(default_qp)
+    default_qp->grid_numbers = 1;
 }
 
 static inline
@@ -148,18 +164,24 @@ static inline
 void parse_2nd_no_gaps(void)
 {
   app->op_gaps = 0;
+  if(default_qp)
+    default_qp->gaps = 0;
 }
 
 static inline
 void parse_2nd_no_grid(void)
 {
   app->op_grid = 0;
+  if(default_qp)
+    default_qp->grid = 0;
 }
 
 static inline
 void parse_2nd_no_grid_numbers(void)
 {
   app->op_grid_numbers = 0;
+  if(default_qp)
+    default_qp->grid_numbers = 0;
 }
 
 static inline
@@ -191,6 +213,8 @@ static inline
 void parse_2nd_no_lines(void)
 {
   app->op_lines = 0;
+  if(default_qp)
+    default_qp->lines = 0;
 }
 
 static inline
@@ -216,6 +240,8 @@ static inline
 void parse_2nd_no_points(void)
 {
   app->op_points = 0;
+  if(default_qp)
+    default_qp->points = 0;
 }
 
 static inline
@@ -246,6 +272,8 @@ static inline
 void parse_2nd_points(void)
 {
   app->op_points = 1;
+  if(default_qp)
+    default_qp->points = 1;
 }
 
 static inline
@@ -259,6 +287,11 @@ void parse_2nd_same_scale(void)
 {
   app->op_same_x_scale = 1;
   app->op_same_y_scale = 1;
+  if(default_qp)
+  {
+    default_qp->same_x_scale = 1;
+    default_qp->same_y_scale = 1;
+  }
 }
 
 static inline
@@ -270,12 +303,8 @@ void parse_2nd_shape(void)
 static inline
 void parse_2nd_shell(void)
 {
-  if(!app->op_shell)
-  {
-    app->op_shell = qp_shell_create(stdin, stdout, 0, getpid());
-    if(!app->op_shell)
-      exit(1);
-  }
+  /* just set it to non-zero value as a flag */
+  app->op_shell = (void *) 1;
 }
 
 static inline
@@ -303,6 +332,9 @@ static inline
 void parse_2nd_background_color(char *arg, int argc, char **argv, int *i)
 {
   get_color(&app->op_background_color, arg);
+  if(default_qp)
+    memcpy(&default_qp->background_color, &app->op_background_color,
+        sizeof(default_qp->background_color));
 }
 
 static inline
@@ -314,108 +346,18 @@ void parse_2nd_file(char *arg, int argc, char **argv, int *i)
 static inline
 void parse_2nd_geometry(char *arg, int argc, char **argv, int *j)
 {
-  /* We use this for the next new main window. */
-  int n[4], count = 0, x_count = -1;
-  int w, h;
-  char *endptr, *s;
-  endptr = s = arg;
-
-  while(1)
+  if(GetGeometry(arg, &(app->op_geometry.x), &(app->op_geometry.y),
+        &(app->op_geometry.width), &(app->op_geometry.height),
+        &(app->op_maximize)))
   {
-    long val;
-
-    val = strtol(s, &endptr, 10);
-    if(s == endptr || !endptr ||
-      val == LONG_MAX || val == LONG_MIN)
-    {
-      DEBUG("bad option: %s='%s'\n", "--geometry", arg);
-      QP_ERROR("option has bad integer number: %s='%s'\n",
+    DEBUG("bad option: %s='%s'\n", "--geometry", arg);
+    QP_ERROR("bad option: %s='%s'\n",
           "--geometry", arg);
-      exit(1);
-    }
-    if(*s == '-' || *s == '0')
-      /* mark a "-0" position as in --geometry=600x700-0+0 */
-      n[count++] = INT_MIN;
-    else
-      n[count++] = val;
-
-    if(!(*endptr))
-      break;
-
-    s = endptr;
-    while(*s && (*s < '0' || *s > '9') && *s != '-' && *s != '+')
-    {
-      if(*s == 'x' || *s == 'X')
-        /* this is where the 'x' is */
-        x_count = count;
-      ++s;
-    }
-    if(!(*s))
-      break;
-  }
-  
-  if(
-      !(count == 2 && (x_count == 1 || x_count == -1))
-       &&
-      !(count == 4 && (x_count == 1 || x_count == 3))
-    )
-  {
-    DEBUG("bad option: %s='%s' count=%d x_count=%d\n",
-        "--geometry", arg, count, x_count);
-    QP_ERROR("bad option: %s='%s'\n", "--geometry", arg);
     exit(1);
   }
 
-  if(x_count == 1)
-    {
-      w = n[0];
-      h = n[1];
-    }
-  else if(x_count == 3)
-    {
-      w = n[2];
-      h = n[3];
-    }
-
-  if(x_count == -1 || x_count == 3)
-    {
-      app->op_geometry.x = n[0];
-      app->op_geometry.y = n[1];
-    }
-  else if(count == 4)
-    {
-      app->op_geometry.x = n[2];
-      app->op_geometry.y = n[3];
-    }
-
-  if(w < 1 || h < 1)
-  {
-    QP_ERROR("bad option: %s='%s'\n", "--geometry", arg);
-    exit(1);
-  }
-
-  if(app->root_window_width < 1)
-    qp_get_root_window_size();
-
-  if(w > app->root_window_width)
-    w = app->root_window_width;
-  if(h > app->root_window_height)
-    h = app->root_window_height;
-
-  if(w == app->root_window_width && h == app->root_window_height)
-    /* We do not want to set app->op_geometry if it is
-     * full screen so that they can still toggle out of
-     * full screen if they choose to. */
-    app->op_maximize = 2; /* Fullscreen */
-  else
-  {
-    app->op_geometry.width = w;
-    app->op_geometry.height = h;
-    app->op_maximize = 0;
-  }
-
-  DEBUG("got --geometry=%dx%d%+d%+d app->op_maximize=%d\n", 
-        w, h,
+  DEBUG("now geometry=%dx%d%+d%+d app->op_maximize=%d\n", 
+        app->op_geometry.width, app->op_geometry.height,
         app->op_geometry.x, app->op_geometry.y,
         app->op_maximize);
 }
@@ -449,6 +391,7 @@ void parse_2nd_graph(char *arg, int argc, char **argv, int *i)
   for(s=qp_sllist_begin(app->sources);s; s=qp_sllist_next(app->sources))
     max_channel_num += s->num_channels;
 
+  check_load_stdin(0);
   get_plot_option(arg, &x, &y, &len, "--graph", 0, max_channel_num);
   graph_plots(x, y, len);
 }
@@ -471,6 +414,7 @@ void parse_2nd_graph_file(char *arg, int argc, char **argv, int *i)
   for(s=qp_sllist_begin(app->sources);s != last_s; s=qp_sllist_next(app->sources))
     offset += s->num_channels;
 
+  check_load_stdin(0);
   get_plot_option(arg, &x, &y, &len, "--graph-file",
       -offset, last_s->num_channels - 1);
 
@@ -496,36 +440,54 @@ void parse_2nd_grid_font(char *arg, int argc, char **argv, int *i)
   if(app->op_grid_font)
     free(app->op_grid_font);
   app->op_grid_font = qp_strdup(arg);
+  if(default_qp)
+  {
+    if(default_qp->grid_font)
+      free(default_qp->grid_font);
+    default_qp->grid_font = qp_strdup(arg);
+  }
 }
 
 static inline
 void parse_2nd_grid_line_width(char *arg, int argc, char **argv, int *i)
 {
   app->op_grid_line_width = get_long(arg, 1, 101, "--grid-line-width");
+  if(default_qp)
+    default_qp->grid_line_width = app->op_grid_line_width;
 }
 
 static inline
 void parse_2nd_grid_line_color(char *arg, int argc, char **argv, int *i)
 {
   get_color(&app->op_grid_line_color, arg);
+  if(default_qp)
+    memcpy(&default_qp->grid_line_color, &app->op_grid_line_color,
+        sizeof(default_qp->grid_line_color));
 }
 
 static inline
 void parse_2nd_grid_text_color(char *arg, int argc, char **argv, int *i)
 {
   get_color(&app->op_grid_text_color, arg);
+  if(default_qp)
+    memcpy(&default_qp->grid_text_color, &app->op_grid_text_color,
+        sizeof(default_qp->grid_text_color));
 }
 
 static inline
 void parse_2nd_grid_x_space(char *arg, int argc, char **argv, int *i)
 {
   app->op_grid_x_space = get_long(arg, 10, 10000000, "--grid-x-space");
+  if(default_qp)
+    default_qp->grid_x_space = app->op_grid_x_space;
 }
 
 static inline
 void parse_2nd_grid_y_space(char *arg, int argc, char **argv, int *i)
 {
   app->op_grid_y_space = get_long(arg, 10, 10000000, "--grid-y-space");
+  if(default_qp)
+    default_qp->grid_y_space = app->op_grid_y_space;
 }
 
 static inline
@@ -539,7 +501,12 @@ void parse_2nd_label_separator(char *arg, int argc, char **argv, int *i)
 static inline
 void parse_2nd_line_width(char *arg, int argc, char **argv, int *i)
 {
-  app->op_line_width = get_long(arg, 1, 101, "--line-width");
+  if(!strcasecmp(arg, "auto"))
+    app->op_line_width = -1;
+  else
+    app->op_line_width = get_long(arg, 1, 101, "--line-width");
+  if(default_qp)
+    default_qp->line_width = app->op_line_width;
 }
 
 static inline
@@ -553,7 +520,11 @@ void parse_2nd_linear_channel(char *arg, int argc, char **argv, int *i)
     app->op_linear_channel = NULL;
   }
 
-  parse_linear_channel(1, arg, argc, argv, i, &start, &step);
+  if(parse_linear_channel(1, arg, argc, argv, i, &start, &step))
+  {
+    QP_ERROR("bad option argument --linear-channel='%s'\n", arg);
+    exit(1);
+  }
 
   app->op_linear_channel = qp_channel_linear_create(start, step);
 }
@@ -562,6 +533,8 @@ static inline
 void parse_2nd_lines(char *arg, int argc, char **argv, int *i)
 {
   app->op_lines = get_yes_no_auto_int(arg, "--lines");
+  if(default_qp)
+    default_qp->lines = app->op_lines;
 }
 
 static inline
@@ -574,22 +547,35 @@ void parse_2nd_number_of_plots(char *arg, int argc, char **argv, int *i)
 static inline
 void parse_2nd_point_size(char *arg, int argc, char **argv, int *i)
 {
-  if(!strncasecmp(arg, "AUTO", 4))
+  if(!strcasecmp(arg, "auto"))
     app->op_point_size = -1;
   else
     app->op_point_size = get_long(arg, 1, 101, "--point-size");
+  if(default_qp)
+    default_qp->point_size = app->op_point_size;
 }
 
 static inline
 void parse_2nd_same_x_scale(char *arg, int argc, char **argv, int *i)
 {
   app->op_same_x_scale = get_yes_no_auto_int(arg, "--same-x-scale");
+  if(default_qp)
+    default_qp->same_x_scale = app->op_same_x_scale;
 }
 
 static inline
 void parse_2nd_same_y_scale(char *arg, int argc, char **argv, int *i)
 {
   app->op_same_y_scale = get_yes_no_auto_int(arg, "--same-y-scale");
+  if(default_qp)
+    default_qp->same_y_scale = app->op_same_y_scale;
+}
+
+static inline
+void parse_2nd_signal(char *arg, int argc, char **argv, int *i)
+{
+  /* just set it to non-zero value as a flag */
+  app->op_signal = get_long(arg, 0, INT_MAX, "--signal");
 }
 
 static inline

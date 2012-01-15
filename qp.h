@@ -110,6 +110,7 @@ struct qp_plot
 
   struct qp_graph *gr;
   char *name;
+  int plot_num; /* gr->plot_create_count after this was made */
 
   /* point and line colors */
   struct qp_color p, l;
@@ -185,7 +186,13 @@ struct qp_source
  * in a qp_win with a gtk window. */
 struct qp_graph
 {
+  int ref_count; // flags to keep from destroying at the wrong time
+  int destroy_called;
+
   char *name;
+
+  int graph_num; /* win->graph_create_count after this was made */
+  struct qp_plot *current_plot;
 
   struct qp_color_gen *color_gen;
 
@@ -220,6 +227,11 @@ struct qp_graph
   /* maximum pixel space between grid lines
    * the smallest it could be is 1/3 of this */
   int grid_x_space, grid_y_space;
+
+  /* default plot parameters in the graph */
+  int line_width, point_size;
+  int points, lines, gaps;
+
   int grid_line_width;
   int grid_on_top;
 
@@ -288,6 +300,7 @@ struct qp_graph
   
   /* is NULL if not drawing with X11 */
   struct qp_graph_x11 *x11;
+  int plot_create_count;
 };
 
 struct qp_graph_x11
@@ -325,13 +338,8 @@ struct qp_app
  *  app_op_declare.h is a generated file. */
 # include "app_op_declare.h"
 
+  /* TODO: an option like grid draw position. */
   int op_grid_on_top;
-
-
-  /* graph/plot defaults */
-  
-
-  double op_plot_line_width, op_plot_point_width; /* =NAN for auto */
 
   GdkCursor *waitCursor,
             *grabCursor,
@@ -399,6 +407,9 @@ struct qp_graph_detail
  * The window does not have to be made. */
 struct qp_win
 {
+  int ref_count; // flags to keep from destroying at the wrong time
+  int destroy_called;
+
   struct qp_sllist *graphs;
   struct qp_graph *current_graph;
 
@@ -458,22 +469,20 @@ struct qp_win
    * unnecessary redraw events. */
   cairo_region_t *last_shape_region;
 
-
-  /* initializing flag
-   *   0 = done calling qp_startup_idle_callback()
-   *   1 = idle callback qp_startup_idle_callback()
-   *       is set
-   *   2 = got a delete window while idle callback
-   *       qp_startup_idle_callback() was set
-   */
-  int initializing;
   /* The front page after qp_startup_idle_callback() */
   int init_front_page_num;
+  int graph_create_count;
+
+  /* graph and plot default parameter values */
+  int gaps, lines, points, grid, grid_numbers, same_x_scale, same_y_scale;
+  int grid_x_space, grid_y_space, grid_line_width;
+  int line_width, point_size;
+  char *grid_font;
+  struct qp_colora background_color, grid_line_color, grid_text_color;
 };
 
 
-/* this is the one and only gtk app
- * object. */
+/* this is the one and only gtk app object. */
 extern
 struct qp_app *app;
 
@@ -491,6 +500,9 @@ void qp_getargs_2nd_pass(int argc, char **argv);
 
 extern
 void qp_graph_detail_set_value_mode(struct qp_graph *gr);
+extern
+void qp_graph_detail_plot_list_remake(struct qp_win *qp);
+
 extern
 void qp_graph_detail_destory(struct qp_win *qp);
 
@@ -612,7 +624,11 @@ extern
 int qp_gtk_init_check(struct qp_gtk_options *opt);
 
 
-/* default_qp is the last qp created */
+/* default_qp is the last qp created during startup
+ * After that it is set by the shells.
+ * TODO: Add list of structs to hold attibutes
+ * of connected shells, since more than one shell
+ * can connect at a time. */
 extern
 struct qp_win *default_qp;
 
@@ -624,6 +640,16 @@ struct qp_win *qp_win_check(struct qp_win *qp)
   if(default_qp)
     return default_qp;
   return default_qp = qp_win_create();
+}
+
+static inline
+char *qp_source_get_label(struct qp_source *s, size_t num, char *buf, size_t buf_len)
+{
+  if(num >= s->num_labels)
+    snprintf(buf, buf_len, "%s[%zu]", s->name, num);
+  else
+    snprintf(buf, buf_len, "%s", s->labels[num]);
+  return buf;
 }
 
 static inline
@@ -668,4 +694,14 @@ void qp_source_get_plot_name(char *pname, size_t plen,
         sx->labels[channel_num_x]);
 }
 
+extern
+void qp_graph_remove_plot(struct qp_graph *gr, struct qp_plot *p);
+extern
+void qp_graph_add_plot(struct qp_graph *gr,
+    struct qp_source *sx, struct qp_source *sy,
+    size_t x_channel_num, size_t y_channel_num);
+extern
+void qp_graph_same_x_scale(struct qp_graph *gr, int same_x_scale);
+extern
+void qp_graph_same_y_scale(struct qp_graph *gr, int same_y_scale);
 

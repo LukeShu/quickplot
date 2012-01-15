@@ -324,6 +324,8 @@ struct qp_option options[] =
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,0}, "--no-readline",        0,    0,         "don't use GNU readline with the Quickplot command "
                                                   "shell if you run with the ::--shell@@ option.  This "
+                                                  "will disable the use of line editing, shell "
+                                                  "history, and tab command completion.  This "
                                                   "option has no effect if Quickplot is not built with "
                                                   "GNU readline.",                                            "0",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
@@ -406,15 +408,20 @@ struct qp_option options[] =
 { {0,1}, "--shell",              "-e", 0,         "run a Quickplot command shell that reads commands from "
                                                   "standard input and writes out to standard output.  The "
                                                   "default is no shell and standard input will be read as "
-                                                  "graph data.  This option will override ::--pipe@@ and "
-                                                  "like options.  If you want to have a Quickplot command "
-                                                  "shell and read graph data on a pipe you can prefix the "
-                                                  "graph data with the \"read\" command.  You can also "
-                                                  "connect a any number of Quickplot command shells to a "
+                                                  "graph data.  You may use ::--no-pipe@@ to stop standard "
+                                                  "input from being read as graph data.  The shell can do "
+                                                  "most all the things that command-line options can do and "
+                                                  "a lot more.  Run an interactive shell with ::quickplot "
+                                                  "--shell@@ and use the help and tab completion to see how "
+                                                  "it works.  You can also "
+                                                  "connect a Quickplot command shell to a "
                                                   "running Quickplot program with the program "
-                                                  "::quickplot_shell@@.  THIS IS NOT FUNCTIONING YET.",       "NULL",     "struct "
+                                                  "::quickplot_shell@@.",                                     "NULL",     "struct "
                                                                                                                           "qp_shell"
                                                                                                                           " *"        },
+/*------------------------------------------------------------------------------------------------------------------------------------*/
+{ {0,1}, "--signal",             0,    "PID",     "signal SIGUSR1 to process PID after Quickplot is "
+                                                  "running.",                                                 "0",        "pid_t"     },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,0}, "--silent",             0,    0,         "don't spew even on error.  The ::--silent@@ option will "
                                                   "override the effect of the ::--verbose@@ option.",         0,          0           },

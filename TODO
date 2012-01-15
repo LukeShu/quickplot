@@ -2,7 +2,12 @@ Most of this is done, but we need to leave it so we may check
 it out more carefully.  This is just the authors junk notes.
 
 
-  Test Gentoo ebuild with readline.
+  test all the shell commands  
+
+
+
+  document all the environment variables
+
 
   Add quickplot_shell --pid=PID program that connects to
   a pipe to the running quickplot program.
@@ -28,11 +33,6 @@ it out more carefully.  This is just the authors junk notes.
   how about -g "0 1 grid-x 3 4 grid-numbers 0 6" to order the different 
   parts of the grid?  It's just drawing layers...
 
-
-  Refactor!!!
-    * qp_qp --> qp_win
-      make qp_qp_create() be qp_win_create() and remove
-      the non-window object.
 
   Document environment variables in html and man
 

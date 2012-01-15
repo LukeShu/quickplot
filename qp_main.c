@@ -34,6 +34,7 @@
 #include "spew.h"
 #include "qp.h"
 #include "shell.h"
+#include "term_color.h"
 #include "shell_common.h"
 
 #ifdef QP_DEBUG
@@ -71,24 +72,6 @@ void usr1_sighandler(int sig_num, siginfo_t *info, void *ptr)
   qp_shell_create(in, out, 1, info->si_pid);
 }
 
-static
-void usr2_sighandler(int sig_num, siginfo_t *info, void *ptr)
-{
-  struct qp_shell *sh;
-  DEBUG("Caught signal %d from pid %d\n", sig_num, info->si_pid);
-  for(sh = qp_sllist_begin(app->shells); sh; sh = qp_sllist_next(app->shells))
-    if(info->si_pid == sh->pid)
-    {
-      qp_shell_destroy(sh);
-      break;
-    }
-  if(!sh)
-    QP_NOTICE("Caught signal %d from pid %d but "
-        "no shell connection was found\n", sig_num, info->si_pid);
-}
-
-
-
 #ifdef QP_DEBUG
 static
 void error_sighandler(int sig_num)
@@ -122,12 +105,10 @@ int main (int argc, char **argv)
   action.sa_sigaction = usr1_sighandler;
   action.sa_flags = SA_SIGINFO;
   sigaction(SIGUSR1, &action, NULL);
-  
-  memset(&action, 0, sizeof(action));
-  action.sa_sigaction = usr2_sighandler;
-  action.sa_flags = SA_SIGINFO;
-  sigaction(SIGUSR2, &action, NULL);
 
+  if(app->op_signal)
+    kill(app->op_signal, SIGUSR1);
+  
   DEBUG("Quickplot pid %d\n", getpid());
 
   gtk_main();

@@ -28,7 +28,7 @@ AC_PREREQ(2.59)
 
 
 # AC_INIT( PACKAGE, VERSION, BUGREPORT, TARNAME , URL)
-AC_INIT([quickplot], 0.9.11,
+AC_INIT([quickplot], 0.10.0,
         [http://quickplot.sourceforge.net/],
         [quickplot],
         [http://quickplot.sourceforge.net/])
@@ -329,6 +329,7 @@ help_tail.htm
 index.htm
 quickplot.1.head
 quickplot.1.tail
+quickplot_shell.1
 )
 
 AC_OUTPUT

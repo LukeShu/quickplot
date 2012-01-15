@@ -153,9 +153,6 @@ struct qp_app *qp_app_create(void)
   app->op_geometry.width = 800;
   app->op_geometry.height = 700;
 
-  app->op_plot_line_width = 3;
-  app->op_plot_point_width = 5;
-
   app->op_label_separator = qp_strdup(" ");
 
   /* default rgb(a) colors */
@@ -221,12 +218,25 @@ void qp_win_destroy(qp_win_t qp)
   ASSERT(qp);
   ASSERT(qp->window);
 
+  if(qp->ref_count != 1)
+  {
+    ASSERT(qp->ref_count > 1);
+    qp->destroy_called = 1;
+    /* We cannot use just a counter because there could be an
+     * arbitary number of button destroying clicks that
+     * we wish to delay acting on. */
+    // The time of destruction will come later.
+    return;
+  }
+
   {
     struct qp_graph *gr;
     while((gr=qp_sllist_first(qp->graphs)))
+    {
       /* We do not iterate here because qp_graph_destroy()
        * modifies the list. */
       qp_graph_destroy(gr);
+    }
   }
 
   qp_sllist_destroy(qp->graphs, 0);
@@ -246,6 +256,9 @@ void qp_win_destroy(qp_win_t qp)
 
   if(default_qp == qp)
     default_qp = qp_sllist_last(app->qps);
+
+  if(qp->grid_font)
+    free(qp->grid_font);
 
   if(app->main_window_count == 1)
   {
@@ -577,7 +590,7 @@ int qp_win_graph(qp_win_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       VASSERT(0, "More code needed here");
   }
 
-  gr->same_x_scale = app->op_same_x_scale;
+  gr->same_x_scale = qp->same_x_scale;
   gr->same_x_limits = same_extremes;
 
   if(same_extremes)
@@ -672,7 +685,7 @@ int qp_win_graph(qp_win_t qp, const ssize_t *x, const ssize_t *y, size_t num,
       VASSERT(0, "More code needed here");
   }
 
-  gr->same_y_scale = app->op_same_y_scale;
+  gr->same_y_scale = qp->same_y_scale;
   gr->same_y_limits = same_extremes;
 
   if(same_extremes)
@@ -847,11 +860,11 @@ void qp_win_set_status(struct qp_win *qp)
     struct qp_plot *p;
     p = qp_sllist_first(gr->plots);
 
-    if(!p->xscale)
+    if(!p->xscale || !p->yscale)
       /* The plot has not been drawn yet. */
       return;
 
-    if(!p->sig_fig_x)
+    if(!p->sig_fig_x || !p->sig_fig_y)
     {
       GtkAllocation a;
       gtk_widget_get_allocation(gr->drawing_area, &a);

@@ -33,6 +33,9 @@
 #define ECB(X)  extern gboolean ecb_##X(GtkWidget *w,\
                       GdkEvent *event, gpointer data)
 
+extern int _cairo_draw_ignore_event;
+
+
 ECB(close);
 CB(quit);
 ECB(key_release);

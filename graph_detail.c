@@ -103,59 +103,7 @@ void cb_same_y_scale(GtkComboBox *w, gpointer data)
   
   ASSERT(!gr->same_y_limits);
 
-  gr->same_y_scale = gtk_combo_box_get_active(w);
-
-  if(gr->same_y_scale)
-  {
-    struct qp_plot *p;
-    double min=INFINITY, max=-INFINITY;
-
-    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-    {
-      ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
-      if(max < p->y->series.max)
-        max = p->y->series.max;
-      if(min > p->y->series.min)
-        min = p->y->series.min;
-    }
-    if(max == min)
-    {
-      max += 1;
-      min -= 1;
-    }
-    else if(max - min < SMALL_DOUBLE)
-    {
-      max += SMALL_DOUBLE;
-      min -= SMALL_DOUBLE;
-    }
-    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-      qp_plot_y_rescale(p, min, max);
-
-  }
-  else
-  {
-    struct qp_plot *p;
-    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-    {
-      double min, max;
-      max = p->y->series.max;
-      min = p->y->series.min;
-      if(max == min)
-      {
-        max += 1;
-        min -= 1;
-      }
-      else if(max - min < SMALL_DOUBLE)
-      {
-        max += SMALL_DOUBLE;
-        min -= SMALL_DOUBLE;
-      }
-
-      qp_plot_y_rescale(p, min, max);
-    }
-  }
-
-  gr->pixbuf_needs_draw = 1;
+  qp_graph_same_y_scale(gr, gtk_combo_box_get_active(w)?1:0);
 }
 
 static __thread int _ignore_slider_cb = 0;
@@ -710,8 +658,7 @@ void qp_graph_detail_destory(struct qp_win *qp)
   qp->graph_detail = NULL;
 }
 
-static
-void plot_list_remake(struct qp_win *qp)
+void qp_graph_detail_plot_list_remake(struct qp_win *qp)
 {
   GList *l, *list;
 
@@ -903,7 +850,7 @@ void qp_win_graph_detail_init(struct qp_win *qp)
 
   qp->current_graph = gr;
 
-  plot_list_remake(qp);
+  qp_graph_detail_plot_list_remake(qp);
 }
 
 static
@@ -1054,43 +1001,13 @@ static
 void cb_same_x_scale(GtkComboBox *w, struct qp_win *qp)
 {
   struct qp_graph *gr;
-  struct qp_plot *p;
-  double min=INFINITY, max=-INFINITY;
 
   gr = qp->current_graph;
-  if(!gr)
-    return;
-  
+  if(!gr) return;
+
   ASSERT(!gr->same_x_limits);
 
-  gr->same_x_scale = gtk_combo_box_get_active(w);
-
-  if(gr->same_x_scale)
-  {
-    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-    {
-      ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
-      if(max > p->x->series.max)
-        max = p->x->series.max;
-      if(min < p->x->series.min)
-        min = p->x->series.min;
-    }
-    if(max == min)
-    {
-      max += 1;
-      min -= 1;
-    }
-    else if(max - min < SMALL_DOUBLE)
-    {
-      max += SMALL_DOUBLE;
-      min -= SMALL_DOUBLE;
-    }
-  }
-
-  for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-      qp_plot_x_rescale(p, min, max);
-
-  gr->pixbuf_needs_draw = 1;
+  qp_graph_same_x_scale(gr, gtk_combo_box_get_active(w)?1:0);
 }
 
 
@@ -1196,166 +1113,13 @@ void cb_plotter(GtkButton *w, struct qp_plotter *pr)
       break;
 
   if(p)
-  {
-    qp_sllist_remove(gr->plots, p, 0);
-    qp_plot_destroy(p, gr);
-  }
+    qp_graph_remove_plot(gr, p);
   else
-  {
-    char pname[128];
-    
-    qp_source_get_plot_name(pname, 128, x_pr->source, y_pr->source,
+    qp_graph_add_plot(gr, x_pr->source, y_pr->source,
         x_pr->channel_num, y_pr->channel_num);
-
-    qp_plot_create(gr, x_pr->channel, y_pr->channel , pname,
-        x_pr->channel->series.min, x_pr->channel->series.max,
-        y_pr->channel->series.min, y_pr->channel->series.max);
-  }
-
-
-  if(qp_sllist_length(gr->plots))
-  {
-    /* We must rescale all the plots */
-    /* TODO: make this code suck less */
-    double dx_min = INFINITY, xmin = INFINITY, xmax = -INFINITY,
-           dy_min = INFINITY, ymin = INFINITY, ymax = -INFINITY;
-    struct qp_channel_series *csx0, *csy0;
-    p=qp_sllist_begin(gr->plots);
-    ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
-    ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
-    csx0 = &(p->x->series);
-    csy0 = &(p->y->series);
-    gr->same_x_limits = 1;
-    gr->same_y_limits = 1;
-
-    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-    {
-      double dx, dy;
-      struct qp_channel_series *cs;
-      ASSERT(p->x->form == QP_CHANNEL_FORM_SERIES);
-      ASSERT(p->y->form == QP_CHANNEL_FORM_SERIES);
-      cs = &(p->x->series);
-      dx = cs->max - cs->min;
-      if(xmin > cs->min)
-        xmin = cs->min;
-      if(xmax < cs->max)
-        xmax = cs->max;
-      if(dx > SMALL_DOUBLE && dx_min > dx)
-        dx_min = dx;
-      if(csx0->max != cs->max || csx0->min != cs->min)
-        gr->same_x_limits = 0;
-
-      cs = &(p->y->series);
-      dy = cs->max - cs->min;
-      if(ymin > cs->min)
-        ymin = cs->min;
-      if(ymax < cs->max)
-        ymax = cs->max;
-      if(dy > SMALL_DOUBLE && dy_min > dy)
-        dy_min = dy;
-      if(csy0->max != cs->max || csy0->min != cs->min)
-        gr->same_y_limits = 0;
-    }
-
-    if(gr->same_x_limits)
-    {
-      gr->same_x_scale = 1;
-    }
-
-    if(gr->same_x_scale)
-    {
-      if(xmax == xmin)
-      {
-        /* It could be just one point so lets give it a
-         * decent scale, not like the 1e-14 crap. */
-        xmax += 1;
-        xmin -= 1;
-      }
-      else if(xmax - xmin < SMALL_DOUBLE)
-      {
-        xmax += SMALL_DOUBLE;
-        xmin -= SMALL_DOUBLE;
-      }
-    }
-    else if(xmax == xmin)
-    {
-      /* It could be just one point so lets give it a
-       * decent scale, not like the 1e-14 crap. */
-      xmax += 1;
-      xmin -= 1;
-    }
-    else if(xmax - xmin < SMALL_DOUBLE)
-    {
-      /* they requested different scales but the values
-       * are too close together, so we make it same scale */
-      xmax += SMALL_DOUBLE;
-      xmin -= SMALL_DOUBLE;
-    }
-    else
-    {
-      /* use different scales */
-      xmin = INFINITY;
-      xmax = -INFINITY;
-    }
-
-    if(gr->same_y_limits)
-      gr->same_y_scale = 1;
-
-    if(gr->same_y_scale)
-    {
-      if(ymax == ymin)
-      {
-        /* It could be just one point so lets give it a
-         * decent scale, not like the 1e-14 crap. */
-        ymax += 1;
-        ymin -= 1;
-      }
-      else if(ymax - ymin < SMALL_DOUBLE)
-      {
-        ymax += SMALL_DOUBLE;
-        ymin -= SMALL_DOUBLE;
-      }
-    }
-    else if(ymax == ymin)
-    {
-      /* It could be just one point so lets give it a
-       * decent scale, not like the 1e-14 crap. */
-      ymax += 1;
-      ymin -= 1;
-    }
-    else if(ymax - ymin < SMALL_DOUBLE)
-    {
-      /* they requested different scales but the values
-       * are too close together, so we make it same scale */
-      ymax += SMALL_DOUBLE;
-      ymin -= SMALL_DOUBLE;
-    }
-    else
-    {
-      /* use different scales */
-      ymin = INFINITY;
-      ymax = -INFINITY;
-    }
-
-    for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
-    {
-      qp_plot_x_rescale(p, xmin, xmax);
-      qp_plot_y_rescale(p, ymin, ymax);
-    }
-  }
-
-  gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window), app->waitCursor);
-  gtk_widget_queue_draw(gr->qp->graph_detail->selecter_drawing_area);
-  /* We will queue the Graph draw in the selecter_drawing_area draw
-   * so that we see the selecter draw before the graph */
-  gr->pixbuf_needs_draw = 1;
-  gr->draw_value_pick = 0;
 
 
   //qp_win_graph_detail_init(gr->qp);
-
-  qp_graph_detail_set_value_mode(gr);
-  plot_list_remake(gr->qp);
 
 #if 0
   DEBUG("chan_num=%zd toggled=%d\n",
@@ -1392,10 +1156,7 @@ GtkWidget *make_channel_selecter_column(GtkWidget *hbox, struct qp_win *qp, int 
       char text[128];
       struct qp_plotter *pr;
 
-      if(i >= s->num_labels)
-        snprintf(text, 128, "%s[%zu]", s->name, i);
-      else
-        snprintf(text, 128, "%s", s->labels[i]);
+      qp_source_get_label(s, i, text, 128);
 
       radio = gtk_radio_button_new_with_label_from_widget(
             GTK_RADIO_BUTTON(radio), text);
@@ -1650,7 +1411,7 @@ void qp_app_graph_detail_source_remake(void)
   for(qp=qp_sllist_begin(app->qps);qp;qp=qp_sllist_next(app->qps))
     if(qp->graph_detail)
     {
-      plot_list_remake(qp);
+      qp_graph_detail_plot_list_remake(qp);
       plot_selecter_remake(qp);
     }
 }

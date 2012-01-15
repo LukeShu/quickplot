@@ -215,10 +215,10 @@ gboolean qp_startup_idle_callback(gpointer data)
   qp = (struct qp_win *) data;
   ASSERT(qp);
   ASSERT(qp->notebook);
-  ASSERT(qp->initializing);
 
-  if(qp->initializing == 2)
+  if(qp->destroy_called)
   {
+    --qp->ref_count;
     qp_win_destroy(qp);
     return FALSE;
   }
@@ -233,7 +233,7 @@ gboolean qp_startup_idle_callback(gpointer data)
     if((n = gtk_notebook_get_n_pages(GTK_NOTEBOOK(qp->notebook))) == 1)
     {
       qp->init_front_page_num = -1;
-      qp->initializing = 0;
+      --qp->ref_count;
       DEBUG("removing callback\n");
       return FALSE; /* remove this idle callback */
     }
@@ -263,7 +263,7 @@ gboolean qp_startup_idle_callback(gpointer data)
     {
       gtk_notebook_set_current_page(GTK_NOTEBOOK(qp->notebook), qp->init_front_page_num);
       qp->init_front_page_num = -1;
-      qp->initializing = 0;
+      --qp->ref_count;
       DEBUG("removing callback\n");
       return FALSE; /* remove this idle callback */
     }
@@ -292,19 +292,38 @@ qp_win_t _qp_win_create(const struct qp_win_config *c)
 
   qp = qp_malloc(sizeof(*qp));
   memset(qp,0,sizeof(*qp));
+  qp->ref_count = 1;
   qp->graphs = qp_sllist_create(NULL);
   qp_sllist_append(app->qps, qp);
   default_qp = qp;
 
+  qp->gaps = app->op_gaps;
+  qp->lines = app->op_lines;
+  qp->points = app->op_points;
+  qp->grid = app->op_grid;
+  qp->grid_font = qp_strdup(app->op_grid_font);
+  qp->same_x_scale = app->op_same_x_scale;
+  qp->same_y_scale = app->op_same_y_scale;
+  qp->grid_numbers = app->op_grid_numbers;
+  qp->grid_line_width = app->op_grid_line_width;
+  qp->grid_x_space = app->op_grid_x_space;
+  qp->grid_y_space = app->op_grid_y_space;
+  qp->point_size = app->op_point_size;
+  qp->line_width = app->op_line_width;
+
+  memcpy(&qp->background_color, &app->op_background_color,
+      sizeof(qp->background_color));
+  memcpy(&qp->grid_line_color, &app->op_grid_line_color,
+      sizeof(qp->grid_line_color));
+  memcpy(&qp->grid_text_color, &app->op_grid_text_color,
+      sizeof(qp->grid_text_color));
+
   qp->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
   ASSERT(qp->window);
 
-  /* set this flag */
-  qp->initializing = 1;
-
   qp->border = (c)?(c->border):(app->op_border);
   gtk_window_set_decorated(GTK_WINDOW(qp->window), qp->border);
-  
+ 
 
   qp->shape = (c)?0:(app->op_shape);
   qp->x11_draw = (c)?(c->x11_draw):(app->op_x11_draw);
@@ -624,12 +643,13 @@ qp_win_t _qp_win_create(const struct qp_win_config *c)
   /* Setup/draw the plots in the tabs */
   qp->init_front_page_num = -1;
   g_idle_add_full(G_PRIORITY_LOW + 10, qp_startup_idle_callback, qp, NULL);
+  ++qp->ref_count;
 
   return qp; /* success */
 }
 
 
-qp_win_t qp_win_create()
+qp_win_t qp_win_create(void)
 {
   return _qp_win_create(NULL);
 }

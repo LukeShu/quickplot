@@ -84,21 +84,12 @@ gboolean ecb_close(GtkWidget *w, GdkEvent *event, gpointer data)
 
 void cb_delete_window(GtkWidget *w, gpointer data)
 {
-  struct qp_win *qp;
   ASSERT(data);
   VASSERT(app->main_window_count > 1,
       "the delete window menu item should be deactivated if"
       " there is just one main quickplot window");
-  qp = data;
-
-DEBUG("qp->initializing=%d\n", qp->initializing);
-
-  if(qp->initializing)
-    /* let the initializing callback
-     * function delete the window. */
-    qp->initializing = 2;
-  else
-    qp_win_destroy(qp);
+  
+  qp_win_destroy((struct qp_win *) data);
 }
 
 void cb_quit(GtkWidget *w, gpointer data)
@@ -244,6 +235,7 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_F:
     case GDK_KEY_f:
+    case GDK_KEY_F11:
       gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_fullscreen));
       break;
     case GDK_KEY_G:
@@ -252,6 +244,7 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_H:
     case GDK_KEY_h:
+    case GDK_KEY_F1:
       cb_help(NULL, NULL);
       break;
     case GDK_KEY_I:
@@ -501,13 +494,13 @@ void cb_view_fullscreen(GtkWidget *w, gpointer data)
   gdk_window_set_cursor(gtk_widget_get_window(qp->window), app->waitCursor);
 }
 
-static __thread int cairo_draw_ignore_event = 0;
+int _cairo_draw_ignore_event = 0;
 
 void cb_view_cairo_draw(GtkWidget *w, gpointer data)
 {
   struct qp_win *qp;
 
-  if(cairo_draw_ignore_event)
+  if(_cairo_draw_ignore_event)
   {
     //DEBUG("ignoring\n");
     return;
@@ -528,6 +521,8 @@ void cb_view_cairo_draw(GtkWidget *w, gpointer data)
   gtk_widget_queue_draw(qp->current_graph->drawing_area);
   gdk_window_set_cursor(gtk_widget_get_window(qp->window), app->waitCursor);
 }
+
+
 
 void cb_view_shape(GtkWidget *w, gpointer data)
 {
@@ -833,10 +828,10 @@ gboolean cb_switch_page(GtkNotebook *notebook, GtkWidget *page,
           GTK_CHECK_MENU_ITEM(gr->qp->view_cairo_draw)) &&
       !gr->x11) )
   {
-    cairo_draw_ignore_event = 1;
+    _cairo_draw_ignore_event = 1;
     gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(gr->qp->view_cairo_draw),
         (gr->x11)?FALSE:TRUE);
-    cairo_draw_ignore_event = 0;
+    _cairo_draw_ignore_event = 0;
   }
 
   // redraw queuing is not needed

@@ -1,4 +1,5 @@
-
+.SH "SEE ALSO"
+.BR quickplot_shell (1)
 .SH COPYRIGHT
 Copyright (C) 1998-2011  Lance Arsenault
 .PP

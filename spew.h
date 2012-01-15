@@ -34,6 +34,8 @@ int qp_get_spew_level(void);
 extern
 void qp_spew_init(int level);
 
+extern
+int qp_set_spew_level(int level);
 
 
 /* This adds addition compiler checks for the printf formating. */
