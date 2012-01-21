@@ -169,7 +169,8 @@ int qp_plot_begin(struct qp_plot *p,
   if(p->x->form == QP_CHANNEL_FORM_SERIES &&
       p->y->form == QP_CHANNEL_FORM_SERIES &&
       p->x->series.is_increasing &&
-      qp_channel_series_length(p->x) == qp_channel_series_length(p->y))
+      qp_channel_series_length(p->x) == qp_channel_series_length(p->y) &&
+      !p->x->series.has_nan && !p->y->series.has_nan)
   {
     /* culling */
     /* this is likely the most common case

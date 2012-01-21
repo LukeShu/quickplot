@@ -77,6 +77,7 @@ struct qp_channel_series
 
   int is_increasing;
   int is_decreasing;
+  int has_nan; /* has values like +/-NAN or +/-INF */
    
   double min, max; /* for zoom/scale calculations */
 
@@ -171,6 +172,7 @@ qp_channel_t qp_channel_series_create(qp_channel_t orig, int value_type)
     c->series.is_decreasing = orig->series.is_decreasing;
     c->series.min = orig->series.min;
     c->series.max = orig->series.max;
+    c->series.has_nan = orig->series.has_nan;
 
     ++(*(c->series.ref_count));
     return c;

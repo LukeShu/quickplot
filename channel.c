@@ -69,6 +69,8 @@ qp_channel_t qp_channel_linear_create(double start, double step)
   ((double *) c->data)[0] = start;
   ((double *) c->data)[1] = step;
 
+  /* TODO: We setup the values in source.c */
+
   return c;
 }
 
@@ -96,6 +98,7 @@ qp_channel_t qp_channel_create(int form, int value_type)
   }
 
   channel = (struct qp_channel *) qp_malloc(sizeof(*channel));
+  memset(channel, 0, sizeof(*channel));
   channel->form = form;
   channel->value_type = value_type;
   channel->id = (++channel_create_count);

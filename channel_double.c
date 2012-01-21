@@ -178,7 +178,11 @@ double qp_channel_series_double_end(qp_channel_t c)
 static inline
 void check_min_max(struct qp_channel_series *cs, double val)
 {
-  if(!is_good_double(val)) return;
+  if(!is_good_double(val))
+  {
+    cs->has_nan = 1;
+    return;
+  }
 
   if(val > cs->max)
     cs->max = val;
