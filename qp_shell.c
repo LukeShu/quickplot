@@ -248,6 +248,7 @@ int main (int argc, char **argv)
       e_argv[i++] = last_arg;
       e_argv[i] = NULL;
       execv(qp_path, e_argv);
+      QP_EERROR("failed to execute %s\n", qp_path);
       // we failed, kill my child.
       kill(pid, SIGINT);
       return 1; // failed
