@@ -370,7 +370,7 @@ void _qp_spew_append(const char *format, ...)
 }
 
 void _qp_assert(const char *file, int line,
-    const char *func, long long bool_arg,
+    const char *func, long bool_arg,
     const char *arg, const char *format, ...)
 {
   if(!bool_arg)

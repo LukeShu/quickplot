@@ -21,7 +21,6 @@
 
 */
 
-
 #ifndef _QP_DEBUG_H_
 #define _QP_DEBUG_H_
 
@@ -36,6 +35,7 @@
 #ifndef PACKAGE_TARNAME
 #  error  "You must include config.h before this file"
 #endif
+
 
 
 
@@ -77,7 +77,7 @@ void _qp_spew_append(const char *format, ...)
 
 extern
 void _qp_assert(const char *file, int line,
-    const char *func, long long bool_arg,
+    const char *func, long bool_arg,
     const char *arg, const char *format, ...)
   __printf(6,7);
 
@@ -110,10 +110,10 @@ void _qp_assert(const char *file, int line,
 
 
 #define ASSERT(x) _qp_assert(__FILE__, __LINE__, \
-    __func__, (long long) (x), #x, " ")
+    __func__, (long) (x), #x, " ")
 #define VASSERT(x, fmt, ...)    \
     _qp_assert(__FILE__, __LINE__, __func__, \
-        (long long) (x), #x, fmt, ##__VA_ARGS__)
+        (long) (x), #x, fmt, ##__VA_ARGS__)
 
 
 
@@ -138,7 +138,7 @@ void *_qp_malloc(size_t s, const char *file, int line,
   errno = 0;
   p = malloc(s);
 #ifdef QP_DEBUG
-  _qp_assert(file, line, func, (long long) p, "malloc()",
+  _qp_assert(file, line, func, (long) p, "malloc()",
       " malloc(%zu) failed\n", s);
 #endif
   if(!s) /* for non-debug build case failure */
@@ -163,7 +163,7 @@ void *_qp_realloc(void *x, size_t s, const char *file, int line,
   errno = 0;
   p = realloc(x,s);
 #ifdef QP_DEBUG
-  _qp_assert(file, line, func, (long long) p, "realloc()",
+  _qp_assert(file, line, func, (long) p, "realloc()",
       " realloc(%p,%zu) failed\n", x, s);
 #endif
   if(!s) /* for non-debug build case failure */
@@ -188,7 +188,7 @@ char *_qp_strdup(const char *s, const char *file, int line,
   errno = 0;
   p = strdup(s);
 #ifdef QP_DEBUG
-  _qp_assert(file, line, func, (long long) p, "strdup()",
+  _qp_assert(file, line, func, (long) p, "strdup()",
       " strdup(\"%s\") failed\n", s);
 #endif
   if(!s) /* for non-debug build case failure */
@@ -213,7 +213,7 @@ char *_qp_strndup(const char *s, size_t n, const char *file, int line,
   errno = 0;
   p = strndup(s, n);
 #ifdef QP_DEBUG
-  _qp_assert(file, line, func, (long long) p, "strndup()",
+  _qp_assert(file, line, func, (long) p, "strndup()",
       " strndup(\"%s\", %zu) failed\n", s, n);
 #endif
   if(!s) /* for non-debug build case failure */

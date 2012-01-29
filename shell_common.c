@@ -620,7 +620,7 @@ char **qp_completion (const char *text, int start, int end)
      to complete.  Otherwise it is the name of a file in the current
      directory. */
   int words;
-  char last_char;
+  char last_char = 0;
   words = count_words(&last_char);
   rl_attempted_completion_over = 0;
 

@@ -31,7 +31,7 @@
 #include <stdlib.h>
 #include <errno.h>
 #include <dlfcn.h>
-
+#include <inttypes.h>
 
 #include <sndfile.h>
 #include <gtk/gtk.h>
@@ -214,15 +214,15 @@ off_t lseek(int fd, off_t offset, int whence)
   {
     if(offset > BUF_LEN || offset > qp_rd->rd)
     {
-      ERROR("Virtualized lseek(fd=%d, offset=%zu, SEEK_SET) failed\n",
+      ERROR("Virtualized lseek(fd=%d, offset=%ld, SEEK_SET) failed\n",
           fd, offset);
-      QP_ERROR("Failed to virtualize lseek(fd=%d, offset=%zu, SEEK_SET)"
+      QP_ERROR("Failed to virtualize lseek(fd=%d, offset=%ld, SEEK_SET)"
           " values where not expected.\n", fd, offset);
       ASSERT(0);
       exit(1);
     }
 
-    DEBUG("Virtualizing lseek(fd=%d, offset=%zu, SEEK_SET)\n", fd, offset);
+    DEBUG("Virtualizing lseek(fd=%d, offset=%ld, SEEK_SET)\n", fd, offset);
 
     qp_rd->rd = offset;
     return offset; /* success */
@@ -607,8 +607,8 @@ int read_sndfile(struct qp_source *source, struct qp_reader *rd)
   }
   else if(info.frames < skip_lines)
   {
-    QP_INFO("file \"%s\" is readable by libsndfile with %ld "
-        "samples which is less the lines to skip from --skip-lines=%zu\n",
+    QP_INFO("file \"%s\" is readable by libsndfile with %"PRId64
+        " samples which is less the lines to skip from --skip-lines=%zu\n",
         rd->filename, info.frames, skip_lines);
     return -1; /* error */
   }

@@ -846,7 +846,7 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
           qp_graph_create(NULL, NULL);
         else
         {
-          ssize_t *x, *y;
+          ssize_t *x = NULL, *y = NULL;
           size_t num;
           if(GetPlotNums(&argv[2], &x, &y, &num))
           {
