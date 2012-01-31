@@ -221,7 +221,7 @@ quickplot_SOURCES =\
 
 quickplot_SHORTNAME = qp
 quickplot_CFLAGS = $(gtk_3_CFLAGS) $(sndfile_CFLAGS)
-quickplot_LDADD = libquickplot.la $(gtk_3_LIBS) $(sndfile_LIBS)
+quickplot_LDADD = libquickplot.la $(gtk_3_LIBS) $(sndfile_LIBS) -lX11 -ldl
 #if USE_READLINE
 quickplot_LDADD += $(readline_LIBS)
 #endif
