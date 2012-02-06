@@ -499,7 +499,6 @@ int qp_win_graph(qp_win_t qp, const ssize_t *x, const ssize_t *y, size_t num,
     const char *name)
 {
   size_t num_chan = 0, i;
-  int op_new_window;
   int same_extremes = 1;
   struct qp_channel *chan_0;
   struct qp_graph *gr, *last_graph;
@@ -510,8 +509,6 @@ int qp_win_graph(qp_win_t qp, const ssize_t *x, const ssize_t *y, size_t num,
   ASSERT(x);
   ASSERT(y);
   ASSERT(num);
-
-  op_new_window = app->op_new_window;
 
   if(!num)
   {
