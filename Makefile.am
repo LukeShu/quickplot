@@ -413,7 +413,7 @@ sha1:   $(gzfile).sha1   $(bz2file).sha1   $(xzfile).sha1
 sha256: $(gzfile).sha256 $(bz2file).sha256 $(xzfile).sha256
 sha512: $(gzfile).sha512 $(bz2file).sha512 $(xzfile).sha512
 
-.gz.gz.md5: 
+.gz.gz.md5:
 	md5sum $< > $@
 .gz.gz.sha1:
 	sha1sum $< > $@
@@ -422,7 +422,7 @@ sha512: $(gzfile).sha512 $(bz2file).sha512 $(xzfile).sha512
 .gz.gz.sha512:
 	sha512sum $< > $@
 
-.bz2.bz2.md5: 
+.bz2.bz2.md5:
 	md5sum $< > $@
 .bz2.bz2.sha1:
 	sha1sum $< > $@
