@@ -360,6 +360,11 @@ void qp_graph_detail_set_value_mode(struct qp_graph *gr)
   }
 
   p0 = qp_sllist_begin(gr->plots);
+  if(!p0)
+  {
+    gr->value_mode = 0;
+    return;
+  }
   if(!p0->x->series.is_increasing)
   {
     gr->value_mode = 0;

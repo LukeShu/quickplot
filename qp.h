@@ -283,7 +283,7 @@ struct qp_graph
   int value_mode,
       /* The pick x y values depend on the mode
        * if it's mode=2 Pick Plot Value then
-       * value_pick_x (y) with not necessarily be the
+       * value_pick_x (y) will not necessarily be the
        * same as qp->pointer_x (y). */
       value_pick_x, value_pick_y;
 

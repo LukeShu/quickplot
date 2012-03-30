@@ -105,7 +105,6 @@ struct qp_gtk_options *strip_gtk_options(int *argc, char ***argv)
 
   while(i < *argc)
   {
-    char *s;
     char **op;
     int j;
     j = i;
@@ -113,7 +112,7 @@ struct qp_gtk_options *strip_gtk_options(int *argc, char ***argv)
     op = with_arg;
     while(*op)
     {
-      if((s = get_opt(0, *op, *argc, *argv, &i)))
+      if(get_opt(0, *op, *argc, *argv, &i))
       {
         strip_opt(opt, j, i-1, argc, argv, *op);
         i = j;
