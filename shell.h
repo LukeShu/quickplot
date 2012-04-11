@@ -31,6 +31,7 @@ struct qp_shell
   char *line;
   size_t len;
   char *prompt;
+  guint tag;
   int close_on_exit;
   pid_t pid; /* process that is connected */
   int file_in_isatty;

@@ -66,13 +66,11 @@ function Get_Prefixes()
   while [ -n "$1" ] ; do
     for i in ${Pre}*${1} ; do
       prefix[$count]="${i%${1}}"
-      for i in ${prefix[$count]}* ; do
-        if [ -n "${files[$count]}" ] ; then
-          files[$count]="${files[$count]} $i"
-        else
-          files[$count]="$i"
-        fi
-      done
+      if [ -n "${files[$count]}" ] ; then
+        files[$count]="${files[$count]} $i"
+      else
+        files[$count]="$i"
+      fi
       let count=$count+1
     done
     shift 1

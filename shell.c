@@ -208,6 +208,17 @@ void qp_shell_destroy(struct qp_shell *sh)
   if(!sh)
     return;
 
+  if(qp_sllist_find(app->shells, sh) == 0)
+  {
+    /* I don't know how to flush out the G main
+     * loop pending events.  We have a problem
+     * with G main loop calling shell callbacks 
+     * after the shell has been removed and
+     * qp_shell_destroy() has been called. */
+    WARN("Quickplot Shell exiting again!\n");
+    return;
+  }
+
   if(sh->file_out)
   {
     errno = 0;
@@ -236,6 +247,8 @@ void qp_shell_destroy(struct qp_shell *sh)
   sh->fd.revents = 0;
 
   g_source_remove_poll(&sh->gsource, &(sh->fd));
+  /* g_source_remove() removes a source from its' GMainContext */
+  g_source_remove(sh->tag);
   /* g_source_destroy() removes a source from its' GMainContext */
   g_source_destroy(&sh->gsource);
   /* free the gsource object in memory */
@@ -409,7 +422,7 @@ gboolean dispatch(GSource *source, GSourceFunc callback, gpointer data)
     else
 #endif
     if(do_getline(sh))
-      break;
+      return FALSE;
   }
   while(check_file_in(sh->file_in, 0, 0));
 
@@ -425,7 +438,6 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
 {
   struct qp_shell *sh;
   GSource *s;
-  gint gid;
   
   ASSERT(file_out);
 
@@ -476,8 +488,8 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
       /* larger number == lower priority */); 
   VASSERT(s, "g_source_new() failed\n");
   /* Adds source to a GMainContext */
-  gid = g_source_attach(s, NULL);
-  VASSERT(gid > 0, "g_source_attach() failed\n");
+  sh->tag = g_source_attach(s, NULL);
+  VASSERT(sh->tag > 0, "g_source_attach() failed\n");
   g_source_add_poll(s, &(sh->fd));
   qp_shell_initialize(!app->op_no_readline);
 
