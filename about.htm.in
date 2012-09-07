@@ -152,7 +152,8 @@ that <a href="help.html#house">one can make pretty pictures</a> with.
   <li>Quickplot is no longer written in C++ so it builds and
     installs faster with
     less prerequisites
-  <li>a command line shell (added in version 0.10.*)
+  <li>a command line shell that let you interact with a running quickplot
+    process from a text based command shell (added in version 0.10.*)
 </ul>
 
 

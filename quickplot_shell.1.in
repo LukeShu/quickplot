@@ -46,7 +46,7 @@ but \fBquickplot_shell\fR
 runs as a separate process and talks to the Quickplot program
 using pipes, where as \fBquickplot\fR \fB--shell\fR runs one
 process with both the GUI and the shell with no pipes.
-You may connect as number of remote Quickplot shells to a Quickplot
+You may connect any number of remote Quickplot shells to a Quickplot
 program.
 .br
 .TP

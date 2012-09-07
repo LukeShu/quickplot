@@ -135,7 +135,6 @@ This will create a directory named quickplot in the current directory.
 
 <span style="font-size: 90%; font-weight:bold;">Dec 11
 2011</span>&nbsp;&nbsp;
-Quickplot is currently under active development.&nbsp;
 A complete re-write was done and there is a new release that
 requires the use of GTK+ version 3, without GTKmm.&nbsp;
 We consider this rewrite, version 0.10.*, much better than

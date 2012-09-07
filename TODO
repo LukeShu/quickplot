@@ -1,7 +1,8 @@
-BUG BUG
+---- BUG -----
 Fix bug when reading pipe input for plot data with --shell:
   Looks like an Xevent is reading the wrong fd.
   I remember using dup(), dup2() or dup*() somewhere.
+--------------
 
 
 
@@ -97,8 +98,6 @@ it out more carefully.  This is just the authors junk notes.
   find/check all the GTK+ argument options
 
   check the status x y print format when there is no grid
-
-  Make man page.
 
 
   Make function channels that use less memory
