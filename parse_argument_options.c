@@ -159,8 +159,6 @@ void qp_getargs_2nd_pass(int argc, char **argv)
         exit(1);
   }
 
-  free(parser);
-
   {
     struct qp_win *qp;
     /* There should be at least one qp window */
@@ -182,9 +180,48 @@ void qp_getargs_2nd_pass(int argc, char **argv)
   if(app->op_shell)
   {
     /* We must make the shell last of all so the shell is usable. */
+    
+    if(parser->p2.got_stdin)
+      /* we are reading stdin for plot data so we'll open the
+       * controlling tty to read input for the quickplot shell. */
+    {
+      int stdin_fd, tty_fd;
+
+      errno = 0;
+      tty_fd = open("/dev/tty", O_RDONLY);
+      if(tty_fd == -1)
+      {
+        VASSERT(0, "open(\"/dev/tty\", O_RDONLY) failed\n");
+        QP_EERROR("failed to open controlling tty\n");
+        exit(1);
+      }
+      /* We replace the old stdin file desciptor with
+       * this tty_fd  so that readline() can use stdin */
+      stdin_fd = fileno(stdin);
+      errno = 0;
+      if(close(stdin_fd))
+      {
+        VASSERT(0, "close(%d) failed\n", stdin_fd);
+        QP_EERROR("failed to close the original standard input\n");
+        exit(1);
+      }
+      errno = 0;
+      if(dup2(tty_fd, stdin_fd) == -1)
+      {
+        VASSERT(0, "dup2(%d, %d) failed\n", tty_fd, stdin_fd);
+        QP_EERROR("failed to dup controlling tty to standard input\n");
+        exit(1);
+      }
+
+      /* reset the standard input file stream */
+      clearerr(stdin);
+    }
+
     app->op_shell = qp_shell_create(stdin, stdout, 0, getpid());
     if(!app->op_shell)
       exit(1);
   }
+
+  free(parser);
 }
 

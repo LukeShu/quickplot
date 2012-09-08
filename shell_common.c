@@ -902,7 +902,7 @@ int process_client_side_commands(int *argc_, char ***argv_,
         else
         {
 #endif
-          /* setup readline */
+          /* setup getline */
 #ifdef HAVE_LIBREADLINE
           *use_readline = 0;
 #endif
