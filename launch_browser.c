@@ -57,6 +57,7 @@ static int LaunchBrowser(const char * const url)
   const char * const browsers[] =
   {
     "firefox",
+    "chromium-browser",
     "galeon",
     "konqueror",
     "mozilla",

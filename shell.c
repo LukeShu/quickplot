@@ -468,7 +468,7 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
   sh->len = 0;
   sh->close_on_exit = close_on_exit;
   sh->pid = pid;
-  sh->file_in_isatty = isatty(fileno(sh->file_in));
+  sh->file_in_isatty = isatty(fileno(file_in));
 
   sh->prompt = allocate_prompt();
 
@@ -496,7 +496,9 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
   fprintf(sh->file_out, "\nQuickplot version: %s\n", VERSION);
 
 #ifdef HAVE_LIBREADLINE
-  if(isatty(fileno(sh->file_in)) && !app->op_no_readline)
+  if(isatty(fileno(file_in)) && !app->op_no_readline &&
+      file_in == stdin /* readline() can only use the stdin stream */
+      )
   {
     fprintf(sh->file_out, "Using readline version: %d.%d\n",
         RL_VERSION_MAJOR, RL_VERSION_MINOR);
