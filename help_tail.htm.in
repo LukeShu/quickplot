@@ -196,7 +196,7 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
   <tr><td style="white-space:nowrap;"><b>esc</b></td> <td>close the current focused 
       window.&nbsp; This will not close the last main window.&nbsp;
       If the current focused window is in full screen this will change
-      it to non-full sreen.</td</tr>
+      it to non-full screen.</td</tr>
   <tr class=c><td style="white-space:nowrap;"><b>left/right arrow</b></td>
     <td>the right and left arrow keys cycle though graph tabs when the buttons
       and tabs are not showing</td</tr>

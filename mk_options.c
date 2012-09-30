@@ -90,8 +90,8 @@ struct qp_option options[] =
 {
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,1}, "",                     0,    "FILE",    "read data from file FILE.  If FILE is - (dash) then "
-                                                  "standard input will be read.  See also ::--file@@ and "
-                                                  "::--pipe@@.",                                              0,          0           },
+                                                  "standard input will be read.  This is the same as "
+                                                  "the ::--file@@ option.  See also ::--pipe@@.",            0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {2,0}, "--about",              "-a", 0,         "display introductory information about Quickplot in a "
                                                   "browser and exit",                                         0,          0           },
@@ -299,7 +299,7 @@ struct qp_option options[] =
                                                   "status bar.  See also ::--gui@@.",                         0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-labels",          "-Q", 0,         "don't read channel labels from the file.  This is "
-                                                  "the deafult.  See also ::--labels@@.",                     0,          0           },
+                                                  "the default.  See also ::--labels@@.",                     0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-linear-channel",  "-k", 0,         "turn off adding a linear channel for up coming files.  "
                                                   "See also ::--linear-channel@@.",                           0,          0           },

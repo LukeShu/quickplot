@@ -110,7 +110,7 @@ a web browser.
 
 <p>
 Quickplot can load data from: GUIs (graphical user interfaces), files listed
-on the command line, and from standard input (pipes too).&nbsp; Data
+on the command line, and from standard input (pipes) too.&nbsp; Data
 is loaded into channels.&nbsp; A channel represents a series of numbers,
 like for example the values for one variable, or a column of numbers in
 a spreadsheet.&nbsp; Other names for channel may be
@@ -446,8 +446,8 @@ the order in which things happen as Quickplot starts up.
 
 
 <p>
-When using short options, like <em>-n20</em>
-that require an argument, may not be grouped with other short
+Short options, like <em>-n20</em>,
+that require a sub-argument, may not be grouped with other short
 options in one argument.&nbsp; For example the argument
 <em>-on20</em>, is not valid, but -oN is a valid argument
 with two options <em>o</em> (<em>--no-points</em>) and
