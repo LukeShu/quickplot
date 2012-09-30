@@ -52,7 +52,8 @@ static int LaunchBrowser(const char * const url)
 {
   int i=0;
   pid_t pid;
-
+  const char *browser;
+  
   // now try the list of browsers
   const char * const browsers[] =
   {
@@ -94,7 +95,7 @@ static int LaunchBrowser(const char * const url)
 
   // First see if the user has set a prefered browser in the BROWSER
   // environment variable.
-  const char *browser = getenv("BROWSER");
+  browser = getenv("BROWSER");
 
   if(browser)
     execlp(browser, browser, url, NULL);
