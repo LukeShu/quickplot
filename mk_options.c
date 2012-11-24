@@ -91,7 +91,7 @@ struct qp_option options[] =
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {1,1}, "",                     0,    "FILE",    "read data from file FILE.  If FILE is - (dash) then "
                                                   "standard input will be read.  This is the same as "
-                                                  "the ::--file@@ option.  See also ::--pipe@@.",            0,          0           },
+                                                  "the ::--file@@ option.  See also ::--pipe@@.",             0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {2,0}, "--about",              "-a", 0,         "display introductory information about Quickplot in a "
                                                   "browser and exit",                                         0,          0           },
