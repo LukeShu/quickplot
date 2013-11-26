@@ -1,7 +1,7 @@
 #!/bin/sh
 
 if test -z "$1" ; then
-  echo "bad script $0 usage"
+  echo "Usage: $0 RELEASE_DATE_FILE"
   exit 1
 fi
 

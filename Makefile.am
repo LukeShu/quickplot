@@ -314,7 +314,7 @@ index.html: index.htm
 # dist and one for installing, and the values for
 # @release_date@ and @repo_version@ differ for those two cases
 about.html: about.htm
-	repo_version="`${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION`";\
+	repo_version="`${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION ${top_srcdir}`";\
  rel_date="`${top_srcdir}/release_date.sh ${top_srcdir}/RELEASE_DATE`"; sed $<\
  -e "s/@release_date@/$$rel_date/g"\
  -e "s/@repo_version@/$$repo_version/g"\
