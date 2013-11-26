@@ -75,7 +75,8 @@ rm -f\
  Makefile Makefile.in missing mkinstalldirs ltmain.sh\
  config.sub config.guess configure\
  configure.scan autoscan-*x.log INSTALL\
- libtool config.status autoscan.log depcomp confdefs.h
+ libtool config.status autoscan.log depcomp confdefs.h\
+ last_release
 
 rm -f config.h* stamp-h* compile\
  quickplot quickplot_shell *.xpm *.txt REPO_VERSION RELEASE_DATE paths.h\
