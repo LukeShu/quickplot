@@ -382,7 +382,7 @@ endif
 dist-hook:
 	if test -f RELEASE_DATE ; then mv RELEASE_DATE RELEASE_DATE.save ; fi
 	if test -f REPO_VERSION ; then mv REPO_VERSION REPO_VERSION.save ; fi
-	${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION > REPO_VERSION.tmp
+	${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION ${top_srcdir} > REPO_VERSION.tmp
 	mv REPO_VERSION.tmp REPO_VERSION
 	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
 	echo $(VERSION) > last_release
