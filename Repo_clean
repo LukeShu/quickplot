@@ -37,15 +37,6 @@ if [ "$dir" != "$PWD" ] ; then
     exit 1
 fi
 
-d=$(echo "$0"|sed 's/[^/]*$//')
-[ -z "$d" ] && d='.'
-if [ "$(cd "$d" 2>/dev/null && echo "${PWD}")" != "${PWD}" ]
-then
-    echo "This script ($0) must be executed directly\
- from the top $0 source directory."
-    exit 1
-fi
- 
 # This is not a complete list but if they have them
 # they will likely have any others that are needed.
 progs="svn svnversion lynx convert autoconf automake sed grep awk bash diff"
