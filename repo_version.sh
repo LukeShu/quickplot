@@ -8,19 +8,10 @@ fi
 ret="`(svnversion) 2>/dev/null`"
 err="$?"
 
-if test "X$err" != "X0" ; then
-  ret=exported
-elif test -z "$ret" ; then
-  ret=unknown
-fi
-
-if test "X$ret" = "Xexported" ; then
-  if test -f "$1" ; then
-    out="`cat $1`"
-    echo "$out"
-  else
-    echo "unknown"
-  fi
+if test "$err" != "0" ; then
+  echo "unknown"
+elif test "$ret" = "Unversioned directory" ; then
+  echo "unknown"
 else
-  echo $ret
+  echo "$ret"
 fi

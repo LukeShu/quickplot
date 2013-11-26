@@ -267,11 +267,6 @@ if USE_LYNX
 SUFFIXES += .txt
 endif
 
-ABOUT_HTML_DEP = about.htm
-if IS_SVN_CO
-ABOUT_HTML_DEP += .svn/all-wcprops
-endif
-
 if HAVE_LOCAL_SCREENSHOTS
 SCREENSHOT_URL = screenshots.html
 else
@@ -318,7 +313,7 @@ index.html: index.htm
 # because we need to generate about.html for two cases, one for
 # dist and one for installing, and the values for
 # @release_date@ and @repo_version@ differ for those two cases
-about.html: $(ABOUT_HTML_DEP)
+about.html: about.htm
 	repo_version="`${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION`";\
  rel_date="`${top_srcdir}/release_date.sh ${top_srcdir}/RELEASE_DATE`"; sed $<\
  -e "s/@release_date@/$$rel_date/g"\
