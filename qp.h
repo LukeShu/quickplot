@@ -322,6 +322,7 @@ struct qp_app
   int *argc;
   char ***argv;
 
+  int is_globel_menu;
   int is_gtk_init;
   int main_window_count;
   pid_t pid;

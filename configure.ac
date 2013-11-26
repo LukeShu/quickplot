@@ -94,10 +94,11 @@ error=no
 
 AC_ARG_ENABLE([developer],
     AS_HELP_STRING([--enable-developer],
-                   [if you wish to edit Quickplot source image files and\
- Quickplot documentation files enabling this option will add addition\
- make file targets which are built using the programs lynx and\
- the ImageMagick program convert.\
+                   [if you wish to build and edit Quickplot source image\
+ files and Quickplot documentation files enabling this option will add\
+ addition make file targets which are built using the programs lynx and\
+ the ImageMagick program convert.  This option is required if you are\
+ building Quickplot from the repository source.\
  (default is no developer targets).]),
  [enable_developer="$enableval"],
  [enable_developer=no])

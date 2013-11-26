@@ -73,7 +73,7 @@ void set_color_button(GtkWidget *w, struct qp_colora *c)
   rgba.blue = c->b;
   rgba.alpha = c->a;
   //DEBUG("%g %g %g %g\n", c->r, c->g, c->b, c->a);
-  gtk_color_button_set_rgba(GTK_COLOR_BUTTON(w), &rgba);
+  gtk_color_chooser_set_rgba(GTK_COLOR_CHOOSER(w), &rgba);
 }
 
 static inline
@@ -394,7 +394,7 @@ static inline
 void set_rgba(GtkColorButton *w, struct qp_colora *c)
 {
   GdkRGBA rgba;
-  gtk_color_button_get_rgba(w, &rgba);
+  gtk_color_chooser_get_rgba(GTK_COLOR_CHOOSER(w), &rgba);
   c->r = rgba.red;
   c->g = rgba.green;
   c->b = rgba.blue;
@@ -433,7 +433,7 @@ GtkWidget *color_button_create(const char *text,
   gtk_misc_set_alignment(GTK_MISC(label), 0.0, 0.5);
   picker = gtk_color_button_new();
   gtk_color_button_set_title(GTK_COLOR_BUTTON(picker), text);
-  gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
+  gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(picker), TRUE);
   set_color_button(picker, c);
 
   hbox = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 1);
@@ -1588,7 +1588,7 @@ void graph_detail_create(struct qp_win *qp)
               gd->background_color_picker = picker = gtk_color_button_new();
               gtk_color_button_set_title(GTK_COLOR_BUTTON(picker),
                   "Select the Graph Background Color");
-              gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
+              gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(picker), TRUE);
               gtk_grid_attach(GTK_GRID(grid), label, 0, 0, 1, 1);
               gtk_grid_attach(GTK_GRID(grid), picker, 1, 0, 1, 1);
               g_signal_connect(G_OBJECT(picker), "color-set",
@@ -1601,7 +1601,7 @@ void graph_detail_create(struct qp_win *qp)
               gd->grid_color_picker = picker = gtk_color_button_new();
               gtk_color_button_set_title(GTK_COLOR_BUTTON(picker),
                   "Select the Graph Grid Color");
-              gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
+              gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(picker), TRUE);
               gtk_grid_attach(GTK_GRID(grid), label, 0, 1, 1, 1);
               gtk_grid_attach(GTK_GRID(grid), picker, 1, 1, 1, 1);
               g_signal_connect(G_OBJECT(picker), "color-set",
@@ -1614,7 +1614,7 @@ void graph_detail_create(struct qp_win *qp)
               gd->numbers_color_picker = picker = gtk_color_button_new();
               gtk_color_button_set_title(GTK_COLOR_BUTTON(picker),
                   "Select the Graph Grid Numbers Color");
-              gtk_color_button_set_use_alpha(GTK_COLOR_BUTTON(picker), TRUE);
+              gtk_color_chooser_set_use_alpha(GTK_COLOR_CHOOSER(picker), TRUE);
               gtk_grid_attach(GTK_GRID(grid), label, 0, 2, 1, 1);
               gtk_grid_attach(GTK_GRID(grid), picker, 1, 2, 1, 1);
               g_signal_connect(G_OBJECT(picker), "color-set",
@@ -1675,7 +1675,7 @@ void graph_detail_create(struct qp_win *qp)
           /*****************************************************************************/
         }
 
-        gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollwin), hbox);
+        gtk_container_add(GTK_CONTAINER(scrollwin), hbox);
         gtk_widget_show(hbox);
         gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 8);
         gtk_widget_show(scrollwin);
@@ -1722,7 +1722,7 @@ void graph_detail_create(struct qp_win *qp)
         gd->selecter_hbox = box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 2);
         gtk_box_set_homogeneous(GTK_BOX(box), FALSE);
         plot_selecter_make(qp);
-        gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollwin), box);
+        gtk_container_add(GTK_CONTAINER(scrollwin), box);
         gtk_widget_show(box);
       }
       gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 8);
@@ -1773,7 +1773,7 @@ void graph_detail_create(struct qp_win *qp)
         gd->plot_list_hbox = box = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
         gtk_box_set_homogeneous(GTK_BOX(box), FALSE);
         plot_list_make(qp);
-        gtk_scrolled_window_add_with_viewport(GTK_SCROLLED_WINDOW(scrollwin), box);
+        gtk_container_add(GTK_CONTAINER(scrollwin), box);
         gtk_widget_show(box);
       }
       gtk_box_pack_start(GTK_BOX(vbox), scrollwin, TRUE, TRUE, 8);

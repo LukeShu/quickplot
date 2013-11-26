@@ -26,8 +26,6 @@
  * The program quickplot is a server to shells and the
  * program quickplot can also be a shell. */
 
-/* This function is only used in one place so we make it inline */
-
 
 #include <ctype.h>
 #include <stdio.h>
@@ -70,7 +68,7 @@
  * better optimized.   For one thing strcmp() looks at the
  * whole string and calculates a total diff, when we just need
  * to know at the first character that differs.  The command
- * strings could be in an ordered tree and etc ...
+ * strings could be in an ordered tree and/or etc ...
  *
  * Need to look into flex and bison???*/
 
@@ -262,7 +260,7 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
         fprintf(out, "There are no windows\n");
     }
     else
-      spew_args("Unknown command", argc, argv, out);
+      BadCommand("Unknown command", argc, argv, out);
   
     /********************************/
   }
@@ -444,7 +442,7 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
       }
       else if(!strcmp(argv[1], "menubar"))
       {
-        if(argc == 3)
+        if(argc == 3 && !app->is_globel_menu)
         {
           struct qp_win *qp;
           app->op_menubar = GetBool(argv[2], 0);
@@ -785,7 +783,7 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
           BadCommand2(out, argc, argv);
       }
       else
-        spew_args("Unknown command", argc, argv, out);
+        BadCommand("Unknown command", argc, argv, out);
     }
     else if(!strcmp(argv[0], "close"))
     {
@@ -1229,7 +1227,7 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
 
       }
       else
-        spew_args("Unknown command", argc, argv, out);
+        BadCommand("Unknown command", argc, argv, out);
     }
     else if(!strcmp(argv[0], "open"))
     {
@@ -1455,7 +1453,7 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
           BadCommand2(out, argc, argv);
       }
       else
-        spew_args("Unknown command", argc, argv, out);
+        BadCommand("Unknown command", argc, argv, out);
     }
     else if(!strcmp(argv[0], "window"))
     {
@@ -1595,7 +1593,7 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
       }
       else if(!strcmp(argv[1], "menubar"))
       {
-        if(argc == 3)
+        if(argc == 3 && !app->is_globel_menu)
         {
           int menubar, current;
           menubar = GetBool(argv[2], 0);
@@ -2028,11 +2026,11 @@ int do_server_commands(size_t argc, char **argv, struct qp_shell *sh)
           BadCommand2(out, argc, argv);
       }
       else
-        spew_args("Unknown window command", argc, argv, out);
+        BadCommand("Unknown window command", argc, argv, out);
     }
 
     else
-      spew_args("Unknown command", argc, argv, out);
+      BadCommand("Unknown command", argc, argv, out);
 
     /********************************/
   }

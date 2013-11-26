@@ -463,9 +463,12 @@ qp_win_t _qp_win_create(const struct qp_win_config *c)
        *                   View menu
        *******************************************************************/
       menu = create_menu(menubar, accelGroup, "View");
-      qp->view_menubar =
-      create_check_menu_item(menu, "_Menu Bar", GDK_KEY_M,
-          (c)?(c->menubar):(app->op_menubar), cb_view_menubar, qp);
+      if(!app->is_globel_menu)
+        qp->view_menubar =
+          create_check_menu_item(menu, "_Menu Bar", GDK_KEY_M,
+            (c)?(c->menubar):(app->op_menubar), cb_view_menubar, qp);
+      else
+        qp->view_menubar = NULL;
       qp->view_buttonbar =
       create_check_menu_item(menu, "_Button Bar", GDK_KEY_B,
           (c)?(c->buttonbar):(app->op_buttons), cb_view_buttonbar, qp);
@@ -668,7 +671,10 @@ struct qp_win *qp_win_copy_create(struct qp_win *old_qp)
   config.x11_draw = old_qp->x11_draw;
   config.width = width;
   config.height = height;
-  config.menubar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_menubar));
+  if(!app->is_globel_menu)
+    config.menubar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_menubar));
+  else
+    config.menubar = 0;
   config.buttonbar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_buttonbar));
   config.tabs = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_graph_tabs));
   config.statusbar = gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(old_qp->view_statusbar));

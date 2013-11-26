@@ -26,6 +26,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <math.h>
+#include <dlfcn.h>
 
 #include "quickplot.h"
 
@@ -82,6 +83,40 @@ int qp_app_init(int *argc, char ***argv)
   app->argc = argc;
   app->argv = argv;
 
+  /* This stupid code is to fix Quickplot when running with
+   * Ubuntu Unity window manager.  The libraries that
+   * Quickplot runs with are not the same as `ldd PATHTOQUICKPLOT'
+   * with tell you so the unity code that will run which I see from
+   * /proc/PID/maps is libunity-gtk-module.so calling function
+   * void gtk_module_init(void) which looks at environment variable
+   * UBUNTU_MENUPROXY.  They appear to load that after the linker
+   * is done.  I see no other reasonable interface to the state
+   * of the globel menu shit in the libunity-gtk-module.so source code.
+   * Here's to hoping they don't decide to unset UBUNTU_MENUPROXY
+   * or change what OFF is.  If they change stuff and brake this
+   * this will still work as it did before. */
+
+  /* We need this so that we know whether or not we can hide the
+   * main menu, and in doing so will cause a redraw event,
+   * which in turn tells us whether or not we need to set
+   * the wait cursor when we try to hide the main menu, because
+   * you can't set the cursor in the redraw code, because
+   * it's too late then.  Ya what-ever!  Once again: Unity === bad design */
+  {
+      const char *env;
+      env = g_getenv("UBUNTU_MENUPROXY");
+      app->is_globel_menu =
+        dlopen("libunity-gtk-module.so", RTLD_NOLOAD | RTLD_LAZY) &&
+        !(env && env[0] && (
+                !g_ascii_strcasecmp(env, "0") ||
+                !g_ascii_strcasecmp(env, "no") ||
+                !g_ascii_strcasecmp(env, "off") ||
+                !g_ascii_strcasecmp(env, "false")
+                )
+         );
+  }
+
+
   { /* The close buttons on the tabs were too big by default.
      * They made the tabs change height when the button
      * was added.  This appears to fix them. */
@@ -90,13 +125,13 @@ int qp_app_init(int *argc, char ***argv)
 #endif
     const char css[] =
       "GtkButton#tab_close_button {\n"
-      "  -GtkButton-default-border: 0;\n"
-      "  -GtkButton-default-outside-border: 0;\n"
-      "  -GtkButton-inner-border: 0;\n"
-      "  -GtkWidget-focus-line-width: 0;\n"
-      "  -GtkWidget-focus-padding: 0;\n"
-      "   border-radius: 4;\n" /* This looks prettier to me. */
-      "  padding: 0;\n"
+      "  -GtkButton-default-border: 0px;\n"
+      "  -GtkButton-default-outside-border: 0px;\n"
+      "  -GtkButton-inner-border: 0px;\n"
+      "  -GtkWidget-focus-line-width: 0px;\n"
+      "  -GtkWidget-focus-padding: 0px;\n"
+      "   border-radius: 4px;\n" /* This looks prettier to me. */
+      "  padding: 0px;\n"
       " }";
     GtkCssProvider *provider;
     provider = gtk_css_provider_new();

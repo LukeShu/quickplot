@@ -22,7 +22,9 @@
 */
 
 /* This file provides a Command line interface (CLI) or Command-line shell
- * for a running quickplot program.  Add a language to this like Ruby.
+ * for a running quickplot program.
+ *
+ * TODO: Add a language to this like Ruby.
  *
  * All class objects are containers of parameters.
  * Example
@@ -512,7 +514,7 @@ struct qp_shell *qp_shell_create(FILE *file_in, FILE *file_out,
       /* printing "Quickplot using getline()" may confuse
        * a user into thinking that their terminal is not
        * using readline when it may indeed be using readline. */
-      fprintf(sh->file_out, "Quickplot server using getline()\n");
+      //fprintf(sh->file_out, "Quickplot server using getline()\n");
 
     if(sh->pid == app->pid)
       /* local shell prompt */

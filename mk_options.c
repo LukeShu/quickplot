@@ -265,12 +265,17 @@ struct qp_option options[] =
 { {0,1}, "--lines",              "-j", "Y|N|A",   " ** ## ::Y@@  yes show lines ## ::N@@  no don't show lines. "
                                                   "Same as ::--no-lines@@. ## ::A@@  auto, be smart about "
                                                   "it.  This is the default. &&",                             "-1",       "int"       },
+
+/*------------------------------------------------------------------------------------------------------------------------------------*/
+{ {1,0}, "--local-menubars",     0,    0,         "disable that darn Ubuntu Unity globel menu bar.  This "
+                                                  "will do nothing if not running with Unity.",               0,          0           },                                      
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--maximize",           "-m", 0,         "maximize the main window.  See also ::--no-maximize@@ "
                                                   "and ::--fullscreen@@.",                                    "0",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--menubar",            0,    0,         "show the menu bar.  This is the default.  See also "
-                                                  "::--menubar@@.",                                           "1",        "int"       },
+                                                  "::--no-menubar@@.  This will do nothing if not running "
+                                                  "with the Ubuntu Unity window manager.",                    "1",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--new-window",         "-w", 0,         "make a new main window for each graph",                    "0",        "int"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
@@ -311,7 +316,8 @@ struct qp_option options[] =
                                                   "See also ::--maximize@@.",                                 0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-menubar",         "-M", 0,         "don't display the menu bar in the main window.  See "
-                                                  "also ::--menubar@@.",                                      0,          0           },
+                                                  "also ::--menubar@@.  This will do nothing if not "
+                                                  "running with the Ubuntu Unity window manager.",            0,          0           },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
 { {0,1}, "--no-new-window",      "-Z", 0,         "don't make a new main window for the graph.  This is "
                                                   "the default.  See also ::--new-window@@.",                 0,          0           },

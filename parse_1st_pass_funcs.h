@@ -130,3 +130,9 @@ void parse_1st_linear_channel(char *arg, int argc, char **argv, int *i)
 }
 
 
+static inline
+void parse_1st_local_menubars(void)
+{
+    setenv("UBUNTU_MENUPROXY", "0", 1);
+}
+

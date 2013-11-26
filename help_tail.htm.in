@@ -155,9 +155,6 @@ summary="list of Quickplot gtk+ options. We got this list from running
 
 
 
-
-
-
 <h2>Keyboard Short-cuts</h2>
 
 
@@ -177,7 +174,7 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 <tr class=c><td><b>g</b></td> <td>show/hide the <b>g</b>raph detail widget</td</tr>
 <tr><td><b>h</b></td> <td>show <b>h</b>elp using a web browser</td</tr>
 <tr class=c><td><b>i</b></td> <td>save a PNG <b>i</b>mage of the graph</td</tr>
-<tr><td><b>m</b></td> <td>show/hide the <b>m</b>enu bar</td</tr>
+<tr><td><b>m</b></td> <td>show/hide the <b>m</b>enu bar or do nothing if there is a globel menu bar</td</tr>
 <tr class=c><td><b>n</b></td> <td>make a <b>n</b>ew graph</td</tr>
 <tr><td><b>o</b></td> <td><b>o</b>pen a data file</td</tr>
 <tr class=c><td><b>q</b></td> <td><b>q</b>uit</td</tr>

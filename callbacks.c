@@ -128,11 +128,13 @@ gboolean ecb_key_release(GtkWidget *w, GdkEvent *event, gpointer data)
 static inline
 void toggle_all_guis(struct qp_win *qp)
 {
-  int showing;
+  int showing = 0;
 
-  showing =
-    gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar))
-    ||
+  if(qp->view_menubar)
+    showing =
+      gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar));
+
+  showing |=
     gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_buttonbar))
     ||
     gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_graph_tabs))
@@ -145,7 +147,8 @@ void toggle_all_guis(struct qp_win *qp)
   if(showing)
   {
     /* Hide them */
-    if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar)))
+    if(qp->view_menubar &&
+        gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar)))
       gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_menubar));
     if(gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_buttonbar)))
       gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_buttonbar));
@@ -160,7 +163,8 @@ void toggle_all_guis(struct qp_win *qp)
   }
 
   /* Show them */
-  if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar)))
+  if(qp->view_menubar &&
+      !gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_menubar)))
     gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_menubar));
   if(!gtk_check_menu_item_get_active(GTK_CHECK_MENU_ITEM(qp->view_buttonbar)))
     gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_buttonbar));
@@ -254,7 +258,8 @@ gboolean ecb_key_press(GtkWidget *w, GdkEvent *event, gpointer data)
       break;
     case GDK_KEY_M:
     case GDK_KEY_m:
-      gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_menubar));
+      if(qp->view_menubar)
+        gtk_menu_item_activate(GTK_MENU_ITEM(qp->view_menubar));
       break;
     case GDK_KEY_N:
     case GDK_KEY_n:
@@ -350,6 +355,7 @@ void cb_zoom_out_all(GtkWidget *w, gpointer data)
   qp_graph_zoom_out(qp->current_graph, 1);
 }
 
+/* this will not be called if qp->view_menubar is not set */
 void cb_view_menubar(GtkWidget *w, gpointer data)
 {
   struct qp_win *qp;
@@ -360,7 +366,7 @@ void cb_view_menubar(GtkWidget *w, gpointer data)
     gtk_widget_show(qp->menubar);
   else
     gtk_widget_hide(qp->menubar);
-  
+
   gdk_window_set_cursor(gtk_widget_get_window(qp->window), app->waitCursor);
 }
 
@@ -742,7 +748,7 @@ gboolean ecb_graph_configure(GtkWidget *wdgt, GdkEvent *event, gpointer data)
   gr->pixbuf_needs_draw = 1;
   gr->draw_value_pick = 0;
 
-  // Too bad this does not work
+  // TODO: Too bad this does not work
   gdk_window_set_cursor(gtk_widget_get_window(gr->qp->window),
                   app->waitCursor);
 

@@ -3,7 +3,7 @@ Most of this is done, but we need to leave it so we may check
 it out more carefully.  This is just the authors junk notes.
 
   Add keep aspect mode:  The x/y aspect stays the same when
-  zooming.
+  zooming.   This would be handy for when looking at GIS data.
 
 
   test all the shell commands  

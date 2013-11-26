@@ -308,10 +308,18 @@ int GetPlotNums(char **argv, ssize_t **X, ssize_t **Y, size_t *num)
 }
 
 static inline
+void BadCommand(const char *prefix, size_t argc, char **argv, FILE *file)
+{
+  spew_args(prefix, argc, argv, file);
+  fprintf(file, "Try: help\n");
+}
+
+static inline
 void BadCommand2(FILE *file, int argc, char **argv)
 {
   fprintf(file, "Bad %s %s command: ", argv[0], argv[1]);
   spew_args(NULL, argc, argv, file);
+  fprintf(file, "Try: help\n");
 }
 
 static inline
@@ -502,9 +510,14 @@ char *window_get_value(struct qp_win *qp, const char *name)
     return get_buf;
   }
   if(!strcmp(name, "menubar"))
-    return BoolValue(
-        gtk_check_menu_item_get_active(
-          GTK_CHECK_MENU_ITEM(qp->view_menubar))?1:0);
+  {
+      if(!app->is_globel_menu)
+        return BoolValue(
+          gtk_check_menu_item_get_active(
+            GTK_CHECK_MENU_ITEM(qp->view_menubar))?1:0);
+      else
+        return BoolValue(1);
+  }
   if(!strcmp(name, "shape"))
     return BoolValue(qp->shape);
   if(!strcmp(name, "statusbar"))
