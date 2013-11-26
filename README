@@ -32,77 +32,8 @@ for a long list of configuration options.
 
 
 
-
-
-Installation prerequisites
-
-Quickplot uses the GNU Autotools (./configure) to build and install.
-To build Quickplot from the distribution source tarball
-(example: quickplot-0.9.0.tar.bz2) the following packages are
-required to be installed:
-
-    * GTK+          has many prerequisites, but it all comes with most
-                    GNU/Linux distributions.
-                    http://www.gtk.org/
-
-    * libsndfile    is a C library for reading and writing files
-                    containing sampled sound, such as Ogg/Vorbis,
-                    microsoft WAV, and the Apple/SGI AIFF format,
-                    through one standard library interface.
-                    http://www.mega-nerd.com/libsndfile/
-
-
-
-Development prerequisites
-
-To build and develop Quickplot from the SVN source the following
-packages, in addition to the above packages, are required to be
-installed:
-
-    * GNU Autotools   Autoconf, Automake, and Libtool are used
-                      to build the Quickplot source.
-                      http://www.gnu.org/software/autoconf/
-                      http://www.gnu.org/software/automake/
-                      http://www.gnu.org/software/libtool/
-
-    * ImageMagick     The convert program, from ImageMagick, is
-                      used to make xpm images from PNG images in
-                      the Quickplot source.
-                      http://www.imagemagick.org/
-
-    * Lynx            Lynx is a fully-featured World Wide Web
-                      (WWW) client, or web browser, that can
-                      display inside of a tty terminal.  We use
-                      Lynx to generate ASCII text files from our
-                      html files.
-                      http://lynx.isc.org/
-
-
-
-
-Quickplot version 0.9.0 was tested with the following
-prerequisite package combinations:
-
- sndfile-1.0.25
- libpng-1.5.5
- pixman-0.22.2
- cairo-1.10.2
- glib-2.31.2
- gdk-pixbuf-2.24.0
- pango-1.29.5
- atk-2.2.0
- gtk+-3.3.4
- 
- sndfile-1.0.25
- libpng-1.5.6
- pixman-0.22.2
- cairo-1.10.2
- glib-2.28.8
- gdk-pixbuf-2.24.0
- pango-1.28.4
- atk-1.32.0
- gtk+-3.0.12
-
+See http://quickplot.sourceforge.net/about.html for
+Installation prerequisites and other details.
 
 
 
