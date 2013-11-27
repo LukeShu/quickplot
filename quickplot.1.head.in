@@ -24,4 +24,10 @@ is maintained as a HTML document in a file named help.html.
 You can get the latest version at <@PACKAGE_URL@help.html>.
 The options part in this man page is generated from the
 same source as the options part of the HTML document.
-
+.PP
+The order of argument options matters.  Options take effect
+in the order that they are given with later options overriding
+earlier ones.  The options that cause actions like graph "something"
+must come after the option that says to read the file that has
+"something" in it.  In general, the order of argument options gives
+the order in which things happen as Quickplot starts up. 
