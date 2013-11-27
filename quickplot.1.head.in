@@ -14,7 +14,7 @@ has a graphical user interface, lots of command line options,
 and a command line shell interface as well.
 .I Quickplot
 can load ASCII text files and many sound file formats using the
-libsnfile library.
+libsndfile library.
 .I Quickplot
 can read standard input as a pipe or regular file.
 .PP
