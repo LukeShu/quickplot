@@ -40,6 +40,6 @@ Description: @PACKAGE_NAME@
 Version: @VERSION@
 Homepage: @PACKAGE_URL@
 URL: @PACKAGE_URL@
-Requires: gtk+-3.0
+Requires: gtk+-3.0 sndfile
 Libs: -Wl,-rpath -Wl,${libdir} -L${libdir} -lquickplot
 Cflags: -I${includedir}

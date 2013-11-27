@@ -35,7 +35,8 @@ h1 {
      font-weight:bold;
      text-align:center;
      padding: 18px 26px;
-     width:70%;
+     margin-left: 15%;
+     margin-right: 15%;
      padding: 20px;
      margin-bottom: 38px;
      background-image:url('background_h1.png');

@@ -162,7 +162,7 @@ summary="list of Quickplot gtk+ options. We got this list from running
 Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 </p>
 
-<table class="keys"  summary="list of Quickplot key short-cuts" style="margin-bottom:0px;">
+<table class=keys  summary="list of Quickplot key short-cuts" style="margin-bottom:0px;">
 
 <tr class=c><td><b>a</b></td> <td>show information <b>a</b>bout Quickplot using a web browser</td</tr>
 <tr><td><b>b</b></td> <td>show/hide the <b>b</b>utton bar</td</tr>

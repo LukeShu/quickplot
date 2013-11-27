@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!DOCTYPE html>
 <!--
 
   Quickplot - an interactive 2D plotter
@@ -23,21 +23,20 @@
 
 -->
 
-<html>
+<html lang=en>
 <head>
+<meta charset="UTF-8">
 <title>About Quickplot</title>
-<link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
-<style type='text/css'><!--
-/* inline the style sheet so it does not get lost */
+<link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+<style><!--
+/* We inline the style sheet so it does not get lost */
 @STYLE_CSS@
 --></style>
 </head>
 <body>
 
-
-<center>
 <h1>About Quickplot</h1>
-</center>
+
 
 <p style="text-align:center;font-size:x-large;">
 a fast interactive 2D plotter
