@@ -131,7 +131,6 @@ This will create a directory named quickplot in the current directory.
 <h3>News</h3>
 
 <p>
-
 <span style="font-size: 90%; font-weight:bold;">Dec 11
 2011</span>&nbsp;&nbsp;
 A complete re-write was done and there is a new release that
@@ -140,6 +139,12 @@ We consider this rewrite, version 0.10.*, much better than
 version 0.8.15 in many ways.&nbsp; See the
 new features list at
 <a href="about.html#features">about.html#features</a>.
+</p>
+
+<p>
+<span style="font-size: 90%; font-weight:bold;">Nov 27
+2013</span>&nbsp;&nbsp;
+Made a new release with some new options and minor bug fixes.
 </p>
 
 
