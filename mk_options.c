@@ -262,7 +262,7 @@ struct qp_option options[] =
                                                                                                                           "qp_channe"
                                                                                                                           "l *"       },
 /*------------------------------------------------------------------------------------------------------------------------------------*/
-{ {0,1}, "--lines",              "-j", "Y|N|A",   " ** ## ::Y@@  yes show lines ## ::N@@  no don't show lines. "
+{ {0,1}, "--lines",              "-j", "Y|N|A",   " ** ## ::Y@@  yes show lines. ## ::N@@  no don't show lines. "
                                                   "Same as ::--no-lines@@. ## ::A@@  auto, be smart about "
                                                   "it.  This is the default. &&",                             "-1",       "int"       },
 
