@@ -19,6 +19,10 @@
 #
 ####################################################################
 
+# The .xpm files are built but come in a tarball .xpm files are
+# not checked into the repository.  Distributing the .xpm file in
+# the tarball removes the ImageMagick 'convert' program dependency.
+
 XPM_FILES =\
  imgCopyWindow.xpm\
  imgDeleteWindow.xpm\
@@ -80,9 +84,6 @@ endif
 
 
 man_MANS = quickplot.1 quickplot_shell.1
-
-# The .xpm files are built but come in a tarball
-# .xpm files are not checked into the repository
 
 html_DATA =\
  about.html\
