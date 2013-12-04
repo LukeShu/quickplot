@@ -5,9 +5,8 @@ if test -z "$2" ; then
   exit 1
 fi
 
-cd "$2"
 
-ret="`(svnversion) 2>/dev/null`"
+ret="`(svnversion $2) 2>/dev/null`"
 err="$?"
 
 if test "$err" != "0" ; then
@@ -20,7 +19,7 @@ elif test "$ret" = "Unversioned directory" ; then
   if test -f "$1" ; then
     cat "$1"
   else
-    echo "unknown"
+    echo "Unknown"
   fi
 else
   echo "$ret"

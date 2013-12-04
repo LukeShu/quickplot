@@ -19,23 +19,24 @@
 #
 ####################################################################
 
+XPM_FILES =\
+ imgCopyWindow.xpm\
+ imgDeleteWindow.xpm\
+ imgGrabCursor.xpm\
+ imgHoldCursor.xpm\
+ imgNewWindow.xpm\
+ imgSaveImage.xpm\
+ quickplot.xpm
 
 EXTRA_DIST =\
  house.png\
  imgGrabCursor.png\
- imgGrabCursor.xpm\
  imgHoldCursor.png\
- imgHoldCursor.xpm\
  imgNewWindow.png\
- imgNewWindow.xpm\
  imgDeleteWindow.png\
- imgDeleteWindow.xpm\
  imgCopyWindow.png\
- imgCopyWindow.xpm\
  imgSaveImage.png\
- imgSaveImage.xpm\
  quickplot.png\
- quickplot.xpm\
  sample_plot.png\
  screenshot_small.png\
  favicon.ico\
@@ -57,22 +58,26 @@ EXTRA_DIST =\
  Repo_clean\
  release_date.sh\
  repo_version.sh\
- ax_lib_readline.m4
+ ax_lib_readline.m4\
+ $(XPM_FILES)
 
 BUILT_SOURCES =\
- imgGrabCursor.xpm\
- imgHoldCursor.xpm\
- imgNewWindow.xpm\
- imgDeleteWindow.xpm\
- imgCopyWindow.xpm\
- imgSaveImage.xpm\
- quickplot.xpm\
- about.txt\
- help.txt\
  paths.h\
  parse_args.h\
  app_op_declare.h\
  app_op_init.h
+
+if USE_CONVERT
+BUILT_SOURCES +=\
+ $(XPM_FILES)
+endif
+
+if USE_LYNX
+BUILT_SOURCES +=\
+ about.txt\
+ help.txt
+endif
+
 
 man_MANS = quickplot.1 quickplot_shell.1
 
@@ -140,12 +145,6 @@ libquickplot_la_SOURCES =\
  graph_detail.c\
  graph_draw.c\
  graph_grid.c\
- imgCopyWindow.xpm\
- imgDeleteWindow.xpm\
- imgGrabCursor.xpm\
- imgHoldCursor.xpm\
- imgNewWindow.xpm\
- imgSaveImage.xpm\
  launch_browser.c\
  list.c\
  list.h\
@@ -161,7 +160,6 @@ libquickplot_la_SOURCES =\
  qp.c\
  qp.h\
  quickplot.h\
- quickplot.xpm\
  shell.c\
  shell_get_set_values.h\
  shell.h\
@@ -176,6 +174,7 @@ libquickplot_la_SOURCES =\
  term_color.h\
  utils.h\
  win.c\
+ $(XPM_FILES)\
  zoom.h
 
 libquickplot_la_SHORTNAME = lib
