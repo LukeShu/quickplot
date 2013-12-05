@@ -103,7 +103,6 @@ void parse_1st_version(void)
   exit(0);
 }
 
-
 static inline
 void parse_1st_background_color(char *arg, int argc, char **argv, int *i)
 {
@@ -122,13 +121,11 @@ void parse_1st_grid_text_color(char *arg, int argc, char **argv, int *i)
   check_color_opt("--grid-text-color", arg);
 }
 
-
 static inline
 void parse_1st_linear_channel(char *arg, int argc, char **argv, int *i)
 {
   parse_linear_channel(0, arg, argc, argv, i, NULL, NULL);
 }
-
 
 static inline
 void parse_1st_local_menubars(void)

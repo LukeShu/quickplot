@@ -276,6 +276,33 @@ struct qp_win_config
   int border, x11_draw, width, height, menubar, buttonbar, tabs, statusbar;
 };
 
+/* The "gtk-shell-shows-menubar" property of the menubar
+ * seem to be what tells Unity Globel menubar to be
+ * used.  It would be nice if we could tell this before
+ * we start making widgets.
+ *
+ * Returns 1 if the "gtk-shell-shows-menubar" property is set
+ * else returns 0 */
+static int
+_shell_shows_menubar(GtkWidget *widget)
+{
+  GtkSettings *settings;
+  GParamSpec *pspec;
+  gboolean shell_shows_menubar;
+
+  g_return_val_if_fail(GTK_IS_WIDGET(widget), 0);
+  settings = gtk_widget_get_settings(widget);
+  g_return_val_if_fail(GTK_IS_SETTINGS(settings), 0);
+  pspec = g_object_class_find_property(G_OBJECT_GET_CLASS (settings),
+          "gtk-shell-shows-menubar");
+  g_return_val_if_fail(G_IS_PARAM_SPEC(pspec), 0);
+  g_return_val_if_fail(pspec->value_type == G_TYPE_BOOLEAN, 0);
+  g_object_get(settings, "gtk-shell-shows-menubar",
+          &shell_shows_menubar, NULL);
+
+  return shell_shows_menubar?1:0;
+}
+
 /* the qp_win_config thing will over-ride the app->op_* stuff
  * so that we may have this make a copy of a qp that exists
  * and may have a different state than the app->op_* stuff */
@@ -405,11 +432,18 @@ qp_win_t _qp_win_create(const struct qp_win_config *c)
      *                           top menu bar
      *********************************************************************/
     GtkWidget *menubar;
+
     qp->menubar =
     menubar = gtk_menu_bar_new();
     gtk_menu_bar_set_pack_direction(GTK_MENU_BAR(menubar),
         GTK_PACK_DIRECTION_LTR);
+
+    if(app->is_globel_menu == 3)
+        // set to 0 or 1
+        app->is_globel_menu = _shell_shows_menubar(menubar);
+
     gtk_box_pack_start(GTK_BOX(vbox), menubar, FALSE, FALSE, 0);
+    
     {
       GtkWidget *menu;
       /*******************************************************************
