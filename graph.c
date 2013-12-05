@@ -52,7 +52,7 @@ const gint EDGE_BUF_MIN = 10;
 
 
 
-/* returns a molloc() allocated string
+/* returns a malloc() allocated string
  * Return a unique name for the qp */
 static inline
 char *unique_name(struct qp_win *qp, const char *name)

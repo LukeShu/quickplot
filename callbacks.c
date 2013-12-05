@@ -926,6 +926,7 @@ void set_value_pick_entries(struct qp_graph *gr, int x, int y)
     for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))
     {
       char text[64];
+      if(!p->x_entry) break;
       snprintf(text, 64, "%.*g", p->sig_fig_x, qp_plot_get_xval(p, x));
       gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
 
@@ -1080,12 +1081,15 @@ void set_value_pick_entries(struct qp_graph *gr, int x, int y)
     {
       gr->value_pick_x = qp_plot_get_xpixel(p, xval);
       gr->value_pick_y = qp_plot_get_ypixel(p, yval);
-      snprintf(text, 64, "%.16g", xval);
-      gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
-      snprintf(text, 64, "%.16g", yval);
-      gtk_entry_set_text(GTK_ENTRY(p->y_entry), text);
+      if(p->x_entry)
+      {
+        snprintf(text, 64, "%.16g", xval);
+        gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
+        snprintf(text, 64, "%.16g", yval);
+        gtk_entry_set_text(GTK_ENTRY(p->y_entry), text);
+      }
     }
-    else
+    else if(p->x_entry)
     {
       snprintf(text, 64, "%.*g", p->sig_fig_x, xval);
       gtk_entry_set_text(GTK_ENTRY(p->x_entry), text);
@@ -1122,6 +1126,9 @@ gboolean ecb_graph_button_press(GtkWidget *w, GdkEvent *event, gpointer data)
   ASSERT(event->type == GDK_BUTTON_PRESS ||
       event->type == GDK_2BUTTON_PRESS ||
       event->type == GDK_3BUTTON_PRESS);
+
+  if(!qp_sllist_length(gr->plots))
+    return TRUE;
 
   /* We can get a button press without a release when
    * we include the double and triple press events.
