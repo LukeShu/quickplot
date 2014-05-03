@@ -1,3 +1,6 @@
+Fix cursor after going from fullscreen view to regular window view.
+The graph window cursor is the "wait" cursor until you move it.
+
 
 Most of this is done, but we need to leave it so we may check
 it out more carefully.  This is just the authors junk notes.
