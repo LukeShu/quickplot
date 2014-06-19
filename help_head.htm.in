@@ -254,7 +254,7 @@ line character may used to separate numbers on a given line.&nbsp;
 NAN, INF, -NAN, -INF, +NAN, and +INF (lower case too) are numbers that
 can be read by quickplot.&nbsp;
 Any line starting with zero or more white space characters
-and then a any one of &nbsp;<span
+and then any one of &nbsp;<span
   style="background-color:#AABBCC;">&nbsp; ! " # $ % &amp; ' ( ) /
   &lt; = &gt; ? @ C c &nbsp;</span>&nbsp; is a comment line that
 is ignored.&nbsp;
