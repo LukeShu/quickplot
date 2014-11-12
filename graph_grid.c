@@ -623,7 +623,6 @@ void qp_graph_grid_draw(struct qp_graph *gr, struct qp_plot *p,
       qp_plot_get_ypixel(p, ypow_part*(ymin_mat + yinc)));
 #endif
 
-
   if(gr->same_x_scale)
       DrawXGrid(cr, pangolayout, gr, p,
 	    xmin_mat, xmax_mat, xinc, xpow_part,

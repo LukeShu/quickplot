@@ -28,14 +28,8 @@
 # like joes_configure.bash which you may need but will not go in the
 # repository.  Distribution files are not removed either.
 
-dir="$PWD"
 scriptdir="$(dirname ${BASH_SOURCE[0]})"
 cd $scriptdir || exit 1
-if [ "$dir" != "$PWD" ] ; then
-  echo "This script ($0) must be executed directly\
- from the top $(dirname $0) source directory."
-    exit 1
-fi
 
 # This is not a complete list but if they have them
 # they will likely have any others that are needed.

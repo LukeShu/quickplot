@@ -315,13 +315,11 @@ qp_plot_t qp_plot_create(qp_graph_t gr,
       ++(p->point_size);
   }
 
-
   p->xscale0 = 1.0/(xmax - xmin);
   p->xshift0 = -xmin/(xmax - xmin);
 
   p->yscale0 = 1.0/(ymax - ymin);
   p->yshift0 = -ymin/(ymax - ymin);
-
 
   p->xscale = 0.0;
   p->xshift = 0.0;

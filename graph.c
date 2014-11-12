@@ -678,12 +678,6 @@ void _qp_graph_rescale_plots(struct qp_graph *gr)
     xmax += SMALL_DOUBLE;
     xmin -= SMALL_DOUBLE;
   }
-  else
-  {
-    /* use different scales */
-    xmin = INFINITY;
-    xmax = -INFINITY;
-  }
 
   if(gr->same_y_limits)
     gr->same_y_scale = 1;
@@ -716,12 +710,6 @@ void _qp_graph_rescale_plots(struct qp_graph *gr)
      * are too close together, so we make it same scale */
     ymax += SMALL_DOUBLE;
     ymin -= SMALL_DOUBLE;
-  }
-  else
-  {
-    /* use different scales */
-    ymin = INFINITY;
-    ymax = -INFINITY;
   }
 
   for(p=qp_sllist_begin(gr->plots);p;p=qp_sllist_next(gr->plots))

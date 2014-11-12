@@ -612,7 +612,7 @@ void graph_draw(struct qp_graph *gr, cairo_t *cr,
              * plotting of small files, but not enough that
              * we can measure.  Tests show that cairo rectangle
              * drawing is much slower than line drawing.  Cairo
-             * does not appear to be opimised for small rectangle
+             * does not appear to be optimised for small rectangle
              * drawing.  Single pixel drawing in cairo uses
              * 1x1 rectangles, which are no faster to draw.
              * We convert the doubles to ints in the call to
@@ -837,7 +837,7 @@ void qp_graph_draw(struct qp_graph *gr, cairo_t *gdk_cr)
     g_idle_add_full(G_PRIORITY_LOW, idle_callback, gr, NULL);
     /* fight qp_graph_destroy() race condition with flag */
     ++gr->ref_count;
-    /* We draw after the other widgets are drawn, incase drawing
+    /* We draw after the other widgets are drawn, in case drawing
      * takes a long time.  This waiting also gives a chance
      * for the watch cursor to show.  But that seems to only
      * show if the window had focus at the right time. */
