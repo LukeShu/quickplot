@@ -1238,10 +1238,10 @@ gboolean ecb_graph_button_release(GtkWidget *w, GdkEvent *event, gpointer data)
    * accept any button release event to finish the mouse
    * press and pointer/motion action. */
 
-  // this test shows the the pointer can move
+  // this test shows the pointer can move
   // between motion and this release event
   // We just ignore this motion since it would
-  // just make things looks jiggley (bad).
+  // just make things look jiggly (bad).
   //ASSERT(save_x == (int) event->button.x);
   //ASSERT(save_y == (int) event->button.y);
 

@@ -323,12 +323,16 @@ qp_graph_t qp_graph_create(qp_win_t qp, const char *name)
 		  GDK_BUTTON_RELEASE_MASK |
 		  GDK_POINTER_MOTION_MASK);
 
-  /* We will do our own version of double buffering.
-   * Not that it is better than GTK, but we add an additional
-   * user interaction at the same time we copy image buffers.
-   * Before we found this we were inadvertently triple
-   * buffering the drawing of the graph. */
-  gtk_widget_set_double_buffered(gr->drawing_area, FALSE);
+  /* We will do our own version of double buffering.  Not that it is
+   * better than GTK, but we add an additional user interaction at the
+   * same time we copy image buffers.  Before we found this we were
+   * inadvertently triple buffering the drawing of the graph. */
+  /* With GTK+3.0 version 3.14.5 gtk_widget_set_double_buffered() seems to
+   * be broken.  Calling gtk_widget_set_double_buffered(gr->drawing_area,
+   * FALSE) brakes the Cario draw mode.  We may be doing extra unnecessary
+   * buffering.  gtk_widget_set_double_buffered() is depreciated and has
+   * no fix to replace it. */
+  //gtk_widget_set_double_buffered(gr->drawing_area, FALSE);
 
 #if 1
   {

@@ -814,7 +814,7 @@ get_cairo_region_create_from_surface(struct qp_graph *gr,
 
 
 /* We double buffer the image.  It looks nice and it enables
- * grabing the graph with the pointer and translating it.
+ * grabbing the graph with the pointer and translating it.
  * We draw on our own larger surface and then copy part of that
  * to the gdk surface.
  *
