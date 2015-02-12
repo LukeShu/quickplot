@@ -407,13 +407,13 @@ int read_ascii(qp_source_t source, struct qp_reader *rd)
       char *end;
       size_t len;
       end = s;
-      /* find the next seperator */
+      /* find the next separator */
       end = s;
       while(*end && *end != '\n' && *end != '\r' &&
           strncmp(end, sep, sep_len))
         ++end;
 
-      /* *end == '\0' or end == "the seperator" */
+      /* *end == '\0' or end == "the separator" */
       len = end - s;
       /* get a label */
       source->labels[num_labels] = qp_strndup(s, len);
@@ -422,7 +422,7 @@ int read_ascii(qp_source_t source, struct qp_reader *rd)
       if(!(*end) || *end == '\n' || *end == '\r')
         break;
 
-      /* skip the seperator */
+      /* skip the separator */
       s = end + sep_len;
       if(!(*s))
         break;
@@ -906,7 +906,7 @@ qp_source_t qp_source_create(const char *filename, int value_type)
       c = qp_channel_linear_create(start, step);
     }
 
-    
+
     len = source->num_values;
     for(i=0;i<len;++i)
       qp_channel_series_double_append(c, start + i*step);
@@ -922,6 +922,22 @@ qp_source_t qp_source_create(const char *filename, int value_type)
     free(source->channels);
     source->channels = new_channels;
     ++(source->num_channels);
+
+    if(source->labels && source->num_labels !=  source->num_channels)
+    {
+      // shift the labels and add the linear channel label
+      source->labels = qp_realloc(source->labels,
+          sizeof(char *)*(source->num_labels+2));
+      source->labels[source->num_labels+1] = NULL;
+      for(i=source->num_labels;i>=1;--i)
+        source->labels[i] = source->labels[i-1];
+
+      char s[128];
+      snprintf(s,128, "%s[0]", source->name);
+      // The first channel is the linear channel.
+      source->labels[0] = qp_strdup(s);
+      ++source->num_labels;
+    }
 
     /* Another source may have more values so
      * we must make a new one in case it is used again. */
@@ -1168,7 +1184,10 @@ void qp_source_destroy(qp_source_t source)
   {
     char **s;
     for(s = source->labels; *s; ++s)
-      free(*s);
+    {
+      if(*s)
+        free(*s);
+    }
     free(source->labels);
   }
     
