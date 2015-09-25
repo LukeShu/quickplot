@@ -178,7 +178,7 @@ Quickplot has GUIs for all of the following immutable keyboard short-cuts:
 <tr class=c><td><b>n</b></td> <td>make a <b>n</b>ew graph</td</tr>
 <tr><td><b>o</b></td> <td><b>o</b>pen a data file</td</tr>
 <tr class=c><td><b>q</b></td> <td><b>q</b>uit</td</tr>
-<tr><td><b>r</b></td> <td>toggles the between d<b>r</b>awing with Cai<b>r</b>o and X11</td</tr>
+<tr><td><b>r</b></td> <td>toggles between d<b>r</b>awing with Cai<b>r</b>o and X11</td</tr>
 <tr class=c><td><b>s</b></td> <td>show/hide of the <b>s</b>tatus bar</td</tr>
 <tr><td><b>t</b></td> <td>show/hide of the graph <b>t</b>abs</td</tr>
 <tr class=c><td><b>u</b></td> <td>show/hide of all G<b>U</b>Is</td></tr>
