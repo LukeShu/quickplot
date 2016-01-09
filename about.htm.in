@@ -234,7 +234,7 @@ of the <em>help</em> page is used to make the man page.
 
 </ul>
 
-<p>The <b>--enble-developer</b> option flag is required to be set when
+<p>The <b>--enable-developer</b> option flag is required to be set when
 running configure when building Quickplot from the repository source
 files.  It adds make targets to build files that are not
 in the source repository but are needed to make a source tarball.
