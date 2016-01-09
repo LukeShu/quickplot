@@ -116,12 +116,12 @@ href="https://sourceforge.net/projects/quickplot/">Sourceforge
 
 
 <p>
-To check-out the current source from the SourceForge Subversion
+To check-out the current source from the <a href="http://github.com">GitHub</a>
 repository run:
 </p>
 
 <pre>
-svn co https://quickplot.svn.sf.net/svnroot/quickplot/trunk quickplot
+git clone https://github.com/lanceman2/quickplot
 </pre>
 
 <p>
@@ -129,6 +129,13 @@ This will create a directory named quickplot in the current directory.
 </p>
 
 <h3>News</h3>
+
+<p>
+<span style="font-size: 90%; font-weight:bold;">Jan 03
+2016</span>&nbsp;&nbsp;
+Moved the quickplot repository to <a
+    href="https://github.com/lanceman2/quickplot">GitHub</a>.
+</p>
 
 <p>
 <span style="font-size: 90%; font-weight:bold;">Dec 11

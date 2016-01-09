@@ -37,7 +37,7 @@ then
     exit 1
 fi
  
-progs="svn svnversion convert autoconf automake sed grep awk bash diff"
+progs="git convert autoconf automake sed grep awk bash diff"
 inst=
 for prog in $progs ; do
     if ! which $prog &> /dev/null ; then

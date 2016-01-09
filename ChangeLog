@@ -1,6 +1,5 @@
-This ChangeLog just keeps a summary see:
-svn log https://quickplot.svn.sf.net/svnroot/quickplot/trunk
-for a more.
+This ChangeLog is no longer updated see:
+https://github.com/lanceman2/quickplot for a more information
 
 Tue 26 Nov 2013  Lance Arsenault <lanceman_at_users.sourceforge.net>
     * Added fixes for Ubuntu Unity

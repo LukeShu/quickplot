@@ -60,8 +60,8 @@ EXTRA_DIST =\
  quickplot.1.head.in\
  quickplot.1.tail.in\
  Repo_clean\
- release_date.sh\
- repo_version.sh\
+ release_date.bash\
+ repo_version.bash\
  ax_lib_readline.m4\
  $(XPM_FILES)
 
@@ -314,8 +314,8 @@ index.html: index.htm
 # dist and one for installing, and the values for
 # @release_date@ and @repo_version@ differ for those two cases
 about.html: about.htm
-	repo_version="`${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION ${top_srcdir}`";\
- rel_date="`${top_srcdir}/release_date.sh ${top_srcdir}/RELEASE_DATE`"; sed $<\
+	repo_version="`${top_srcdir}/repo_version.bash ${top_srcdir}/REPO_VERSION ${top_srcdir}`";\
+ rel_date="`${top_srcdir}/release_date.bash ${top_srcdir}/RELEASE_DATE`"; sed $<\
  -e "s/@release_date@/$$rel_date/g"\
  -e "s/@repo_version@/$$repo_version/g"\
  -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
@@ -382,7 +382,7 @@ endif
 dist-hook:
 	if test -f RELEASE_DATE ; then mv RELEASE_DATE RELEASE_DATE.save ; fi
 	if test -f REPO_VERSION ; then mv REPO_VERSION REPO_VERSION.save ; fi
-	${top_srcdir}/repo_version.sh ${top_srcdir}/REPO_VERSION ${top_srcdir} > REPO_VERSION.tmp
+	${top_srcdir}/repo_version.bash ${top_srcdir}/REPO_VERSION ${top_srcdir} > REPO_VERSION.tmp
 	mv REPO_VERSION.tmp REPO_VERSION
 	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
 	echo $(VERSION) > last_release

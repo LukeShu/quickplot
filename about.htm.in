@@ -203,7 +203,7 @@ through one standard library interface.
 
 <p>
 To build and develop Quickplot from the <a
-     href="https://sourceforge.net/svn/?group_id=82651">SVN source</a>
+     href="https://github.com/lanceman2/quickplot">GIT source</a>
 the following packages, in addition to the above packages, are
 required to be installed:
 </p>

@@ -259,7 +259,7 @@ AC_SUBST_FILE(STYLE_CSS)
 FOOTER_HTM="footer.htm"
 AC_SUBST_FILE(FOOTER_HTM)
 
-RELEASE_DATE="`${srcdir}/release_date.sh ${srcdir}/RELEASE_DATE`"
+RELEASE_DATE="`${srcdir}/release_date.bash ${srcdir}/RELEASE_DATE`"
 AC_SUBST(RELEASE_DATE)
 
 AC_SUBST(DEFAULT_GRID_FONT)
@@ -297,7 +297,7 @@ AC_DEFINE_UNQUOTED(NUMBER_OF_PLOTS, $NUMBER_OF_PLOTS,
     [The default maximum number of plot per file])
 
 
-AM_CONDITIONAL([IS_SVN_CO], [test -f .svn/all-wcprops])
+AM_CONDITIONAL([IS_SVN_CO], [test -f .git/config])
 
 AM_CONDITIONAL([HAVE_LOCAL_SCREENSHOTS], [test -f screenshots.html.in])
 

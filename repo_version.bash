@@ -1,26 +1,32 @@
-#!/bin/sh
+#!/bin/bash
 
 if test -z "$2" ; then
   echo "Usage: $0 REPO_VERSION_FILE SRC_DIR"
   exit 1
 fi
 
+cd "$2" || exit 1
 
-ret="`(svnversion $2) 2>/dev/null`"
+mod=
+if git status -s | egrep -q '*M ' ; then
+    mod=M # the source has modifications
+fi
+ret="$(git log --oneline | wc -l)"
+
 err="$?"
 
-if test "$err" != "0" ; then
-  if test -d "$2/.svn" ; then
+if [ "$err" != "0" ] ; then
+  if [ -d "$2/.git" ] ; then
     echo "unknown"
   else
     cat "$1"
   fi
-elif test "$ret" = "Unversioned directory" ; then
-  if test -f "$1" ; then
+elif [ "$ret" = "Unversioned directory" ] ; then
+  if [ -f "$1" ] ; then
     cat "$1"
   else
     echo "Unknown"
   fi
 else
-  echo "$ret"
+  echo "${ret}${mod}"
 fi

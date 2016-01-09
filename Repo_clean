@@ -33,7 +33,7 @@ cd $scriptdir || exit 1
 
 # This is not a complete list but if they have them
 # they will likely have any others that are needed.
-progs="svn svnversion lynx convert autoconf automake sed grep awk bash diff"
+progs="git lynx convert autoconf automake sed grep awk bash diff"
 inst=
 for prog in $progs ; do
     if ! which $prog &> /dev/null ; then

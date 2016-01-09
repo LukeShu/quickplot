@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-if test -z "$1" ; then
+if [ -z "$1" ] ; then
   echo "Usage: $0 RELEASE_DATE_FILE"
   exit 1
 fi
 
-if test -f "$1" ; then
+if [ -f "$1" ] ; then
   cat "$1"
 else
   echo "not released yet"

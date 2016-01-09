@@ -54,10 +54,10 @@ Running the above line will make the directory quickplot_tests in the
 current directory.
 
 
-If you are building Quickplot from the svn repository source files,
+If you are building Quickplot from the GitHub repository source files,
 when you run configure you must use the --enable-developer option
 to enable the building of addition files that are in tarball
-distributions, but not in the svn repository.  For example run:
+distributions, but not in the git repository.  For example run:
 
 	./bootstrap
         ./configure --prefix /home/joe/installed/encap/quickplot \
@@ -67,6 +67,4 @@ distributions, but not in the svn repository.  For example run:
 
 
 
-
-
-
+TODO: Add --enable-developer=auto to be the default
