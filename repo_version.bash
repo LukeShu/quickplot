@@ -8,14 +8,12 @@ fi
 cd "$2" || exit 1
 
 mod=
+ret="$(git log --oneline | wc -l)"
 if git status -s | egrep -q '*M ' ; then
     mod=M # the source has modifications
 fi
-ret="$(git log --oneline | wc -l)"
 
-err="$?"
-
-if [ "$err" != "0" ] ; then
+if [ "$ret" = "0" ] ; then
   if [ -d "$2/.git" ] ; then
     echo "unknown"
   else

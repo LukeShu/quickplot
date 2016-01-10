@@ -28,7 +28,7 @@ AC_PREREQ(2.59)
 
 
 # AC_INIT( PACKAGE, VERSION, BUGREPORT, TARNAME , URL)
-AC_INIT([quickplot], 1.0.0rc,
+AC_INIT([quickplot], 1.0.1rc,
         [http://quickplot.sourceforge.net/],
         [quickplot],
         [http://quickplot.sourceforge.net/])
