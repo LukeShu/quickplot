@@ -221,12 +221,15 @@ AM_CONDITIONAL([HAVE_GNU_LIB_NAMES_H],
 STYLE_CSS="${srcdir}/style.css"
 AC_SUBST_FILE(STYLE_CSS)
 
-# replace @FOOTER_HTM@ with the file footer.htm
-FOOTER_HTM="footer.htm"
+# replace @FOOTER_HTM@ with the file footer.html.part
+FOOTER_HTM="footer.html.part"
 AC_SUBST_FILE(FOOTER_HTM)
 
 RELEASE_DATE="`${srcdir}/release_date.bash ${srcdir}/RELEASE_DATE`"
 AC_SUBST(RELEASE_DATE)
+
+REPO_VERSION="`${srcdir}/repo_version.bash ${srcdir}/REPO_VERSION ${srcdir}`"
+AC_SUBST(REPO_VERSION)
 
 AC_SUBST(DEFAULT_GRID_FONT)
 AC_DEFINE_UNQUOTED(DEFAULT_GRID_FONT, "$DEFAULT_GRID_FONT",
@@ -265,7 +268,13 @@ AC_DEFINE_UNQUOTED(NUMBER_OF_PLOTS, $NUMBER_OF_PLOTS,
 
 AM_CONDITIONAL([IS_SVN_CO], [test -f .git/config])
 
-AM_CONDITIONAL([HAVE_LOCAL_SCREENSHOTS], [test -f screenshots.html.in])
+AM_CONDITIONAL([HAVE_LOCAL_SCREENSHOTS], [test -f screenshots.html.fin.in])
+if test -f screenshots.html.fin.in; then
+	SCREENSHOT_URL=screenshots.html
+else
+	SCREENSHOT_URL="${PACKAGE_URL}screenshots.html"
+fi
+AC_SUBST(SCREENSHOT_URL)
 
 
 
@@ -289,11 +298,11 @@ fi
 AC_CONFIG_FILES(
 Makefile
 quickplot.pc
-footer.htm
-about.htm
-help_head.htm
-help_tail.htm
-index.htm
+footer.html.part
+about.html.fin
+help.html.head
+help.html.tail.fin
+index.html.fin
 quickplot.1.head
 quickplot.1.tail
 quickplot_shell.1

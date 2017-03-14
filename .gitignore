@@ -13,6 +13,7 @@ quickplot-*
 *.la
 *.so
 *.lo
+*.tmp
 
 aclocal.m4
 config.cache
@@ -47,19 +48,17 @@ quickplot_shell
 REPO_VERSION
 RELEASE_DATE
 paths.h
-*.htm
+*.html
+*.fin
+*.part
 _ScreenShot_*_thumb.png
 _ScreenShot_*_thumb-*.png
-about.html
-help.html
-index.html
-screenshots.html
 config.h.in
 config.h
 mk_options
 quickplot.pc
-quickplot.1.head
-quickplot.1.tail
+*.head
+*.tail
 quickplot.1
 quickplot_shell.1
 

@@ -48,17 +48,10 @@ EXTRA_DIST =\
  background_h1.png\
  background_h2.png\
  style.css\
- footer.htm.in\
- about.htm.in\
- help_head.htm.in\
- help_tail.htm.in\
- index.htm.in\
  about.txt\
  help.txt\
  bootstrap\
  quickplot.ebuild\
- quickplot.1.head.in\
- quickplot.1.tail.in\
  Repo_clean\
  release_date.bash\
  repo_version.bash\
@@ -257,12 +250,6 @@ SUFFIXES = .html .bz2 .xz .gz \
 SUFFIXES += .png .xpm
 SUFFIXES += .txt
 
-if HAVE_LOCAL_SCREENSHOTS
-SCREENSHOT_URL = screenshots.html
-else
-SCREENSHOT_URL = @PACKAGE_URL@screenshots.html
-endif
-
 .PHONY: hash md5 sha1 sha256 sha512
 
 # TODO: There should be a better way to find installed
@@ -290,38 +277,32 @@ quickplot.1: quickplot.1.head quickplot.1.tail mk_options
 	echo ".\\\" This file was generated using $(MAKE)" >> $@
 
 
-index.html: index.htm
+index.html: index.html.fin
 	sed $<\
- -e "s!@SCREENSHOT_URL@!$(SCREENSHOT_URL)!g"\
  -e 's!@Top@!<span class=nav>\&nbsp;Top\&nbsp;</span>!'\
  -e 's!@About@!<a class=nav href="about.html">\&nbsp;About\&nbsp;</a>!'\
  -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\
  > $@
 
 
-# We cannot have configure replace @release_date@ and @repo_version@
-# because we need to generate about.html for two cases, one for
-# dist and one for installing, and the values for
-# @release_date@ and @repo_version@ differ for those two cases
-about.html: about.htm
-	repo_version="`${top_srcdir}/repo_version.bash ${top_srcdir}/REPO_VERSION ${top_srcdir}`";\
- rel_date="`${top_srcdir}/release_date.bash ${top_srcdir}/RELEASE_DATE`"; sed $<\
- -e "s/@release_date@/$$rel_date/g"\
- -e "s/@repo_version@/$$repo_version/g"\
+about.html: about.html.fin
+	sed $<\
  -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
  -e 's!@About@!<span class=nav>\&nbsp;About\&nbsp;</span>!'\
  -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\
  > $@
 
-help.html: help_head.htm mk_options help_tail.htm
-	cat help_head.htm > $@
-	./mk_options -t >> $@
-	cat help_tail.htm | sed\
+help.html.tail: help.html.tail.fin
+	sed $<\
  -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
  -e 's!@About@!<a class=nav href="about.html">\&nbsp;About\&nbsp;</a>!'\
  -e 's!@Help@!<span class=nav>\&nbsp;Help\&nbsp;</span>!'\
- >> $@
+ > $@
 
+help.html: help.html.head mk_options help.html.tail
+	cat help.html.head > $@
+	./mk_options -t >> $@
+	cat help.html.tail >> $@
 
 if HAVE_LOCAL_SCREENSHOTS
 
@@ -329,36 +310,47 @@ install-exec-hook:
 	mkdir -p $(DESTDIR)$(htmldir)
 	cp ScreenShot_* _ScreenShot_* $(DESTDIR)$(htmldir)
 
-thumbs.htm: mk_thumbs.htm.bash
+thumbs.html.part: mk_thumbs.htm.bash
 	./mk_thumbs.htm.bash > $@
 
-screenshots.html: screenshots.html.in style.css thumbs.htm footer.htm
-	./mk_screenshots.html.bash < $< > $@
+# ./config.status is part of ./configure; we do this here instead of
+# adding screenshots.html.fin to AC_CONFIG_FILES to avoid
+# screenshots.html.fin.in getting included in the dist tarball.
+screenshots.html.fin: screenshots.html.fin.in style.css footer.html.part config.status
+	./config.status --file=$@:$<
+
+screenshots.html: screenshots.html.fin thumbs.html.part
+	sed -e "/@THUMBS_HTM@/{ r thumbs.html.part$$(printf '\n ')d; }" $< > $@.tmp
+	sed\
+ -e 's!@Top@!<a class=nav href="index.html">\&nbsp;Top\&nbsp;</a>!'\
+ -e 's!@About@!<a class=nav href="about.html">\&nbsp;About\&nbsp;</a>!'\
+ -e 's!@Help@!<a class=nav href="help.html">\&nbsp;Help\&nbsp;</a>!'\
+ $@.tmp > $@
+	rm $@.tmp
 
 screenshots:
-	rm -f screenshots.html thumbs.htm
+	rm -f screenshots.html thumbs.html.part
 	$(MAKE) screenshots.html
 
 endif
 
-help_head.htm: style.css
-help_tail.htm: footer.htm
-index.htm: style.css footer.htm
-about.htm: style.css footer.htm
+help.html.head: style.css
+help.html.tail.fin: footer.html.part
+index.html.fin: style.css footer.html.part
+about.html.fin: style.css footer.html.part
 
 
 
 .png.xpm:
-	$(CONVERT) $< $@
-	mv $@ $@.in
-	sed -e 's/static.*\schar/static const char/g' $@.in > $@
-	rm $@.in
+	$(CONVERT) $< xpm:$@.tmp
+	sed -e 's/static.*\schar/static const char/g' -e 's/_xpm\[\] = /[] = /g' $@.tmp > $@
+	rm $@.tmp
 
 
 .html.txt:
-	$(LYNX) -dump $< > $@.in
-	dir=`pwd` && sed -e "s!//localhost$$dir/!!g" $@.in > $@
-	rm $@.in
+	$(LYNX) -dump $< > $@.tmp
+	dir=`pwd` && sed -e "s!//localhost$$dir/!!g" $@.tmp > $@
+	rm $@.tmp
 
 
 # Add the repository revision number to the dist.
@@ -373,10 +365,10 @@ dist-hook:
 	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
 	echo $(VERSION) > last_release
 	cat RELEASE_DATE REPO_VERSION >> last_release
-	rm -f about.html about.htm about.txt
+	rm -f about.txt about.html about.html.fin
 	$(MAKE) about.txt
 	mv REPO_VERSION RELEASE_DATE about.txt $(distdir)
-	rm -f about.html about.htm
+	rm -f about.txt about.html about.html.fin
 	$(MAKE) about.txt
 	if test -f REPO_VERSION.save ; then mv REPO_VERSION.save REPO_VERSION ; fi
 	if test -f RELEASE_DATE.save ; then mv RELEASE_DATE.save RELEASE_DATE ; fi
