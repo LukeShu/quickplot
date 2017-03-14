@@ -7,24 +7,22 @@ fi
 
 cd "$2" || exit 1
 
-mod=
-ret="$(git log --oneline | wc -l)"
-if git status -s | egrep -q '*M ' ; then
-    mod=M # the source has modifications
-fi
+if cdup="x$(git rev-parse --show-cdup 2>/dev/null)" && [ "$cdup" = x ] ; then
+  # Git
 
-if [ "$ret" = "0" ] ; then
-  if [ -d "$2/.git" ] ; then
-    echo "unknown"
-  else
-    cat "$1"
+  mod=
+  if git status -s | egrep -q '^.?M' ; then
+    mod=M # the source has modifications
   fi
-elif [ "$ret" = "Unversioned directory" ] ; then
+
+  ret="$(git log --oneline | wc -l)"
+
+  echo "${ret}${mod}"
+else
+  # non-Git
   if [ -f "$1" ] ; then
     cat "$1"
   else
     echo "Unknown"
   fi
-else
-  echo "${ret}${mod}"
 fi
