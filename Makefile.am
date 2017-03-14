@@ -62,8 +62,7 @@ EXTRA_DIST =\
  Repo_clean\
  release_date.bash\
  repo_version.bash\
- ax_lib_readline.m4\
- $(XPM_FILES)
+ ax_lib_readline.m4
 
 BUILT_SOURCES =\
  paths.h\
@@ -71,16 +70,12 @@ BUILT_SOURCES =\
  app_op_declare.h\
  app_op_init.h
 
-if USE_CONVERT
 BUILT_SOURCES +=\
  $(XPM_FILES)
-endif
 
-if USE_LYNX
 BUILT_SOURCES +=\
  about.txt\
  help.txt
-endif
 
 
 man_MANS = quickplot.1 quickplot_shell.1
@@ -259,13 +254,8 @@ SUFFIXES = .html .bz2 .xz .gz \
 .bz2.md5 .bz2.sha1 .bz2.sha256 .bz2.sha512 \
 .xz.md5 .xz.sha1 .xz.sha256 .xz.sha512
 
-if USE_CONVERT
 SUFFIXES += .png .xpm
-endif
-
-if USE_LYNX
 SUFFIXES += .txt
-endif
 
 if HAVE_LOCAL_SCREENSHOTS
 SCREENSHOT_URL = screenshots.html
@@ -358,21 +348,17 @@ about.htm: style.css footer.htm
 
 
 
-if USE_CONVERT
 .png.xpm:
-	convert $< $@
+	$(CONVERT) $< $@
 	mv $@ $@.in
 	sed -e 's/static.*\schar/static const char/g' $@.in > $@
 	rm $@.in
-endif
 
 
-if USE_LYNX
 .html.txt:
-	echo > $@
-	dir=`pwd` && lynx -dump $< | \
-sed -e "s!//localhost$$dir/!!g" >> $@
-endif
+	$(LYNX) -dump $< > $@.in
+	dir=`pwd` && sed -e "s!//localhost$$dir/!!g" $@.in > $@
+	rm $@.in
 
 
 # Add the repository revision number to the dist.
@@ -387,15 +373,11 @@ dist-hook:
 	date -u +"%d %b %G %H:%M:%S UTC" > RELEASE_DATE
 	echo $(VERSION) > last_release
 	cat RELEASE_DATE REPO_VERSION >> last_release
-if USE_LYNX
 	rm -f about.html about.htm about.txt
 	$(MAKE) about.txt
 	mv REPO_VERSION RELEASE_DATE about.txt $(distdir)
 	rm -f about.html about.htm
 	$(MAKE) about.txt
-else
-	mv REPO_VERSION RELEASE_DATE $(distdir)
-endif
 	if test -f REPO_VERSION.save ; then mv REPO_VERSION.save REPO_VERSION ; fi
 	if test -f RELEASE_DATE.save ; then mv RELEASE_DATE.save RELEASE_DATE ; fi
 	cd $(distdir) && rm -f $(DISTCLEANFILES) config.h
