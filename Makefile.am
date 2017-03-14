@@ -349,7 +349,7 @@ about.html.fin: style.css footer.html.part
 
 .html.txt:
 	$(LYNX) -dump $< > $@.tmp
-	dir=`pwd` && sed -e "s!//localhost$$dir/!!g" $@.tmp > $@
+	dir=`pwd` && sed -e "s!file://$$dir/!!g" $@.tmp > $@
 	rm $@.tmp
 
 
