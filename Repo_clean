@@ -57,6 +57,8 @@ fi
 
 set -x
 
+# If you edit the following, please also edit the .gitignore file.
+
 # generated directories
 rm -rf .deps .libs conftest.dir autom4te.cache m4
 
