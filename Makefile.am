@@ -426,3 +426,4 @@ $(bz2file):
 $(xzfile):
 	$(MAKE) dist-xz
 
+.DELETE_ON_ERROR:
